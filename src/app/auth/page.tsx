@@ -11,9 +11,13 @@ export default function Page({
   const [accessToken, setAccessToken] = useState("");
 
   async function signIn() {
-    const uri: string = `http://localhost:3001/auth?code=${searchParams.code}`;
-    const res: AxiosResponse = await axios.post(uri);
-    setAccessToken(res.data.accessToken);
+    try {
+      const uri: string = `http://localhost:3001/auth?code=${searchParams.code}`;
+      const res: AxiosResponse = await axios.post(uri);
+      setAccessToken(res.data.accessToken);
+    } catch (err) {
+      alert("500!!!!!!!!!!!!!!!!!!!!!");
+    }
   }
 
   useEffect(() => {
