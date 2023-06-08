@@ -14,9 +14,9 @@ export default function Page({
     try {
       const uri: string = `http://localhost:3001/auth?code=${searchParams.code}`;
       const res: AxiosResponse = await axios.post(uri);
-      setAccessToken(res.data.accessToken);
+      setAccessToken(res.data.jwtToken);
     } catch (err) {
-      alert("500!!!!!!!!!!!!!!!!!!!!!");
+      alert("500");
     }
   }
 
@@ -26,7 +26,7 @@ export default function Page({
   return (
     <div>
       <h1>HelloWorld</h1>
-      <h1>{accessToken}</h1>
+      <p>JWT Token: {accessToken}</p>
     </div>
   );
 }

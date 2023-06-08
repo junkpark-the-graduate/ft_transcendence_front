@@ -7,9 +7,7 @@ const AUTH_URL = `https://api.intra.42.fr/oauth/authorize?client_id=${process.en
 
 export default function Home() {
   const router = useRouter();
-  console.log("env: ", process.env);
   function onClick() {
-    console.log(process.env.NEXT_PUBLIC_FT_REDIRECT_URI);
     router.push(AUTH_URL);
   }
   return (
