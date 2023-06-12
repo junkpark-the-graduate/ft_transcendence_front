@@ -12,7 +12,7 @@ export default function Home() {
   }
   return (
     <div>
-      <button onClick={onClick}>sign in with 42 intra!!!!!!!!!!!!!!</button>
+      <button onClick={onClick}>sign in with 42 intra</button>
     </div>
   );
 }
