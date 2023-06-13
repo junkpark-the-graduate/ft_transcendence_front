@@ -1,16 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
 
+div {
+  word-break: break-all;
+}
+
 button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 
-  margin: 0;
-  padding: 0.5rem 1rem;
+  margin: 0.2rem;
+  padding: 0.4rem 0.8rem;
 
   font-family: "Noto Sans KR", sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 11pt;
+  font-weight: 500;
   text-align: center;
   text-decoration: none;
 
@@ -20,12 +24,26 @@ button {
   width: auto;
 
   border: none;
-  border-radius: 10px;
+  border-radius: 11px;
 }
 
 button:hover {
   background-color: #2b2b76;
   /* transition: 0.3s; */
+}
+
+input {
+  width: 30%; /* 원하는 너비 설정 */
+  height: 50%; /* 높이값 초기화 */
+  line-height: normal; /* line-height 초기화 */
+  padding: 0.5em 0.5em; /* 원하는 여백 설정, 상하단 여백으로 높이를 조절 */
+  font-family: "Noto Sans KR", sans-serif;
+  border-radius: 11px;
+  border: 1px solid #999;
+  outline-style: none; /* 포커스시 발생하는 효과 제거를 원한다면 */
+  -webkit-appearance: none; /* 브라우저별 기본 스타일링 제거 */
+  -moz-appearance: none;
+  appearance: none;
 }
 
 /* :root {

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import Cookies from "js-cookie";
 
 export default function Page({
   searchParams,
@@ -10,7 +11,7 @@ export default function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const [accessToken, setAccessToken] = useState("");
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   const [decoded, setDecoded] = useState({});
   const [userInfo, setUserInfo] = useState([]);
 
@@ -18,15 +19,18 @@ export default function Page({
     try {
       const uri: string = `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth?code=${searchParams.code}`;
       const res: AxiosResponse = await axios.post(uri);
+      const accessToken = res.data.accessToken;
 
-      setAccessToken(res.data.jwtToken);
-      const tmp: JwtPayload | string | null = jwt.decode(res.data.jwtToken);
+      Cookies.set("accessToken", accessToken);
+
+      setAccessToken(accessToken);
+      const tmp: JwtPayload | string | null = jwt.decode(accessToken);
       if (tmp) {
         setDecoded(tmp);
         getUserById(tmp!.sub);
       }
     } catch (err) {
-      alert("500");
+      console.error(err);
     }
   }
 
@@ -36,7 +40,7 @@ export default function Page({
       const res: AxiosResponse = await axios.get(uri);
       setUserInfo(res.data);
     } catch (err) {
-      alert("getUserById err");
+      console.error(err);
     }
   }
 
@@ -53,7 +57,15 @@ export default function Page({
       <p>{userInfo.email}</p>
       <img src={userInfo.image} />
       <hr />
-      <button>email authentication</button>
+      <p>email authentication</p>
+      <input
+        name="email"
+        type="email"
+        placeholder="enter your email"
+        // onChange={userChangeHandler}
+        // disabled={userState.emailAuth}
+      />
+      <button>send</button>
     </div>
   );
 }
