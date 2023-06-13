@@ -16,7 +16,7 @@ export default function Page({
 
   async function signIn() {
     try {
-      const uri: string = `http://localhost:3001/auth?code=${searchParams.code}`;
+      const uri: string = `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth?code=${searchParams.code}`;
       const res: AxiosResponse = await axios.post(uri);
 
       setAccessToken(res.data.jwtToken);
@@ -32,7 +32,7 @@ export default function Page({
 
   async function getUserById(ftId: any) {
     try {
-      const uri: string = `http://localhost:3001/user/${ftId}`;
+      const uri: string = `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user/${ftId}`;
       const res: AxiosResponse = await axios.get(uri);
       setUserInfo(res.data);
     } catch (err) {
@@ -47,10 +47,13 @@ export default function Page({
   return (
     <div>
       <h1>HelloWorld</h1>
+      <hr />
       <p>JWT Token: {accessToken}</p>
       <p>{userInfo.name}</p>
       <p>{userInfo.email}</p>
       <img src={userInfo.image} />
+      <hr />
+      <button>email authentication</button>
     </div>
   );
 }
