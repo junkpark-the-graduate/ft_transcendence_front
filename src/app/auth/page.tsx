@@ -3,7 +3,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextPageContext } from "next";
 import Cookies from "js-cookie";
-//import { cookies } from "next/headers";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -24,18 +23,18 @@ export default function Page({
 
       if (res.ok) {
         try {
-          console.log();
+          //console.log();
           const json = await res.json();
           const accessToken = json.accessToken;
-          console.log(accessToken);
+          //console.log(accessToken);
           Cookies.set("accessToken", accessToken);
           router.push("/user");
         } catch (error) {
-          console.error("1Failed to parse JSON response:", error);
+          console.error("Failed to parse JSON response:", error);
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error("err: ", err);
     }
   }
 
