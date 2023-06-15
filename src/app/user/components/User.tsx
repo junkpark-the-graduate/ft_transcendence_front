@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { cookies } from "next/headers";
 
-function getToken() {
+export function getToken() {
   const tokenCookie = cookies().get("accessToken");
   return tokenCookie ? tokenCookie.value : null;
 }
@@ -39,23 +39,19 @@ async function getUserComponent() {
   }
 
   return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Image
-          src={userInfo.image}
-          alt=""
-          width={150}
-          height={150}
-          objectFit="contain"
-        />
-        <div style={{ marginLeft: "20px" }}>
-          <h3>{userInfo.name}</h3>
-          <p>{userInfo.ftId}</p>
-          <p>{userInfo.email}</p>
-        </div>
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <Image
+        src={userInfo.image}
+        alt=""
+        width={150}
+        height={150}
+        objectFit="contain"
+      />
+      <div style={{ marginLeft: "20px" }}>
+        <h3>{userInfo.name}</h3>
+        <p>{userInfo.ftId}</p>
+        <p>{userInfo.email}</p>
       </div>
-      <hr />
-      <button>edit profile</button>
     </div>
   );
 }

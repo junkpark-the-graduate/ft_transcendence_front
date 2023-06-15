@@ -34,7 +34,7 @@ button:hover {
 
 input {
   width: 30%; /* 원하는 너비 설정 */
-  height: 50%; /* 높이값 초기화 */
+  height: 40%; /* 높이값 초기화 */
   line-height: normal; /* line-height 초기화 */
   padding: 0.5em 0.5em; /* 원하는 여백 설정, 상하단 여백으로 높이를 조절 */
   font-family: "Noto Sans KR", sans-serif;
@@ -46,6 +46,14 @@ input {
   appearance: none;
 }
 
+ul {
+  list-style: none;
+  padding-left: 10px;
+}
+
+li {
+  margin: 0.3rem;
+}
 /* :root {
   --max-width: 1100px;
   --border-radius: 12px;
