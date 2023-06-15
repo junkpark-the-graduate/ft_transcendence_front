@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Button from "@mui/material/Button";
 
 interface CustomButtonProps {
   title: string;
@@ -15,13 +16,19 @@ export default function CustomButton({
   const router = useRouter();
 
   return (
-    <button
+    <Button
+      variant="contained"
+      sx={{
+        color: "#0b131f",
+        backgroundColor: "#90caf9",
+        fontWeight: "bold",
+      }}
       className={tailwindStyles}
       onClick={() => {
         router.push("/edit");
       }}
     >
       {title}
-    </button>
+    </Button>
   );
 }

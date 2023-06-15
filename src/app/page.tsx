@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Button from "@mui/material/Button";
 
 export default function Home() {
   const router = useRouter();
@@ -10,7 +11,17 @@ export default function Home() {
   }
   return (
     <div>
-      <button onClick={onClick}>sign in with 42 intra</button>
+      <Button
+        variant="contained"
+        onClick={onClick}
+        sx={{
+          color: "#0b131f",
+          backgroundColor: "#90caf9",
+          fontWeight: "bold",
+        }}
+      >
+        sign in with 42 intra
+      </Button>
     </div>
   );
 }

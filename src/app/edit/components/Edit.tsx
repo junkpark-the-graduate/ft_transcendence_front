@@ -4,6 +4,7 @@ import CustomButton from "@/app/user/components/CustomButton";
 import { useForm, FieldErrors } from "react-hook-form";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import Button from "@mui/material/Button";
 
 interface HookFormTypes {
   name: string;
@@ -32,6 +33,7 @@ const HookForm = () => {
     });
     if (res.ok) {
       router.push("/user");
+      router.refresh();
     } else {
       console.log("Failed to update user");
     }
@@ -71,7 +73,17 @@ const HookForm = () => {
         </li>
         <li>
           <div>
-            <button type="submit">save</button>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                color: "#0b131f",
+                backgroundColor: "#90caf9",
+                fontWeight: "bold",
+              }}
+            >
+              save
+            </Button>
           </div>
         </li>
       </ul>

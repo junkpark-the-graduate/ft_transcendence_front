@@ -1,5 +1,6 @@
 import User from "./components/User";
 import CustomButton from "./components/CustomButton";
+import Button from "@mui/material/Button";
 
 export default function Profile() {
   return (
@@ -7,7 +8,7 @@ export default function Profile() {
       <User />
       <hr />
       <CustomButton title="edit profile" />
-      <button>edit image</button>
+      {/*<Button>edit image</Button>*/}
     </div>
   );
 }
