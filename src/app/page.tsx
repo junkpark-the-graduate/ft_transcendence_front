@@ -15,6 +15,7 @@ export default function Home() {
         variant="contained"
         onClick={onClick}
         sx={{
+          margin: "0.2rem",
           color: "#0b131f",
           backgroundColor: "#90caf9",
           fontWeight: "bold",

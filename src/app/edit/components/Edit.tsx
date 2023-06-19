@@ -46,6 +46,7 @@ const Edit = () => {
       <form onSubmit={handleSubmit}>
         <TextField
           required
+          placeholder="new name"
           inputProps={{ maxLength: 10 }}
           onChange={(e) => {
             setName(e.target.value);
@@ -67,7 +68,34 @@ const Edit = () => {
             },
           }}
         />
-        <TextField
+        <Switch
+          checked={twoFactor}
+          onChange={() => {
+            setTwoFactor(!twoFactor);
+          }}
+        />
+        <div>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              color: "#0b131f",
+              backgroundColor: "#90caf9",
+              fontWeight: "bold",
+            }}
+          >
+            save
+          </Button>
+        </div>
+      </form>
+    </>
+  );
+};
+
+export default Edit;
+
+{
+  /* <TextField
           required
           inputProps={{ maxLength: 50 }}
           onChange={(e) => {
@@ -89,29 +117,5 @@ const Edit = () => {
               "& > fieldset": { borderColor: "white" },
             },
           }}
-        />
-        <Switch
-          checked={twoFactor}
-          onChange={() => {
-            setTwoFactor(!twoFactor);
-          }}
-        ></Switch>
-        <div>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              color: "#0b131f",
-              backgroundColor: "#90caf9",
-              fontWeight: "bold",
-            }}
-          >
-            save
-          </Button>
-        </div>
-      </form>
-    </>
-  );
-};
-
-export default Edit;
+        /> */
+}

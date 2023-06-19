@@ -1,14 +1,15 @@
 import User from "./components/User";
 import CustomButton from "./components/CustomButton";
-import Button from "@mui/material/Button";
+import EmailButton from "./components/EmailButton";
 
 export default function Profile() {
   return (
     <div>
+      <h3>main page (user info)</h3>
       <User />
       <hr />
       <CustomButton title="edit profile" />
-      {/*<Button>edit image</Button>*/}
+      <CustomButton title="edit image" />
     </div>
   );
 }
