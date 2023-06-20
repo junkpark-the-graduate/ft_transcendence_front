@@ -16,17 +16,29 @@ export default function Page({
   const { code } = searchParams;
 
   async function signIn() {
+    console.log("hello");
     try {
       const res = await fetch(`http://127.0.0.1:3001/auth?code=${code}`, {
         method: "POST",
       });
+      console.log("hihi");
+
+      console.log(res.status);
+      // true -> res자체가 redirect된 상태
 
       if (res.ok) {
         try {
           const json = await res.json();
-          const accessToken = json.accessToken;
-          Cookies.set("accessToken", accessToken);
-          router.push("/user");
+          console.log(json.redirect);
+          if (json.redirect) {
+            console.log("redirect!!!!!!");
+            router.push("http://127.0.0.1:3000/auth/tfa-loading");
+          } else {
+            console.log("죽여줘!!!!!!!!!!!!!!!!!!!");
+            const accessToken = json.accessToken;
+            Cookies.set("accessToken", accessToken);
+            router.push("/user");
+          }
         } catch (error) {
           console.error("Failed to parse JSON response:", error);
         }

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import { useRouter } from "next/navigation";
 
 const Timer: React.FC = () => {
   const [milliseconds, setMilliseconds] = useState(300000);
@@ -26,10 +28,33 @@ const Timer: React.FC = () => {
   );
 };
 
+const VerifyButton = () => {
+  const router = useRouter();
+
+  return (
+    <Button
+      variant="contained"
+      sx={{
+        margin: "0.2rem",
+        color: "#0b131f",
+        backgroundColor: "#90caf9",
+        fontWeight: "bold",
+      }}
+      onClick={() => {
+        // 일단 확인을 해야죠
+        router.push("/user");
+      }}
+    >
+      verify
+    </Button>
+  );
+};
+
 export default async function Page() {
   return (
     <div>
-      <Timer></Timer>
+      <Timer />
+      <VerifyButton />
     </div>
   );
 }

@@ -7,6 +7,7 @@ async function getAccessToken(twoFactorToken: string) {
       `http://127.0.0.1:3001/auth/2fa?twoFactorToken=${twoFactorToken}`,
       {
         method: "POST",
+        credentials: "include",
       }
     );
 
