@@ -6,6 +6,27 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useState } from "react";
+import { setInterval } from "timers/promises";
+
+const Loading = () => {
+  const txt = "login...";
+  const [text, setText] = useState("");
+  const [count, setCount] = useState(0);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setText(text + txt[count]);
+  //     setCount(count + 1);
+  //   }, 100);
+  //   if (count === txt.length) {
+  //     clearInterval(interval);
+  //   }
+  //   return () => clearInterval(interval);
+  // });
+
+  return <h1>{txt}</h1>;
+};
 
 export default function Page({
   searchParams,
@@ -16,27 +37,21 @@ export default function Page({
   const { code } = searchParams;
 
   async function signIn() {
-    console.log("hello");
     try {
       const res = await fetch(`http://127.0.0.1:3001/auth?code=${code}`, {
         method: "POST",
       });
-      console.log("hihi");
 
       console.log(res.status);
       // true -> res자체가 redirect된 상태
-
       if (res.ok) {
         try {
           const json = await res.json();
-          console.log(json.redirect);
-          if (json.redirect) {
-            console.log("redirect!!!!!!");
+          if (json.twoFactorToken) {
+            Cookies.set("twoFactorToken", json.twoFactorToken);
             router.push("http://127.0.0.1:3000/auth/tfa-loading");
           } else {
-            console.log("죽여줘!!!!!!!!!!!!!!!!!!!");
-            const accessToken = json.accessToken;
-            Cookies.set("accessToken", accessToken);
+            Cookies.set("accessToken", json.accessToken);
             router.push("/user");
           }
         } catch (error) {

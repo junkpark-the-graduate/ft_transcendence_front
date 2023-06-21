@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 async function getAccessToken(twoFactorToken: string) {
   try {
     const res = await fetch(
-      `http://127.0.0.1:3001/auth/2fa?twoFactorToken=${twoFactorToken}`,
+      `http://127.0.0.1:3001/auth/tfa?twoFactorToken=${twoFactorToken}`,
       {
         method: "POST",
         credentials: "include",
