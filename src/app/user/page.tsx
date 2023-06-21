@@ -1,6 +1,5 @@
+import CustomButton from "../components/Button";
 import User from "./components/User";
-import CustomButton from "./components/CustomButton";
-import EmailButton from "./components/EmailButton";
 
 export default function Profile() {
   return (
@@ -8,8 +7,9 @@ export default function Profile() {
       <h3>main page (user info)</h3>
       <User />
       <hr />
-      <CustomButton title="edit profile" />
-      <CustomButton title="edit image" />
+      <CustomButton title="home" routeLink="/" />
+      <CustomButton title="edit profile" routeLink="/edit" />
+      <CustomButton title="edit image" routeLink="/edit" />
     </div>
   );
 }

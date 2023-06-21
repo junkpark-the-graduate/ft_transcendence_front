@@ -93,29 +93,3 @@ const Edit = () => {
 };
 
 export default Edit;
-
-{
-  /* <TextField
-          required
-          inputProps={{ maxLength: 50 }}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-          type="email"
-          id="email"
-          name="email"
-          variant="outlined"
-          sx={{
-            input: { color: "white" },
-            "& label.Mui-focused": {
-              "& > fieldset": { borderColor: "white" },
-            },
-            "& .MuiOutlinedInput-root": {
-              "& > fieldset": { borderColor: "white" },
-            },
-            "& .MuiOutlinedInput-root:hover": {
-              "& > fieldset": { borderColor: "white" },
-            },
-          }}
-        /> */
-}

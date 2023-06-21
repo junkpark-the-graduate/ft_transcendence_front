@@ -5,12 +5,14 @@ import Button from "@mui/material/Button";
 
 interface CustomButtonProps {
   title: string;
+  routeLink: string;
   tailwindStyles?: string;
   // 특성 추가해주시면 댑니다
 }
 
 export default function CustomButton({
   title,
+  routeLink,
   tailwindStyles,
 }: CustomButtonProps) {
   const router = useRouter();
@@ -26,7 +28,7 @@ export default function CustomButton({
       }}
       className={tailwindStyles}
       onClick={() => {
-        router.push("/edit");
+        router.push(routeLink);
       }}
     >
       {title}
