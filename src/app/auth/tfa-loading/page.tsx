@@ -51,9 +51,12 @@ const VerifyButton = () => {
             method: "POST",
           }
         );
+
+        const json = await res.json();
         if (!res.ok) {
           alert("2차 인증 실패");
         } else {
+          Cookies.set("accessToken", json.accessToken);
           router.push("/user");
         }
       }}

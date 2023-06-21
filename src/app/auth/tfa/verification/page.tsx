@@ -1,32 +1,32 @@
 import { redirect } from "next/dist/server/api-utils";
 
-async function getAccessTokenWithTfa(twoFactorCode: string) {
-  const res = await fetch(
-    `http://localhost:3001/auth/tfa/verification?twoFactorCode=${twoFactorCode}`
-  );
-
-  if (res.ok) {
-    const json = await res.json();
-    const accessToken = json.accessToken;
-    return accessToken;
+async function verify(twoFactorCode: string) {
+  try {
+    const res = await fetch(
+      `http://back:3001/auth/tfa/verification?twoFactorCode=${twoFactorCode}`,
+      {
+        method: "POST",
+      }
+    );
+    return res;
+  } catch (err) {
+    return { ok: false };
   }
-  return undefined;
 }
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { twoFactorCode?: string };
+  searchParams: {
+    twoFactorCode?: string;
+  };
 }) {
   const { twoFactorCode } = searchParams;
 
   if (twoFactorCode === undefined) {
   } else {
-    const accessToken = await getAccessTokenWithTfa(twoFactorCode);
-    if (accessToken === undefined) {
-      redirect("/");
-    } else {
-      return <>{accessToken}</>;
-    }
+    const res = await verify(twoFactorCode);
+    if (res.ok) return <h1>인증 완료</h1>;
+    else return <h1>다시시도</h1>;
   }
 }
