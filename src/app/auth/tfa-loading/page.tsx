@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const Timer: React.FC = () => {
   const [milliseconds, setMilliseconds] = useState(300000);
@@ -40,9 +41,24 @@ const VerifyButton = () => {
         backgroundColor: "#90caf9",
         fontWeight: "bold",
       }}
-      onClick={() => {
-        // 일단 확인을 해야죠
-        router.push("/user");
+      onClick={async () => {
+        const twoFactorToken = Cookies.get("twoFactorToken");
+        console.log("twoFactorToken!!!!!!!!!", twoFactorToken);
+
+        const res = await fetch(
+          `http://127.0.0.1:3001/auth/tfa?twoFactorToken=${twoFactorToken}`,
+          {
+            method: "POST",
+          }
+        );
+
+        const json = await res.json();
+        if (!res.ok) {
+          alert("2차 인증 실패");
+        } else {
+          Cookies.set("accessToken", json.accessToken);
+          router.push("/user");
+        }
       }}
     >
       verify
