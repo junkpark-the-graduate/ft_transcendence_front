@@ -57,6 +57,7 @@ const VerifyButton = () => {
           alert("2차 인증 실패");
         } else {
           Cookies.set("accessToken", json.accessToken);
+          router.refresh();
           router.push("/user");
         }
       }}
