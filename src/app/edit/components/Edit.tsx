@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { Switch, TextField } from "@mui/material";
-import Button from "@mui/material/Button";
 import React, { Component } from "react";
+
+import { Input, Switch, Button } from "@chakra-ui/react";
 
 const Edit = () => {
   const [name, setName] = useState("");
@@ -30,7 +30,7 @@ const Edit = () => {
       body: JSON.stringify({
         name: name,
         email: email,
-        twoFactor: twoFactor,
+        twoFactorEnabled: twoFactor,
       }),
     });
     if (res.ok) {
@@ -44,10 +44,9 @@ const Edit = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <TextField
+        <Input
           required
           placeholder="new name"
-          inputProps={{ maxLength: 10 }}
           onChange={(e) => {
             setName(e.target.value);
           }}
@@ -55,18 +54,6 @@ const Edit = () => {
           id="name"
           name="name"
           variant="outlined"
-          sx={{
-            input: { color: "white" },
-            "& label.Mui-focused": {
-              "& > fieldset": { borderColor: "white" },
-            },
-            "& .MuiOutlinedInput-root": {
-              "& > fieldset": { borderColor: "white" },
-            },
-            "& .MuiOutlinedInput-root:hover": {
-              "& > fieldset": { borderColor: "white" },
-            },
-          }}
         />
         <Switch
           checked={twoFactor}
@@ -75,15 +62,7 @@ const Edit = () => {
           }}
         />
         <div>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              color: "#0b131f",
-              backgroundColor: "#90caf9",
-              fontWeight: "bold",
-            }}
-          >
+          <Button type="submit" variant="contained">
             save
           </Button>
         </div>

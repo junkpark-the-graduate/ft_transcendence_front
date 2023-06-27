@@ -49,7 +49,7 @@ async function getUserComponent() {
       />
       <div style={{ marginLeft: "20px" }}>
         <h3>{userInfo.name}</h3>
-        <p>{userInfo.ftId}</p>
+        <p>{userInfo.id}</p>
         <p>{userInfo.email}</p>
       </div>
     </div>

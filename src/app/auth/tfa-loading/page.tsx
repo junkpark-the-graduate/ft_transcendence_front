@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { Button } from "@chakra-ui/react";
 
 const Timer: React.FC = () => {
   const [milliseconds, setMilliseconds] = useState(300000);
@@ -35,12 +35,6 @@ const VerifyButton = () => {
   return (
     <Button
       variant="contained"
-      sx={{
-        margin: "0.2rem",
-        color: "#0b131f",
-        backgroundColor: "#90caf9",
-        fontWeight: "bold",
-      }}
       onClick={async () => {
         const twoFactorToken = Cookies.get("twoFactorToken");
         console.log("twoFactorToken!!!!!!!!!", twoFactorToken);
