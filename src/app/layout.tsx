@@ -1,15 +1,11 @@
-import "./globals.css";
+import "../styles/globals.css";
 import { Inter } from "next/font/google";
 import { Providers } from "./providers";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata = {
-  title: "OAuth test",
+  title: "ft_transcendence",
   description: "ft_transcendence",
 };
-
-// app/layout.tsx
 
 export default function RootLayout({
   children,

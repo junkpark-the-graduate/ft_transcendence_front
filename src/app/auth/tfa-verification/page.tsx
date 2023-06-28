@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 async function verify(twoFactorCode: string) {
   try {
     const res = await fetch(
-      `http://back:3001/auth/tfa/verification?twoFactorCode=${twoFactorCode}`,
+      `http://back:3001/auth/tfa-verification?twoFactorCode=${twoFactorCode}`,
       {
         method: "POST",
       }

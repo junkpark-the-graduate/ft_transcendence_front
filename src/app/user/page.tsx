@@ -8,8 +8,8 @@ export default function Profile() {
       <User />
       <hr />
       <LinkButton text="home" routeLink="/" />
-      <LinkButton text="edit profile" routeLink="/edit" />
-      <LinkButton text="edit image" routeLink="/edit" />
+      <LinkButton text="edit profile" routeLink="/user/edit" />
+      <LinkButton text="edit image" routeLink="/user/edit" />
     </div>
   );
 }

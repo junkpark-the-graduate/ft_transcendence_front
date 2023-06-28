@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import "./globals.css";
+import "../styles/globals.css";
 import {
   Center,
   Flex,
