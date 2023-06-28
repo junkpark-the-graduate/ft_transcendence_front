@@ -40,7 +40,7 @@ export default function Page({
 
   async function signIn() {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/auth?code=${code}`, {
+      const res = await fetch(`NEXT_PUBLIC_BACK_END_POINT/auth?code=${code}`, {
         method: "POST",
       });
 
@@ -51,7 +51,7 @@ export default function Page({
           const json = await res.json();
           if (json.twoFactorToken) {
             Cookies.set("twoFactorToken", json.twoFactorToken);
-            router.push("http://127.0.0.1:3000/auth/tfa-loading");
+            router.push(`http://NEXT_PUBLIC_BACK_END_POINT/auth/tfa-loading`);
           } else {
             Cookies.set("accessToken", json.accessToken);
             router.push("/user");

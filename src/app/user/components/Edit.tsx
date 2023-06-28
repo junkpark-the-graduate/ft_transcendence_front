@@ -21,7 +21,7 @@ const Edit = () => {
   async function handleSubmit(event: any) {
     event.preventDefault();
     const token = getToken();
-    const res = await fetch("http://127.0.0.1:3001/user", {
+    const res = await fetch("NEXT_PUBLIC_BACK_END_POINT/user", {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,

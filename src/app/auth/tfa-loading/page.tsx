@@ -37,7 +37,6 @@ const VerifyButton = () => {
       variant="contained"
       onClick={async () => {
         const twoFactorToken = Cookies.get("twoFactorToken");
-        console.log("twoFactorToken!!!!!!!!!", twoFactorToken);
 
         const res = await fetch(
           `http://127.0.0.1:3001/auth/tfa?twoFactorToken=${twoFactorToken}`,
