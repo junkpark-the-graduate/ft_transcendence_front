@@ -6,7 +6,7 @@ export function getToken() {
   return tokenCookie ? tokenCookie.value : null;
 }
 
-async function getUserInfo() {
+export async function getUserInfo() {
   const token = getToken();
   if (!token) {
     console.log("Access token is missing.");
@@ -37,23 +37,7 @@ async function getUserComponent() {
   if (!userInfo) {
     return null;
   }
-
-  return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Image
-        src={userInfo.image}
-        alt=""
-        width={150}
-        height={150}
-        objectFit="contain"
-      />
-      <div style={{ marginLeft: "20px" }}>
-        <h3>{userInfo.name}</h3>
-        <p>{userInfo.id}</p>
-        <p>{userInfo.email}</p>
-      </div>
-    </div>
-  );
+  return userInfo;
 }
 
 export default function User() {

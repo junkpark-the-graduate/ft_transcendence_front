@@ -2,7 +2,7 @@
 
 import { Grid, GridItem } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
-import Dashboard from "./Dashboard";
+import TestDashboard from "./Dashboard";
 
 export default function ProfileGrid() {
   return (
@@ -36,7 +36,7 @@ export default function ProfileGrid() {
         area={"main1"}
         p={5}
       >
-        <Dashboard />
+        <TestDashboard />
       </GridItem>
     </Grid>
   );
