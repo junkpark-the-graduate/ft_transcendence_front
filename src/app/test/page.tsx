@@ -1,30 +1,80 @@
 "use client";
 
-import { Flex } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
+import {
+  FormErrorMessage,
+  FormLabel,
+  FormControl,
+  Input,
+  Button,
+  Switch,
+  Divider,
+  Text,
+  Box,
+  Center,
+  Image,
+} from "@chakra-ui/react";
+import { SubmitHandler } from "react-hook-form";
 import BaseButton from "@/ui/Button/Button";
-import BaseInput from "@/ui/Input/Input";
-import BaseCard from "@/ui/Card/Card";
-import BaseSwitch from "@/ui/Switch/Switch";
-import BaseTabs from "@/ui/Tab/Tab";
-import BaseBox from "@/ui/Box/Box";
-import NavBar from "@/ui/NavBar/NavBar";
-import ProfileDashboard from "@/ui/sample/dashboard";
 
-export default function Test() {
+type FormData = {
+  name: string;
+};
+
+export default function HookForm() {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>();
+
+  const onSubmit: SubmitHandler<FormData> = (values) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        alert(JSON.stringify(values, null, 2));
+        // resolve();
+      }, 3000);
+    });
+  };
+
   return (
-    <ProfileDashboard />
-    // <BaseBox>
-    //   <Flex justifyContent="flex-end">
-    //     <BaseInput placeholder="email" />
-    //     <BaseButton
-    //       text="submit"
-    //       type="submit"
-    //       onClick={() => {
-    //         console.log("hello");
-    //       }}
-    //     />
-    //   </Flex>
-    //   <BaseSwitch text="2FA" />
-    // </BaseBox>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Center>
+        <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
+          <FormControl
+          // isInvalid={errors.name}
+          >
+            <FormLabel htmlFor="name">이름 변경하기</FormLabel>
+            <Input
+              id="name"
+              placeholder="name"
+              {...register("name", {
+                required: "This is required",
+                minLength: { value: 4, message: "Minimum length should be 4" },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.name && errors.name.message}
+            </FormErrorMessage>
+            <Divider m="10px 0px" />
+            <FormLabel htmlFor="name">프로필 이미지 변경하기</FormLabel>
+            <Image
+              mx="10px"
+              // borderRadius="full"
+              boxSize="120px"
+              src="https://bit.ly/dan-abramov"
+              alt="Dan Abramov"
+            />
+            <Divider m="10px 0px" />
+          </FormControl>
+          <BaseButton
+            text="저장하기"
+            colorScheme="teal"
+            isLoading={isSubmitting}
+            type="submit"
+          />
+        </Box>
+      </Center>
+    </form>
   );
 }

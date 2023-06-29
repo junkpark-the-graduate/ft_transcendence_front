@@ -47,7 +47,7 @@ const Divider = () => (
 export default function NavBar() {
   return (
     <>
-      <Box bg={"#3B3D41"} borderRadius="15px" px={4}>
+      <Box bg="#29292D" borderRadius="15px" px={4}>
         <Flex h={12} alignItems={"center"} justifyContent={"space-between"}>
           <HStack spacing={8} alignItems={"center"}>
             <HStack
@@ -75,20 +75,11 @@ export default function NavBar() {
               >
                 <Avatar size={"sm"} bg="#1F1F22" />
               </MenuButton>
-              <MenuList p="5px 10px" bg="#3B3D41" borderColor={"#191919"}>
-                <MenuItem
-                  bg="#3B3D41"
-                  fontSize="10pt"
-                  fontFamily={"Futura-bold"}
-                >
+              <MenuList p="5px 10px" bg="#3B3D41" border={"none"}>
+                <MenuItem bg="#3B3D41" fontSize="10pt">
                   view profile
                 </MenuItem>
-                <MenuItem
-                  bg="#3B3D41"
-                  fontSize="10pt"
-                  textColor={"red"}
-                  fontFamily={"Futura-bold"}
-                >
+                <MenuItem bg="#3B3D41" fontSize="10pt" textColor={"red"}>
                   logout
                 </MenuItem>
               </MenuList>
