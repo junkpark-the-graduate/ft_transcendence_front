@@ -54,7 +54,7 @@ export default function Page({
             router.push("http://127.0.0.1:3000/auth/tfa-loading");
           } else {
             Cookies.set("accessToken", json.accessToken);
-            router.push("/user");
+            router.push("/home");
           }
         } catch (error) {
           console.error("Failed to parse JSON response:", error);

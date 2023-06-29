@@ -1,10 +1,8 @@
 "use client";
-
 import { Grid, GridItem } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
-import Dashboard from "./Dashboard";
 
-export default function ProfileGrid() {
+export default function BaseGrid() {
   return (
     <Grid
       templateAreas={`"header header"
@@ -23,21 +21,25 @@ export default function ProfileGrid() {
         pl="2"
         bg="#29292D"
         area={"header"}
-        pt={0.5}
       >
         <NavBar />
       </GridItem>
       <GridItem
         rowSpan={12}
-        colSpan={6}
+        colSpan={4}
         borderRadius={"15px"}
         pl="2"
         bg="#29292D"
         area={"main1"}
-        p={5}
-      >
-        <Dashboard />
-      </GridItem>
+      ></GridItem>
+      <GridItem
+        rowSpan={12}
+        colSpan={2}
+        borderRadius={"15px"}
+        pl="2"
+        bg="#29292D"
+        area={"main2"}
+      ></GridItem>
     </Grid>
   );
 }

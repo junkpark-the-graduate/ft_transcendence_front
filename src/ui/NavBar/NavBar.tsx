@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactNode } from "react";
 import {
   Box,
@@ -11,24 +13,20 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { FaSearch } from "react-icons/fa";
-import BaseIconButton from "@/ui/Button/IconButton";
-import BaseButton from "../Button/Button";
+import { useRouter } from "next/navigation";
 
 const Links = ["home", "game", "chat"];
 
-const NavLink = ({ children }: { children: ReactNode }) => (
+const NavLink = ({ children, path }: { children: ReactNode; path: string }) => (
   <Link
     px={2}
     py={1}
     rounded={"md"}
-    fontFamily={"Futura-bold"}
     _hover={{
       textDecoration: "none",
       bg: "#3B3D41",
     }}
-    href={"#"}
+    href={path}
   >
     {children}
   </Link>
@@ -45,6 +43,12 @@ const Divider = () => (
 );
 
 export default function NavBar() {
+  const router = useRouter();
+
+  const handleLinkClick = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <>
       <Box bg="#29292D" borderRadius="15px" px={4}>
@@ -57,7 +61,9 @@ export default function NavBar() {
             >
               {Links.map((link, index) => (
                 <>
-                  <NavLink key={link}>{link}</NavLink>
+                  <NavLink key={link} path={`/${link}`}>
+                    {link}
+                  </NavLink>
                   {index < Links.length - 1 && <Divider />}
                 </>
               ))}
@@ -76,10 +82,23 @@ export default function NavBar() {
                 <Avatar size={"sm"} bg="#1F1F22" />
               </MenuButton>
               <MenuList p="5px 10px" bg="#3B3D41" border={"none"}>
-                <MenuItem bg="#3B3D41" fontSize="10pt">
+                <MenuItem
+                  bg="#3B3D41"
+                  fontSize="10pt"
+                  onClick={() => {
+                    handleLinkClick("/user/profile");
+                  }}
+                >
                   view profile
                 </MenuItem>
-                <MenuItem bg="#3B3D41" fontSize="10pt" textColor={"red"}>
+                <MenuItem
+                  bg="#3B3D41"
+                  fontSize="10pt"
+                  textColor={"red"}
+                  onClick={() => {
+                    handleLinkClick("/");
+                  }}
+                >
                   logout
                 </MenuItem>
               </MenuList>
