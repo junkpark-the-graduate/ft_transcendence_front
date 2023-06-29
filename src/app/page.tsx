@@ -5,52 +5,35 @@ import "../styles/globals.css";
 import {
   Center,
   Flex,
-  Card,
   CardHeader,
   CardBody,
   Heading,
   Divider,
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
-import BaseInput from "@/ui/Input/Input";
+import BaseCard from "@/ui/Card/Card";
 
-export default function Test() {
+export default function Home() {
   const router = useRouter();
 
   return (
     <>
       <Flex
         width={"100vw"}
-        height={"25vh"}
+        height={"30vh"}
         alignContent={"center"}
         justifyContent={"center"}
       >
         <Center>
-          <Card
-            bg="#29292D"
-            w="350px"
-            h="210px"
-            pos="relative"
-            align="center"
-            variant="filled"
-            fontFamily="futura"
-            borderRadius="12px"
-          >
+          <BaseCard>
             <CardHeader>
               <Heading size="md" color="white" fontFamily="futura">
                 welcome to ping-pong !
               </Heading>
             </CardHeader>
-            <Divider w="85%" borderColor="white" />
+            <Divider borderColor="white" />
             <CardBody alignContent="center">
-              <Center flexDirection="column">
-                <BaseInput
-                  placeholder="입력해도 소용없어..."
-                  onClick={() => {
-                    console.log("input");
-                  }}
-                />
-              </Center>
+              <Center flexDirection="column"></Center>
               <Center>
                 <BaseButton
                   text="sign in with 42 intra"
@@ -60,7 +43,7 @@ export default function Test() {
                 />
               </Center>
             </CardBody>
-          </Card>
+          </BaseCard>
         </Center>
       </Flex>
     </>

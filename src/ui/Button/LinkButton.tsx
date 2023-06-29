@@ -5,21 +5,19 @@ import { useRouter } from "next/navigation";
 
 export default function LinkButton({
   text,
-  routeLink,
+  goTo,
 }: {
   text: string;
-  routeLink: string;
+  goTo: string;
 }) {
   const router = useRouter();
 
   return (
-    <div>
-      <BaseButton
-        text={text}
-        onClick={() => {
-          router.push(routeLink);
-        }}
-      />
-    </div>
+    <BaseButton
+      text={text}
+      onClick={() => {
+        router.push(goTo);
+      }}
+    />
   );
 }

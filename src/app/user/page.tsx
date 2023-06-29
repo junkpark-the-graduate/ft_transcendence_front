@@ -7,9 +7,9 @@ export default function Profile() {
       <h3>main page (user info)</h3>
       <User />
       <hr />
-      <LinkButton text="home" routeLink="/" />
-      <LinkButton text="edit profile" routeLink="/user/edit" />
-      <LinkButton text="edit image" routeLink="/user/edit" />
+      <LinkButton text="home" goTo="/" />
+      <LinkButton text="edit profile" goTo="/user/edit" />
+      <LinkButton text="edit image" goTo="/user/edit" />
     </div>
   );
 }
