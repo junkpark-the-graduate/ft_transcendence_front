@@ -40,7 +40,8 @@ export default function GridType1({
         borderRadius={"15px"}
         bg="#29292D"
         area={"main1"}
-        p={10}
+        px={5}
+        py={3}
       >
         {children1}
       </GridItem>
@@ -48,9 +49,10 @@ export default function GridType1({
         rowSpan={11}
         colSpan={2}
         borderRadius={"15px"}
-        p={10}
         bg="#29292D"
         area={"main2"}
+        px={5}
+        py={3}
       >
         {children2}
       </GridItem>
