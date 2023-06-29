@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { Input, Button, Text, Box, Flex } from "@chakra-ui/react";
+import Cookies from "js-cookie";
 
 type ChatType = {
   socketId: string;
@@ -16,6 +17,7 @@ const Chat: React.FC = () => {
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -26,7 +28,11 @@ const Chat: React.FC = () => {
   const ENDPOINT = "ws://localhost:4242/chattings";
 
   useEffect(() => {
-    const socketIo = io(ENDPOINT);
+    const socketIo = io(ENDPOINT, {
+      query: {
+        token: accessToken, // pass the token to the server
+      },
+    });
 
     setSocket(socketIo);
 
@@ -50,7 +56,7 @@ const Chat: React.FC = () => {
     return () => {
       socketIo.disconnect();
     };
-  }, [ENDPOINT]);
+  }, [ENDPOINT, accessToken]); // Add accessToken as a dependency
 
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
