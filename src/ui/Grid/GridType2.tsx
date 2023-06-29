@@ -1,13 +1,14 @@
-"use client";
-import { Grid, GridItem } from "@chakra-ui/react";
-import Simple from "../NavBar/NavBar";
+import { Grid, GridItem, GridProps } from "@chakra-ui/react";
+import NavBar from "@/ui/NavBar/NavBar";
 
-export default function BaseGrid() {
+export interface BaseGridProps extends GridProps {}
+
+export default function GridType2({ children, ...props }: BaseGridProps) {
   return (
     <Grid
       templateAreas={`"header header"
                   "main1 main2"`}
-      gridTemplateRows={"repeat(12, 1fr)"}
+      gridTemplateRows={"repeat(13, 1fr)"}
       gridTemplateColumns={"repeat(6, 1fr)"}
       h="750px"
       gap="2.5"
@@ -21,25 +22,21 @@ export default function BaseGrid() {
         pl="2"
         bg="#29292D"
         area={"header"}
+        pt={0.5}
       >
-        <Simple />
+        <NavBar />
       </GridItem>
       <GridItem
-        rowSpan={11}
-        colSpan={4}
+        rowSpan={12}
+        colSpan={6}
         borderRadius={"15px"}
-        pl="2"
         bg="#29292D"
         area={"main1"}
-      ></GridItem>
-      <GridItem
-        rowSpan={11}
-        colSpan={2}
-        borderRadius={"15px"}
-        pl="2"
-        bg="#29292D"
-        area={"main2"}
-      ></GridItem>
+        px={10}
+        py={5}
+      >
+        {children}
+      </GridItem>
     </Grid>
   );
 }

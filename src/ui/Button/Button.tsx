@@ -16,6 +16,7 @@ export default function BaseButton({
       textColor="white"
       borderRadius="15px"
       px="25px"
+      fontWeight={800}
       _hover={{
         background: "#191919",
       }}
