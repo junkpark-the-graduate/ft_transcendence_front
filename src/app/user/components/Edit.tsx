@@ -3,7 +3,7 @@
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import React from "react";
-
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FormErrorMessage,
@@ -19,20 +19,33 @@ import {
   Image,
   Spacer,
   Flex,
+  useToast,
 } from "@chakra-ui/react";
-import { SubmitHandler } from "react-hook-form";
-import BaseButton from "@/ui/Button/Button";
 
 type FormData = {
   name: string;
+  twoFactorEnabled: boolean;
 };
 
 const Edit = () => {
+  const toast = useToast();
+  const [twoFactor, setTwoFactor] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
+
+  const handleToggleAuth = () => {
+    setTwoFactor(!twoFactor);
+    toast({
+      title: `Two-factor authentication ${twoFactor ? "disabled" : "enabled"}`,
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+  };
 
   const router = useRouter();
 
@@ -43,6 +56,7 @@ const Edit = () => {
 
   async function onSubmit(data: FormData) {
     const token = getToken();
+    console.log(token);
     const { name } = data;
 
     const res = await fetch("http://127.0.0.1:3001/user", {
@@ -53,10 +67,11 @@ const Edit = () => {
       },
       body: JSON.stringify({
         name: name,
+        twoFactorEnabled: twoFactor,
       }),
     });
     if (res.ok) {
-      router.push("/user");
+      router.push("/user/profile");
       router.refresh();
     } else {
       console.log("Failed to update user");
@@ -93,7 +108,17 @@ const Edit = () => {
               alt="Dan Abramov"
             />
             <Divider m="20px 0px" />
+            <FormLabel mb="10px" htmlFor="name">
+              2FA 설정 변경하기{" "}
+            </FormLabel>
+            <Switch
+              colorScheme="gray"
+              isChecked={twoFactor}
+              onChange={handleToggleAuth}
+            />
           </FormControl>
+          <Divider m="20px 0px" />
+
           <Flex>
             <Spacer />
             <Button colorScheme="gray" isLoading={isSubmitting} type="submit">

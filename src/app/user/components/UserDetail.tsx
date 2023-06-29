@@ -1,6 +1,6 @@
 import {
-  Button,
   Box,
+  Button,
   Flex,
   Avatar,
   Heading,
@@ -9,31 +9,72 @@ import {
   useToast,
   Spacer,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import EditButton from "./EditButton";
+import Cookies from "js-cookie";
+// import { cookies } from "next/headers";
 
-const userData = {
-  id: 1,
-  name: "John Doe",
-  avatar: "https://example.com/avatar.jpg",
-  twoFactorAuth: false,
-};
+// const userData = {
+//   id: 1,
+//   name: "John Doe",
+//   avatar: "",
+//   twoFactorEnabled: false,
+// };
+
+interface UserData {
+  id: number;
+  name: string;
+  image: string;
+  twoFactorEnabled: boolean;
+}
+
+export function getToken() {
+  const tokenCookie = Cookies.get("accessToken");
+  return tokenCookie ? tokenCookie : null;
+}
 
 export default function UserDetail() {
+  const token = getToken();
   const toast = useToast();
-  const [twoFactorAuth, setTwoFactorAuth] = useState(userData.twoFactorAuth);
+  const [userData, setUserData] = useState<UserData>();
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleToggleAuth = () => {
-    setTwoFactorAuth(!twoFactorAuth);
-    toast({
-      title: `Two-factor authentication ${
-        twoFactorAuth ? "disabled" : "enabled"
-      }`,
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
+  const fetchUser = async () => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3001/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userData = await res.json();
+      setUserData(userData);
+      console.log(userData);
+      setIsLoading(false);
+      // setTwoFactorEnabled(userData.twoFactorEnabled);
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  if (isLoading) {
+    return <p>this is not fucking ready</p>;
+  }
+  // const handleToggleAuth = () => {
+  //   setTwoFactorEnabled(!twoFactorEnabled);
+  //   toast({
+  //     title: `Two-factor authentication ${
+  //       twoFactorEnabled ? "disabled" : "enabled"
+  //     }`,
+  //     status: "success",
+  //     duration: 2000,
+  //     isClosable: true,
+  //   });
+  // };
 
   const handleEditProfile = () => {
     // Edit profile logic
@@ -45,33 +86,27 @@ export default function UserDetail() {
     });
   };
 
-  const router = useRouter();
   return (
     <Box>
       <Flex align="center" mb={4}>
-        <Avatar size="xl" name={userData.name} src={userData.avatar} />
+        <Avatar size="xl" name={userData?.name} src={userData?.image} />
         <Box ml={4}>
-          <Heading size="lg">{userData.name}</Heading>
-          <Text>Unique ID: {userData.id}</Text>
+          <Heading size="lg">{userData?.name}</Heading>
+          <Text>Unique ID: {userData?.id}</Text>
+          {/* <Text> */}
+          {/* TFA enable: {userData.twoFactorEnabled ? "true" : "false"} */}
+          {/* </Text> */}
         </Box>
       </Flex>
-
       <Flex align="center" mb={4}>
         <Text mr={2}>Two-Factor Authentication:</Text>
-        <Switch
+        {/* <Switch
           colorScheme="gray"
-          isChecked={twoFactorAuth}
+          isChecked={twoFactorEnabled}
           onChange={handleToggleAuth}
-        />
+        /> */}
         <Spacer />
-        <Button
-          size={"sm"}
-          onClick={() => {
-            router.push("/user/edit");
-          }}
-        >
-          Edit Profile
-        </Button>
+        <EditButton />
       </Flex>
     </Box>
   );

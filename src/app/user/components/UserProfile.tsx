@@ -1,8 +1,7 @@
-"use client";
-
 import { Grid, GridItem } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 import TestDashboard from "./Dashboard";
+import User from "./User";
 
 export default function ProfileGrid() {
   return (
@@ -25,7 +24,7 @@ export default function ProfileGrid() {
         area={"header"}
         pt={0.5}
       >
-        <NavBar />
+        {/* <NavBar /> */}
       </GridItem>
       <GridItem
         rowSpan={12}
@@ -36,7 +35,9 @@ export default function ProfileGrid() {
         area={"main1"}
         p={5}
       >
-        <TestDashboard />
+        <User />
+
+        {/* <TestDashboard /> */}
       </GridItem>
     </Grid>
   );

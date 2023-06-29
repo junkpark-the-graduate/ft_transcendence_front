@@ -1,11 +1,13 @@
-"use client";
-
-import UserProfile from "../components/UserProfile";
+import User from "../components/User";
+import Dashboard from "../components/Dashboard";
+import EditButton from "../components/EditButton";
 
 export default function Profile() {
   return (
     <div>
-      <UserProfile />
+      {/* <User /> */}
+      {/* <EditButton /> */}
+      <Dashboard />
     </div>
   );
 }

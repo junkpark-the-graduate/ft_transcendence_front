@@ -1,7 +1,7 @@
 "use client";
 
+import React from "react";
 import { useRouter } from "next/navigation";
-import "../styles/globals.css";
 import {
   Button,
   Center,
@@ -36,13 +36,12 @@ export default function Home() {
             <CardBody alignContent="center">
               <Center flexDirection="column"></Center>
               <Center>
-                <Button
+                <BaseButton
+                  text="sign in with 42 intra"
                   onClick={() => {
                     router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}`);
                   }}
-                >
-                  sign in with 42 intra
-                </Button>
+                />
               </Center>
             </CardBody>
           </BaseCard>

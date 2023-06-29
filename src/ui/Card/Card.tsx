@@ -20,9 +20,6 @@ export default function BaseCard({ children, ...props }: BaseCardProps) {
       p="10px 30px"
     >
       {children}
-      {/* <CardHeader></CardHeader>
-      <CardBody></CardBody>
-      <CardFooter></CardFooter> */}
     </Card>
   );
 }

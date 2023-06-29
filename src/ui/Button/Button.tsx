@@ -2,6 +2,7 @@ import { Button, ButtonProps } from "@chakra-ui/react";
 
 export interface BaseButtonProps extends ButtonProps {
   text: string;
+  onClick: () => void;
 }
 
 export default function BaseButton({
@@ -18,6 +19,7 @@ export default function BaseButton({
       _hover={{
         background: "#191919",
       }}
+      onClick={onClick}
       {...props}
     >
       {text}

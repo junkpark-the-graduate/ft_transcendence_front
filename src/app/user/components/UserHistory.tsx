@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Heading,
@@ -43,9 +45,7 @@ export default function UserHistory() {
           ))}
         </Stack>
       </Stack>
-
       <Divider my={4} />
-
       <Heading size="md" mb={2}>
         Match History
       </Heading>

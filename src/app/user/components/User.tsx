@@ -6,7 +6,7 @@ export function getToken() {
   return tokenCookie ? tokenCookie.value : null;
 }
 
-export async function getUserInfo() {
+async function getUserInfo() {
   const token = getToken();
   if (!token) {
     console.log("Access token is missing.");
@@ -37,7 +37,18 @@ async function getUserComponent() {
   if (!userInfo) {
     return null;
   }
-  return userInfo;
+
+  return (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <Image src={userInfo.image} alt="" width={150} height={150} />
+      <div style={{ marginLeft: "20px" }}>
+        <h3>name: {userInfo.name}</h3>
+        <p>id: {userInfo.id}</p>
+        <p>email: {userInfo.email}</p>
+        <p>2FA: {userInfo.twoFactorEnabled ? "enabled" : "disabled"}</p>
+      </div>
+    </div>
+  );
 }
 
 export default function User() {

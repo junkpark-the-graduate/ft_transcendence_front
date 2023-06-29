@@ -19,6 +19,7 @@ const Links = ["home", "game", "chat"];
 
 const NavLink = ({ children, path }: { children: ReactNode; path: string }) => (
   <Link
+    key={path} // key 속성 추가
     px={2}
     py={1}
     rounded={"md"}
@@ -34,6 +35,7 @@ const NavLink = ({ children, path }: { children: ReactNode; path: string }) => (
 
 const Divider = () => (
   <Box
+    key="divider" // key 속성 추가
     w={0.5}
     h={4}
     bg="white"
