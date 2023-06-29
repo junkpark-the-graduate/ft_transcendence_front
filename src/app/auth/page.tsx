@@ -1,34 +1,9 @@
 "use client";
 
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { NextPageContext } from "next";
 import Cookies from "js-cookie";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useState } from "react";
-
-const Loading = () => {
-  const txt = "login";
-  const [text, setText] = useState("login");
-  const [animationIndex, setAnimationIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnimationIndex((prevIndex) => (prevIndex + 1) % 5);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const animationFrames = ["", ".", "..", "...", ""];
-
-  useEffect(() => {
-    setText(txt + animationFrames[animationIndex]);
-  }, [animationIndex]);
-
-  return <h1>{text}</h1>;
-};
+import { Loading } from "./components/Loading";
 
 export default function Page({
   searchParams,

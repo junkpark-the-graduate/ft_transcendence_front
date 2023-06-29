@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormControl,
   Input,
-  Button,
   Switch,
   Divider,
   Box,
@@ -20,6 +19,7 @@ import {
   Flex,
   useToast,
 } from "@chakra-ui/react";
+import BaseButton from "@/ui/Button/Button";
 
 type FormData = {
   name: string;
@@ -122,9 +122,12 @@ const Edit = () => {
 
           <Flex>
             <Spacer />
-            <Button colorScheme="gray" isLoading={isSubmitting} type="submit">
-              변경사항 저장하기
-            </Button>
+            <BaseButton
+              text="변경사항 저장하기"
+              isLoading={isSubmitting}
+              type="submit"
+              onClick={() => {}}
+            />
           </Flex>
         </Box>
       </Center>
