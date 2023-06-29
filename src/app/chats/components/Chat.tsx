@@ -23,12 +23,9 @@ const Chat: React.FC = () => {
 
   useEffect(scrollToBottom, [chatList]);
 
-  // const ENDPOINT = "http://localhost:4242/chattings";
   const ENDPOINT = "ws://localhost:4242/chattings";
-  // let socketIo: Socket;
 
   useEffect(() => {
-    // socket = io(ENDPOINT);
     const socketIo = io(ENDPOINT);
 
     setSocket(socketIo);
@@ -55,14 +52,6 @@ const Chat: React.FC = () => {
     };
   }, [ENDPOINT]);
 
-  // const submitChat = (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   if (message && socket) {
-  //     socket.emit("submit_chat", { username, message });
-  //     setMessage("");
-  //   }
-  // };
-
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
     if (message && socket) {
@@ -72,13 +61,6 @@ const Chat: React.FC = () => {
       setMessage("");
     }
   };
-
-  // const joinChat = (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   if (username && socket) {
-  //     socket.emit("new_user", username);
-  //   }
-  // };
 
   return (
     <div>
