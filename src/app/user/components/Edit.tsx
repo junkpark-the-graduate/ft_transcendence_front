@@ -13,7 +13,6 @@ import {
   Button,
   Switch,
   Divider,
-  Text,
   Box,
   Center,
   Image,
@@ -105,7 +104,7 @@ const Edit = () => {
               borderRadius="full"
               boxSize="120px"
               src="https://bit.ly/dan-abramov"
-              alt="Dan Abramov"
+              alt=""
             />
             <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
@@ -115,7 +114,9 @@ const Edit = () => {
               colorScheme="gray"
               isChecked={twoFactor}
               onChange={handleToggleAuth}
-            />
+            >
+              {twoFactor ? "2FA enabled" : "2FA disabled"}
+            </Switch>
           </FormControl>
           <Divider m="20px 0px" />
 

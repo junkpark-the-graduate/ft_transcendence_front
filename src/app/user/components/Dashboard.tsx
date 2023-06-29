@@ -8,7 +8,7 @@ import UserDetail from "./UserDetail";
 export default function Dashboard() {
   return (
     <Flex p={4} direction="column">
-      <Divider my={4} />
+      <Divider my={6} />
       <UserDetail />
       <Divider my={2} />
       <Flex mt={4}>

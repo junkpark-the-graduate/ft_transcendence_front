@@ -1,29 +1,13 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Avatar,
-  Heading,
-  Text,
-  Switch,
-  useToast,
-  Spacer,
-} from "@chakra-ui/react";
+import { Box, Flex, Avatar, Heading, Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import EditButton from "./EditButton";
 import Cookies from "js-cookie";
-// import { cookies } from "next/headers";
-
-// const userData = {
-//   id: 1,
-//   name: "John Doe",
-//   avatar: "",
-//   twoFactorEnabled: false,
-// };
+import { useRouter } from "next/navigation";
+import LinkButton from "@/ui/Button/LinkButton";
 
 interface UserData {
   id: number;
   name: string;
+  email: string;
   image: string;
   twoFactorEnabled: boolean;
 }
@@ -34,6 +18,8 @@ export function getToken() {
 }
 
 export default function UserDetail() {
+  const router = useRouter();
+
   const token = getToken();
   const toast = useToast();
   const [userData, setUserData] = useState<UserData>();
@@ -51,7 +37,6 @@ export default function UserDetail() {
       setUserData(userData);
       console.log(userData);
       setIsLoading(false);
-      // setTwoFactorEnabled(userData.twoFactorEnabled);
     } catch (err) {
       console.log(err);
     }
@@ -62,22 +47,10 @@ export default function UserDetail() {
   }, []);
 
   if (isLoading) {
-    return <p>this is not fucking ready</p>;
+    return <p>now loading</p>;
   }
-  // const handleToggleAuth = () => {
-  //   setTwoFactorEnabled(!twoFactorEnabled);
-  //   toast({
-  //     title: `Two-factor authentication ${
-  //       twoFactorEnabled ? "disabled" : "enabled"
-  //     }`,
-  //     status: "success",
-  //     duration: 2000,
-  //     isClosable: true,
-  //   });
-  // };
 
   const handleEditProfile = () => {
-    // Edit profile logic
     toast({
       title: "Edit Profile",
       status: "info",
@@ -87,26 +60,22 @@ export default function UserDetail() {
   };
 
   return (
-    <Box>
+    <Box position="relative">
       <Flex align="center" mb={4}>
         <Avatar size="xl" name={userData?.name} src={userData?.image} />
         <Box ml={4}>
-          <Heading size="lg">{userData?.name}</Heading>
-          <Text>Unique ID: {userData?.id}</Text>
-          {/* <Text> */}
-          {/* TFA enable: {userData.twoFactorEnabled ? "true" : "false"} */}
-          {/* </Text> */}
+          <Heading mb={3} size="lg">
+            {userData?.name}
+          </Heading>
+          <Text>42 ID: {userData?.id}</Text>
+          <Text>email: {userData?.email}</Text>
+          <Text>
+            TFA enable: {userData?.twoFactorEnabled ? "true" : "false"}
+          </Text>
         </Box>
-      </Flex>
-      <Flex align="center" mb={4}>
-        <Text mr={2}>Two-Factor Authentication:</Text>
-        {/* <Switch
-          colorScheme="gray"
-          isChecked={twoFactorEnabled}
-          onChange={handleToggleAuth}
-        /> */}
-        <Spacer />
-        <EditButton />
+        <Box position="absolute" bottom={4} right={0}>
+          <LinkButton text="Edit Profile" size="sm" goTo="/user/edit" />
+        </Box>
       </Flex>
     </Box>
   );
