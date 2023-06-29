@@ -28,6 +28,8 @@ const Chat: React.FC = () => {
   const ENDPOINT = "ws://localhost:4242/chattings";
 
   useEffect(() => {
+    if (!accessToken) return;
+
     const socketIo = io(ENDPOINT, {
       query: {
         token: accessToken, // pass the token to the server
