@@ -8,9 +8,7 @@ export default function GameDesciption() {
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam iaculis
       blandit dapibus. Sed ut nunc non lectus placerat interdum at ut sapien.
       Cras ac sapien non dui elementum luctus. Donec bibendum rhoncus neque quis
-      imperdiet. Donec condimentum interdum risus eget vulputate. Pellentesque
-      tincidunt faucibus libero nec mollis. Integer ac lectus aliquam, lacinia
-      mauris vel, tristique ligula.
+      imperdiet.
     </BaseBox>
   );
 }

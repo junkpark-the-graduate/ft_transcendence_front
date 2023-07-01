@@ -20,6 +20,9 @@ export default function BaseButton({
       _hover={{
         background: "#191919",
       }}
+      _focus={{
+        background: "#191919",
+      }}
       onClick={onClick}
       {...props}
     >
