@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import LinkButton from "@/ui/Button/LinkButton";
 
-interface UserData {
+export interface UserData {
   id: number;
   name: string;
   email: string;
@@ -12,18 +12,16 @@ interface UserData {
   twoFactorEnabled: boolean;
 }
 
-export function getToken() {
+export function getTokenClient() {
   const tokenCookie = Cookies.get("accessToken");
   return tokenCookie ? tokenCookie : null;
 }
 
-export default function UserDetail() {
+export function getUserData() {
   const router = useRouter();
 
-  const token = getToken();
-  const toast = useToast();
+  const token = getTokenClient();
   const [userData, setUserData] = useState<UserData>();
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUser = async () => {
@@ -35,7 +33,6 @@ export default function UserDetail() {
       });
       const userData = await res.json();
       setUserData(userData);
-      console.log(userData);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -46,18 +43,12 @@ export default function UserDetail() {
     fetchUser();
   }, []);
 
-  if (isLoading) {
-    return <p>now loading</p>;
-  }
+  return isLoading ? null : userData;
+}
 
-  const handleEditProfile = () => {
-    toast({
-      title: "Edit Profile",
-      status: "info",
-      duration: 2000,
-      isClosable: true,
-    });
-  };
+export default function UserData() {
+  const userData = getUserData();
+  const toast = useToast();
 
   return (
     <Box position="relative">

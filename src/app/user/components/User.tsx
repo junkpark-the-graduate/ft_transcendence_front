@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { cookies } from "next/headers";
 
-export function getToken() {
+export function getTokenServer() {
   const tokenCookie = cookies().get("accessToken");
   return tokenCookie ? tokenCookie.value : null;
 }
 
 async function getUserInfo() {
-  const token = getToken();
+  const token = getTokenServer();
   if (!token) {
     console.log("Access token is missing.");
     return null;
