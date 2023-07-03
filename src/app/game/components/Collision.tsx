@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import * as THREE from "three";
+import { io } from "socket.io-client";
 
 const PADDLE_WIDTH = 8;
 const PADDLE_HEIGHT = 1;
@@ -9,8 +10,35 @@ let BALL_SPEED = 0.5;
 const PLANE_WIDTH = 50;
 const PLANE_HEIGHT = 100;
 
+const ENDPOINT = "ws://localhost:4242/game";
+
 export default function Collision() {
   useEffect(() => {
+    //const socket = io(`${process.env.NEXT_PUBLIC_BACK_END_POINT}`);
+    const socket = io(ENDPOINT);
+
+    socket.on("connect", () => {
+      console.log("socket connected");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("socket disconnected");
+    });
+
+    socket.on("game", (data) => {
+      // data : paddle1, paddle2, ball position
+      //console.log(data);
+
+      paddle.position.x = data.paddle1.position.x;
+      paddle.position.y = data.paddle1.position.y;
+
+      paddle2.position.x = data.paddle2.position.x;
+      paddle2.position.y = data.paddle2.position.y;
+
+      ball.position.x = data.ball.position.x;
+      ball.position.y = data.ball.position.y;
+    });
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75, // fov
@@ -44,7 +72,6 @@ export default function Collision() {
 
     const ballGeometry = new THREE.SphereGeometry(1, 100, 100);
     const ball = new THREE.Mesh(ballGeometry, material);
-    const ballDirection = new THREE.Vector3(1, 1, 0);
 
     const planeGeometry = new THREE.PlaneGeometry(50, 100, 100);
     const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xf9dadd }); // make a material class
@@ -61,92 +88,53 @@ export default function Collision() {
     scene.add(plane);
     scene.add(background);
 
-    camera.position.z = 10; // move the camera back
-    camera.position.y = -50;
-    camera.lookAt(0, 4, -1);
+    //camera.position.z = 10; // move the camera back
+    //camera.position.y = -50;
+    //camera.lookAt(0, 4, -1);
     // 1인칭
-    //camera.position.y = -40;
-    //camera.lookAt(0, 1, 0);
+    camera.position.y = -30;
+    camera.lookAt(0, 1, 0);
 
-    paddle.position.y = -30;
-    paddle2.position.y = 30;
+    // paddle.position.y = -30;
+    // paddle2.position.y = 30;
     plane.position.z = -2;
 
-    // TODO 키 반복 지연 시간 문제
+    interface KeyState {
+      [key: number]: boolean;
+    }
+
+    const keyState: KeyState = {
+      37: false, // left
+      39: false, // right
+    };
+
     window.addEventListener(
       "keydown",
-      function (event) {
-        event.preventDefault();
-        switch (event.keyCode) {
-          case 37: // Left
-            paddle.position.x -= PADDLE_SPEED;
-            break;
-          case 39: // Right
-            paddle.position.x += PADDLE_SPEED;
-            break;
-        }
+      function (e: KeyboardEvent) {
+        keyState[e.keyCode || e.which] = true;
       },
-      false
+      true
+    );
+
+    window.addEventListener(
+      "keyup",
+      function (e: KeyboardEvent) {
+        keyState[e.keyCode || e.which] = false;
+      },
+      true
     );
 
     function animate() {
       requestAnimationFrame(animate);
-      ball.position.x += ballDirection.x * BALL_SPEED;
-      ball.position.y += ballDirection.y * BALL_SPEED;
-      paddle2.position.x = ball.position.x;
-
+      if (keyState[37]) {
+        socket.emit("key_left", "left");
+      }
+      if (keyState[39]) {
+        socket.emit("key_right", "right");
+      }
       // 1인칭
-      // camera.position.x = paddle.position.x;
+      camera.position.x = paddle.position.x;
 
-      if (
-        ball.position.x <= -PLANE_WIDTH / 2 ||
-        ball.position.x >= PLANE_WIDTH / 2
-      ) {
-        ballDirection.x = -ballDirection.x;
-      }
-      if (
-        ball.position.y <= -PLANE_HEIGHT / 2 ||
-        ball.position.y >= PLANE_HEIGHT / 2
-      ) {
-        ball.position.x = 0;
-        ball.position.y = 0;
-      }
-
-      if (
-        ball.position.x <= paddle.position.x + PADDLE_WIDTH / 2 &&
-        ball.position.x >= paddle.position.x - PADDLE_WIDTH / 2
-      ) {
-        // and if ball is aligned with paddle on y plane
-
-        if (
-          ball.position.y <= paddle.position.y + PADDLE_HEIGHT / 2 &&
-          ball.position.y >= paddle.position.y - PADDLE_HEIGHT / 2
-        ) {
-          // ball is intersecting with the front half of the paddle
-          ballDirection.x = (Math.random() - 0.5) * 2;
-          ballDirection.y = -ballDirection.y;
-          if (BALL_SPEED * 1.2 < PADDLE_HEIGHT) BALL_SPEED *= 1.2;
-        }
-      }
-
-      if (
-        ball.position.x <= paddle2.position.x + PADDLE_WIDTH / 2 &&
-        ball.position.x >= paddle2.position.x - PADDLE_WIDTH / 2
-      ) {
-        // and if ball is aligned with paddle on y plane
-
-        if (
-          ball.position.y <= paddle2.position.y + PADDLE_HEIGHT / 2 &&
-          ball.position.y >= paddle2.position.y - PADDLE_HEIGHT / 2
-        ) {
-          // ball is intersecting with the front half of the paddle
-          ballDirection.x = (Math.random() - 0.5) * 2;
-          ballDirection.y = -ballDirection.y;
-          if (BALL_SPEED * 1.2 < PADDLE_HEIGHT) BALL_SPEED *= 1.2;
-        }
-      }
-
-      ballDirection.normalize();
       renderer.render(scene, camera); // render the scene
     }
     animate();
