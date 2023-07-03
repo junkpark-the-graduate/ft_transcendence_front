@@ -52,6 +52,7 @@ export default function UserData() {
 
   return (
     <Box position="relative">
+      <Text>{userData?.image}</Text>
       <Flex align="center" mb={4}>
         <Avatar size="xl" name={userData?.name} src={userData?.image} />
         <Box ml={4}>

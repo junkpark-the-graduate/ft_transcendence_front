@@ -1,8 +1,7 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -22,7 +21,6 @@ import {
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
 import { getTokenClient, getUserData } from "./UserDetail";
-import axios from "axios";
 
 type FormData = {
   name: string;
@@ -33,8 +31,8 @@ type FormData = {
 const Edit = () => {
   const userData = getUserData();
   const router = useRouter();
-  //--------------------------------------------------------------
   const [uploading, setUploading] = useState(false);
+  //--------------------------------------------------------------
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File>();
   //--------------------------------------------------------------
@@ -47,19 +45,11 @@ const Edit = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
 
-  const handleUpload = async () => {
-    setUploading(true);
-    try {
-      if (!selectedFile) return;
-      const formData = new FormData();
-      formData.append("myImage", selectedFile);
-      const { data } = await axios.post("/#", formData);
-      console.log(data);
-    } catch (err: any) {
-      console.log(err.response?.data);
+  useEffect(() => {
+    if (userData) {
+      setTwoFactor(userData.twoFactorEnabled);
     }
-    setUploading(false);
-  };
+  }, [userData]);
 
   const handleToggleAuth = () => {
     setTwoFactor(!twoFactor);
@@ -72,13 +62,29 @@ const Edit = () => {
   };
 
   async function onSubmit(data: FormData) {
-    const token = getTokenClient();
     const { name } = data;
+    const formData = new FormData();
+    if (selectedFile) {
+      formData.append("file", selectedFile);
+      formData.append("filename", selectedFile.name);
 
+      const res = await fetch("http://127.0.0.1:3001/user/upload", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${getTokenClient()}`,
+        },
+        body: formData,
+      });
+      if (!res.ok) {
+        console.log("Failed to update user image");
+      }
+    }
+    console.log(selectedFile);
+    setUploading(true);
     const res = await fetch("http://127.0.0.1:3001/user", {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getTokenClient()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -87,6 +93,7 @@ const Edit = () => {
       }),
     });
     if (res.ok) {
+      setUploading(false);
       router.push("/user/profile");
       router.refresh();
     } else {
