@@ -1,6 +1,14 @@
 import { useEffect } from "react";
 import * as THREE from "three";
 
+const PADDLE_WIDTH = 8;
+const PADDLE_HEIGHT = 1;
+const PADDLE_SPEED = 1;
+const BALL_SIZE = 1;
+let BALL_SPEED = 0.5;
+const PLANE_WIDTH = 50;
+const PLANE_HEIGHT = 100;
+
 export default function Collision() {
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -18,53 +26,63 @@ export default function Collision() {
     //    // add to div
     document.querySelector("#canvas")!.appendChild(renderer.domElement);
 
-    //    const geometry = new THREE.SphereGeometry(2, 100, 100);
-    // });
-    //    const sphere = new THREE.Mesh(geometry, material);
-    //    scene.add(sphere);
+    const backgroundTextureLoader = new THREE.TextureLoader();
+    const backgroundTexture = backgroundTextureLoader.load("Junkpark.png");
+    const backgroundGeometry = new THREE.BoxGeometry(50, 100, 100);
+    const backgroundmaterial = new THREE.MeshBasicMaterial({
+      map: backgroundTexture,
+      side: THREE.BackSide,
+    });
+    const background = new THREE.Mesh(backgroundGeometry, backgroundmaterial);
 
-    const geometry = new THREE.BoxGeometry(4, 1, 1); // make a cube class
+    const paddleGeometry = new THREE.BoxGeometry(
+      PADDLE_WIDTH,
+      PADDLE_HEIGHT,
+      1
+    ); // make a cube class
     const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 }); // make a material class
 
-    const cube = new THREE.Mesh(geometry, material); // make a mesh class
-    const cube2 = new THREE.Mesh(geometry, material); // make a mesh class
+    const ballGeometry = new THREE.SphereGeometry(1, 100, 100);
+    const ball = new THREE.Mesh(ballGeometry, material);
+    const ballDirection = new THREE.Vector3(1, 1, 0);
+
+    const planeGeometry = new THREE.PlaneGeometry(50, 100, 100);
+    const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xf9dadd }); // make a material class
+
+    const paddle = new THREE.Mesh(paddleGeometry, material); // make a mesh class
+    const paddle2 = new THREE.Mesh(paddleGeometry, material); // make a mesh class
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 
     scene.add(light); // 씬에 광원 추가
-    //scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
+    scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
+    scene.add(paddle); // place the mesh in the scene(0,0,0)
+    scene.add(paddle2);
+    scene.add(ball);
+    scene.add(plane);
+    scene.add(background);
 
-    scene.add(cube); // place the mesh in the scene(0,0,0)
-    scene.add(cube2);
+    camera.position.z = 10; // move the camera back
+    camera.position.y = -50;
+    camera.lookAt(0, 4, -1);
+    // 1인칭
+    //camera.position.y = -40;
+    //camera.lookAt(0, 1, 0);
 
-    camera.position.z = 20; // move the camera back
-    cube2.position.y = 7;
-
-    const collision = (x: number, y: number) => {
-      const box2 = new THREE.Box3().setFromObject(cube2);
-      cube.position.x += x;
-      cube.position.y += y;
-      const box1 = new THREE.Box3().setFromObject(cube);
-      if (box1.intersectsBox(box2) || box2.intersectsBox(box1)) {
-        cube.position.x -= x;
-        cube.position.y -= y;
-      }
-    };
+    paddle.position.y = -30;
+    paddle2.position.y = 30;
+    plane.position.z = -2;
 
     // TODO 키 반복 지연 시간 문제
     window.addEventListener(
       "keydown",
       function (event) {
+        event.preventDefault();
         switch (event.keyCode) {
           case 37: // Left
-            collision(-0.2, 0);
-            break;
-          case 38: // Up
-            collision(0, 0.2);
+            paddle.position.x -= PADDLE_SPEED;
             break;
           case 39: // Right
-            collision(0.2, 0);
-            break;
-          case 40: // Down
-            collision(0, -0.2);
+            paddle.position.x += PADDLE_SPEED;
             break;
         }
       },
@@ -72,30 +90,67 @@ export default function Collision() {
     );
 
     function animate() {
-      requestAnimationFrame(animate); // call animate() again
-      //cube.geometry.computeBoundingBox();
-      //const bCube = new THREE.Box3(
-      //  cube.geometry.boundingBox?.min,
-      //  cube.geometry.boundingBox?.max
-      //);
-      //cube2.geometry.computeBoundingBox();
-      //const bCube2 = new THREE.Box3(
-      //  cube2.geometry.boundingBox?.min,
-      //  cube2.geometry.boundingBox?.max
-      //);
+      requestAnimationFrame(animate);
+      ball.position.x += ballDirection.x * BALL_SPEED;
+      ball.position.y += ballDirection.y * BALL_SPEED;
+      paddle2.position.x = ball.position.x;
 
-      //const box1 = new THREE.Box3().setFromObject(cube);
-      //const box2 = new THREE.Box3().setFromObject(cube2);
-      //// 두 Box 객체의 AABB(Axis-Aligned Bounding Box)가 교차하는지 확인합니다
-      //if (box1.intersectsBox(box2)) {
-      //  console.log("두 Box 객체가 충돌했습니다.");
-      //  // 충돌 시 필요한 로직을 여기에 추가합니다
-      //}
+      // 1인칭
+      // camera.position.x = paddle.position.x;
 
+      if (
+        ball.position.x <= -PLANE_WIDTH / 2 ||
+        ball.position.x >= PLANE_WIDTH / 2
+      ) {
+        ballDirection.x = -ballDirection.x;
+      }
+      if (
+        ball.position.y <= -PLANE_HEIGHT / 2 ||
+        ball.position.y >= PLANE_HEIGHT / 2
+      ) {
+        ball.position.x = 0;
+        ball.position.y = 0;
+      }
+
+      if (
+        ball.position.x <= paddle.position.x + PADDLE_WIDTH / 2 &&
+        ball.position.x >= paddle.position.x - PADDLE_WIDTH / 2
+      ) {
+        // and if ball is aligned with paddle on y plane
+
+        if (
+          ball.position.y <= paddle.position.y + PADDLE_HEIGHT / 2 &&
+          ball.position.y >= paddle.position.y - PADDLE_HEIGHT / 2
+        ) {
+          // ball is intersecting with the front half of the paddle
+          ballDirection.x = (Math.random() - 0.5) * 2;
+          ballDirection.y = -ballDirection.y;
+          if (BALL_SPEED * 1.2 < PADDLE_HEIGHT) BALL_SPEED *= 1.2;
+        }
+      }
+
+      if (
+        ball.position.x <= paddle2.position.x + PADDLE_WIDTH / 2 &&
+        ball.position.x >= paddle2.position.x - PADDLE_WIDTH / 2
+      ) {
+        // and if ball is aligned with paddle on y plane
+
+        if (
+          ball.position.y <= paddle2.position.y + PADDLE_HEIGHT / 2 &&
+          ball.position.y >= paddle2.position.y - PADDLE_HEIGHT / 2
+        ) {
+          // ball is intersecting with the front half of the paddle
+          ballDirection.x = (Math.random() - 0.5) * 2;
+          ballDirection.y = -ballDirection.y;
+          if (BALL_SPEED * 1.2 < PADDLE_HEIGHT) BALL_SPEED *= 1.2;
+        }
+      }
+
+      ballDirection.normalize();
       renderer.render(scene, camera); // render the scene
     }
     animate();
   }, []);
 
-  return <div id="canvas">Collision ;</div>;
+  return <div id="canvas">Collision</div>;
 }
