@@ -24,7 +24,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
         area={"header"}
         pt={0.5}
       >
-        {/* <NavBar /> */}
+        <NavBar />
       </GridItem>
       <GridItem
         rowSpan={12}

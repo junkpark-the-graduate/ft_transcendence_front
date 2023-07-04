@@ -5,11 +5,11 @@
 @tailwind utilities;
 
 html {
-  min-width: 800px;
+  min-width: 900px;
 }
 
 body {
-  margin: 60px 100px;
+  margin: 40px 80px;
   background-color: rgb(23, 23, 23);
   color: white;
   font-family: "SUIT Variable", sans-serif;

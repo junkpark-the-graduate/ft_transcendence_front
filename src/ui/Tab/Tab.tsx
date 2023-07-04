@@ -5,6 +5,7 @@ import {
   TabPanels,
   TabPanel,
   TabsProps,
+  Center,
 } from "@chakra-ui/react";
 
 export interface BaseTabsProps extends TabsProps {
@@ -18,15 +19,17 @@ export default function BaseTabs({
   ...props
 }: BaseTabsProps) {
   return (
-    <Tabs variant="enclosed">
-      <TabList>
+    <Tabs variant="enclosed" w="100%">
+      <TabList w="100%" mx="auto">
         <Tab
           textColor="#949494"
           _selected={{ fontWeight: "800", textColor: "white" }}
+          mx="auto"
         >
           channels
         </Tab>
         <Tab
+          mx="auto"
           textColor="#949494"
           _selected={{ fontWeight: "800", textColor: "white" }}
         >

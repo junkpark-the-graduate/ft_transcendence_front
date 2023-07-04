@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import {
   Box,
   Button,
@@ -14,6 +14,7 @@ import {
   MenuItem,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import BaseAvatar from "../Avatar/Avatar";
 
 const Links = ["home", "game", "chat"];
 
@@ -40,7 +41,7 @@ const Divider = () => (
     h={4}
     bg="white"
     mx={2}
-    display={{ base: "none", md: "block" }}
+    display={{ base: "flex", md: "flex" }}
   />
 );
 
@@ -59,15 +60,13 @@ export default function NavBar() {
             <HStack
               as={"nav"}
               spacing={4}
-              display={{ base: "none", md: "flex" }}
+              display={{ base: "flex", md: "flex" }}
             >
               {Links.map((link, index) => (
-                <>
-                  <NavLink key={link} path={`/${link}`}>
-                    {link}
-                  </NavLink>
+                <React.Fragment key={link}>
+                  <NavLink path={`/${link}`}>{link}</NavLink>
                   {index < Links.length - 1 && <Divider />}
-                </>
+                </React.Fragment>
               ))}
             </HStack>
           </HStack>
@@ -79,19 +78,27 @@ export default function NavBar() {
                 rounded={"full"}
                 variant={"link"}
                 cursor={"pointer"}
-                minW={0}
               >
-                <Avatar size={"sm"} bg="#1F1F22" />
+                <BaseAvatar />
               </MenuButton>
               <MenuList p="5px 10px" bg="#3B3D41" border={"none"}>
                 <MenuItem
                   bg="#3B3D41"
-                  fontSize="10pt"
+                  fontSize="11pt"
                   onClick={() => {
                     handleLinkClick("/user/profile");
                   }}
                 >
                   view profile
+                </MenuItem>
+                <MenuItem
+                  bg="#3B3D41"
+                  fontSize="11pt"
+                  onClick={() => {
+                    handleLinkClick("/user/edit");
+                  }}
+                >
+                  edit profile
                 </MenuItem>
                 <MenuItem
                   bg="#3B3D41"

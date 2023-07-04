@@ -138,28 +138,7 @@ const Edit = () => {
             <FormLabel mb="10px" htmlFor="name">
               프로필 이미지 변경하기
             </FormLabel>
-            <Input
-              borderRadius="15px"
-              border="none"
-              bg="#3B3D41"
-              type="file"
-              pt="5px"
-              mb="15px"
-              _hover={{
-                background: "#191919",
-              }}
-              _focus={{
-                background: "#191919",
-                borderColor: "#191919",
-              }}
-              onChange={({ target }) => {
-                if (target.files) {
-                  const file = target.files[0];
-                  setSelectedImage(URL.createObjectURL(file));
-                  setSelectedFile(file);
-                }
-              }}
-            />
+
             <Flex alignItems="center">
               <div>
                 {selectedImage ? (
@@ -183,6 +162,28 @@ const Edit = () => {
               <Spacer />
               <Flex flexDirection="column"></Flex>
             </Flex>
+            <Input
+              borderRadius="15px"
+              border="none"
+              bg="#3B3D41"
+              type="file"
+              pt="5px"
+              mt="15px"
+              _hover={{
+                background: "#191919",
+              }}
+              _focus={{
+                background: "#191919",
+                borderColor: "#191919",
+              }}
+              onChange={({ target }) => {
+                if (target.files) {
+                  const file = target.files[0];
+                  setSelectedImage(URL.createObjectURL(file));
+                  setSelectedFile(file);
+                }
+              }}
+            />
 
             <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
@@ -200,7 +201,13 @@ const Edit = () => {
 
           <Flex>
             <Spacer />
-            <RedButton text="취소하기" mr={2} onClick={() => {}} />
+            <RedButton
+              text="취소하기"
+              mr={2}
+              onClick={() => {
+                router.back();
+              }}
+            />
             <BaseButton
               text="저장하기"
               isLoading={isSubmitting}

@@ -6,7 +6,7 @@ import Ranking from "./Ranking";
 export default function GameHome() {
   return (
     <Flex>
-      <Center flexDirection="column">
+      <Center flexDirection="column" display={{ base: "flex", md: "flex" }}>
         <GameStartButton />
         <GameDesciption />
         <Ranking />

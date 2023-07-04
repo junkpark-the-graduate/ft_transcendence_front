@@ -35,6 +35,7 @@ export default function GridType1({
         <NavBar />
       </GridItem>
       <GridItem
+        display={{ base: "flex", md: "flex" }}
         rowSpan={11}
         colSpan={4}
         borderRadius={"15px"}
@@ -46,6 +47,7 @@ export default function GridType1({
         {children1}
       </GridItem>
       <GridItem
+        display={{ base: "flex", md: "flex" }}
         rowSpan={11}
         colSpan={2}
         borderRadius={"15px"}
