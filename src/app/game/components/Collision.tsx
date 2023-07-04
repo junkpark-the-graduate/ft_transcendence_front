@@ -1,6 +1,8 @@
 import { useEffect } from "react";
-import * as THREE from "three";
 import { io } from "socket.io-client";
+import * as THREE from "three";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 
 const PADDLE_WIDTH = 8;
 const PADDLE_HEIGHT = 1;
@@ -13,6 +15,8 @@ const PLANE_HEIGHT = 100;
 const ENDPOINT = "ws://localhost:4242/game";
 
 export default function Collision() {
+  let isPlayer1: boolean = false;
+
   useEffect(() => {
     //const socket = io(`${process.env.NEXT_PUBLIC_BACK_END_POINT}`);
     const socket = io(ENDPOINT);
@@ -25,18 +29,43 @@ export default function Collision() {
       console.log("socket disconnected");
     });
 
+    socket.on("game_test", (data) => {
+      console.log("game_test: ", data);
+    });
+
+    socket.on("game_init", (data) => {
+      console.log("game_init: ", data);
+      isPlayer1 = data.isPlayer1;
+      camera.position.z = 10; // move the camera back
+      if (data.isPlayer1) {
+        // 3인칭
+        camera.position.y = -50;
+        camera.lookAt(0, 4, -1);
+        // 1인칭
+        //camera.position.y = -30;
+        //camera.lookAt(0, 1, 0);
+      } else {
+        // 3인칭
+        camera.position.y = 50;
+        camera.lookAt(0, -4, -1);
+        // 1인칭
+        //camera.position.y = 30;
+        //camera.lookAt(0, -1, 0);
+      }
+    });
+
     socket.on("game", (data) => {
       // data : paddle1, paddle2, ball position
       //console.log(data);
 
-      paddle.position.x = data.paddle1.position.x;
-      paddle.position.y = data.paddle1.position.y;
+      paddle.position.x = data.paddle1.x;
+      paddle.position.y = data.paddle1.y;
 
-      paddle2.position.x = data.paddle2.position.x;
-      paddle2.position.y = data.paddle2.position.y;
+      paddle2.position.x = data.paddle2.x;
+      paddle2.position.y = data.paddle2.y;
 
-      ball.position.x = data.ball.position.x;
-      ball.position.y = data.ball.position.y;
+      ball.position.x = data.ball.pos.x;
+      ball.position.y = data.ball.pos.y;
     });
 
     const scene = new THREE.Scene();
@@ -46,6 +75,7 @@ export default function Collision() {
       0.1, // near
       1000 // far
     );
+
     const light = new THREE.PointLight(0xffffff, 1); // 흰색 광원
     light.position.set(0, 0, 10); // 광원의 위치 설정
 
@@ -53,6 +83,48 @@ export default function Collision() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     //    // add to div
     document.querySelector("#canvas")!.appendChild(renderer.domElement);
+
+    // 텍스트
+    //  const loader = new FontLoader();
+    //loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+    //  const textGeometry = new TextGeometry("Hello, World!", {
+    //    //font: new THREE.FontLoader().parse(fontData), // 폰트 데이터 로드 (폰트 파일 또는 JSON 데이터)
+    //    size: 10, // 텍스트 크기
+    //    height: 1, // 텍스트 높이
+    //    curveSegments: 12, // 곡선 세그먼트 수
+    //    bevelEnabled: false, // 베벨 효과 사용 여부
+    //  });
+
+    const loader = new FontLoader();
+
+    loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
+      let me = 0;
+      let you = 0;
+      let score = `${me} : ${you}`;
+      const geometry = new TextGeometry(score, {
+        font: font,
+        size: 5,
+        height: 3,
+        curveSegments: 12,
+        bevelEnabled: false,
+        // bevelThickness: 10,
+        // bevelSize: 3,
+        // bevelOffset: 0,
+        // bevelSegments: 5,
+      });
+
+      // scnene 에 mesh 추가
+      const textMesh = new THREE.Mesh(geometry, material);
+      textMesh.lookAt(0, -1, 0);
+      textMesh.geometry.center();
+      textMesh.position.z = 25;
+      scene.add(textMesh);
+    });
+    // 텍스트를 나타낼 Material 생성
+    //const textMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    // 텍스트를 나타낼 Mesh 생성
+    //const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    //scene.add(textMesh);
 
     const backgroundTextureLoader = new THREE.TextureLoader();
     const backgroundTexture = backgroundTextureLoader.load("Junkpark.png");
@@ -88,13 +160,6 @@ export default function Collision() {
     scene.add(plane);
     scene.add(background);
 
-    //camera.position.z = 10; // move the camera back
-    //camera.position.y = -50;
-    //camera.lookAt(0, 4, -1);
-    // 1인칭
-    camera.position.y = -30;
-    camera.lookAt(0, 1, 0);
-
     // paddle.position.y = -30;
     // paddle2.position.y = 30;
     plane.position.z = -2;
@@ -127,13 +192,13 @@ export default function Collision() {
     function animate() {
       requestAnimationFrame(animate);
       if (keyState[37]) {
-        socket.emit("key_left", "left");
+        socket.emit("key_left", { isPlayer1: isPlayer1 });
       }
       if (keyState[39]) {
-        socket.emit("key_right", "right");
+        socket.emit("key_right", { isPlayer1: isPlayer1 });
       }
       // 1인칭
-      camera.position.x = paddle.position.x;
+      //camera.position.x = paddle.position.x;
 
       renderer.render(scene, camera); // render the scene
     }
