@@ -113,9 +113,20 @@ const Edit = () => {
               <Input
                 required
                 placeholder={userData?.name}
+                borderRadius="15px"
+                border="none"
+                bg="#3B3D41"
+                textColor="white"
                 type="name"
                 id="name"
                 mr={3}
+                _hover={{
+                  background: "#191919",
+                }}
+                _focus={{
+                  background: "#191919",
+                  borderColor: "#191919",
+                }}
                 {...register("name", { required: "이름을 입력해주세요." })}
               />
               <BaseButton text="중복 검사" onClick={() => {}} />
@@ -128,7 +139,19 @@ const Edit = () => {
               프로필 이미지 변경하기
             </FormLabel>
             <Input
+              borderRadius="15px"
+              border="none"
+              bg="#3B3D41"
               type="file"
+              pt="5px"
+              mb="15px"
+              _hover={{
+                background: "#191919",
+              }}
+              _focus={{
+                background: "#191919",
+                borderColor: "#191919",
+              }}
               onChange={({ target }) => {
                 if (target.files) {
                   const file = target.files[0];
@@ -158,10 +181,7 @@ const Edit = () => {
                 )}
               </div>
               <Spacer />
-              <Flex flexDirection="column">
-                <BaseButton text="이미지 업로드" mt={9} onClick={() => {}} />
-                <RedButton text="이미지 삭제" mt={3} onClick={() => {}} />
-              </Flex>
+              <Flex flexDirection="column"></Flex>
             </Flex>
 
             <Divider m="20px 0px" />
