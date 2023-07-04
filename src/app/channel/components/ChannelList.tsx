@@ -10,7 +10,6 @@ interface Props {
 
 const ChannelList: React.FC<Props> = ({ channels }) => {
   if (!Array.isArray(channels)) {
-    // Render a loading indicator or some fallback UI...
     return <div>Loading...</div>;
   }
 
