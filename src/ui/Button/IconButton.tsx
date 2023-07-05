@@ -10,7 +10,6 @@ export default function BaseIconButton({ icon, ...props }: IconButtonProps) {
     <IconButton
       bg="none"
       // bg="#3B3D41"
-      m="5px"
       color={"white"}
       borderRadius="8px"
       _hover={{
