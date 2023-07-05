@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Center, Heading } from "@chakra-ui/react";
+import { Box, Center, Heading } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import BaseBox from "@/ui/Box/Box";
 
@@ -11,8 +11,8 @@ export default function Home() {
 
   return (
     <Center>
-      <BaseBox>
-        <Heading size="md" color="white">
+      <Box pt={20}>
+        <Heading fontFamily="DungGeunMo" size="md" color="white">
           welcome to ping-pong !
         </Heading>
         <Center flexDirection="column"></Center>
@@ -24,7 +24,7 @@ export default function Home() {
             }}
           />
         </Center>
-      </BaseBox>
+      </Box>
     </Center>
   );
 }

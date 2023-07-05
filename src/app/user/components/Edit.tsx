@@ -113,7 +113,7 @@ const Edit = () => {
               <Input
                 required
                 placeholder={userData?.name}
-                borderRadius="15px"
+                borderRadius="8px"
                 border="none"
                 bg="#3B3D41"
                 textColor="white"
@@ -163,7 +163,7 @@ const Edit = () => {
               <Flex flexDirection="column"></Flex>
             </Flex>
             <Input
-              borderRadius="15px"
+              borderRadius="8px"
               border="none"
               bg="#3B3D41"
               type="file"

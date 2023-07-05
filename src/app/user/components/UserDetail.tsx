@@ -55,7 +55,7 @@ export default function UserData() {
       <Flex align="center" mb={4}>
         <Avatar size="xl" name={userData?.name} src={userData?.image} />
         <Box ml={4}>
-          <Heading mb={3} size="lg">
+          <Heading fontFamily={"DungGeunMo"} mb={3} size="lg">
             {userData?.name}
           </Heading>
           <Text>42 ID: {userData?.id}</Text>

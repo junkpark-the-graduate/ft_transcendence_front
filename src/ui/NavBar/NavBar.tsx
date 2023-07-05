@@ -15,6 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import BaseAvatar from "../Avatar/Avatar";
+import BaseIconButton from "../Button/IconButton";
+import { SearchIcon } from "@chakra-ui/icons";
 
 const Links = ["home", "game", "chat"];
 
@@ -54,8 +56,9 @@ export default function NavBar() {
 
   return (
     <>
-      <Box bg="#29292D" borderRadius="15px" px={4}>
+      <Box bg="none" borderRadius="15px" px={4}>
         <Flex h={12} alignItems={"center"} justifyContent={"space-between"}>
+          42 PING PONG
           <HStack spacing={8} alignItems={"center"}>
             <HStack
               as={"nav"}
@@ -70,8 +73,8 @@ export default function NavBar() {
               ))}
             </HStack>
           </HStack>
-
           <Flex alignItems={"center"}>
+            <BaseIconButton icon={<SearchIcon />} aria-label="search" mr={3} />
             <Menu>
               <MenuButton
                 as={Button}

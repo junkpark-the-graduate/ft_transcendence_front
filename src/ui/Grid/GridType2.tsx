@@ -11,26 +11,27 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
       gridTemplateRows={"repeat(13, 1fr)"}
       gridTemplateColumns={"repeat(6, 1fr)"}
       h="750px"
-      gap="2.5"
+      bg="#29292D"
+      borderRadius={"8px"}
+      // border={"white solid 1px"}
       color="white"
       fontWeight="bold"
     >
       <GridItem
         rowSpan={1}
         colSpan={6}
-        borderRadius={"15px"}
-        pl="2"
-        bg="#29292D"
+        pl={2}
+        pt={1}
+        borderBottom={"white solid 1px"}
+        bg="none"
         area={"header"}
-        pt={0.5}
       >
         <NavBar />
       </GridItem>
       <GridItem
         rowSpan={12}
         colSpan={6}
-        borderRadius={"15px"}
-        bg="#29292D"
+        bg="none"
         area={"main1"}
         px={10}
         py={5}

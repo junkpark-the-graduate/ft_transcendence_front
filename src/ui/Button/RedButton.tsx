@@ -12,7 +12,7 @@ export default function RedButton({ text, onClick, ...props }: RedButtonProps) {
       bg="none"
       borderColor={"#d1361d"}
       textColor={"#d1361d"}
-      borderRadius="15px"
+      borderRadius="8px"
       px="25px"
       fontWeight={600}
       _hover={{

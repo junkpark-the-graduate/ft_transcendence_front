@@ -1,8 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
-@import url("https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css");
+/* @import url("https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css"); */
+/* @import url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff"); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "DungGeunMo";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
 
 html {
   min-width: 900px;
@@ -12,5 +21,5 @@ body {
   margin: 40px 80px;
   background-color: rgb(23, 23, 23);
   color: white;
-  font-family: "SUIT Variable", sans-serif;
+  font-family: "DungGeunMo", sans-serif;
 }

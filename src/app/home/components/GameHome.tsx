@@ -7,9 +7,9 @@ export default function GameHome() {
   return (
     <Flex>
       <Center flexDirection="column" display={{ base: "flex", md: "flex" }}>
-        <GameStartButton />
-        <GameDesciption />
-        <Ranking />
+        {/* <GameStartButton /> */}
+        {/* <GameDesciption /> */}
+        {/* <Ranking /> */}
       </Center>
     </Flex>
   );

@@ -1,15 +1,15 @@
 "use client";
 
 import React from "react";
-import { Center, Heading } from "@chakra-ui/react";
+import { Box, Center, Heading } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import BaseBox from "@/ui/Box/Box";
 
 export const Loading = () => {
   return (
     <Center>
-      <BaseBox>
-        <Heading size="md" color="white">
+      <Box pt={20}>
+        <Heading fontFamily="DungGeunMo" size="md" color="white">
           welcome to ping-pong !
         </Heading>
         <Center flexDirection="column"></Center>
@@ -18,11 +18,11 @@ export const Loading = () => {
             isLoading
             loadingText="sign in"
             spinnerPlacement="start"
-            text=""
+            text="sign in 42 intra"
             onClick={() => {}}
           />
         </Center>
-      </BaseBox>
+      </Box>
     </Center>
   );
 };

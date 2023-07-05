@@ -7,7 +7,7 @@ export default function BaseInput({}: BaseInputProps) {
     <Input
       textColor="white"
       variant="filled"
-      borderRadius="15px"
+      borderRadius="8px"
       mr="10px"
       _hover={{
         background: "#191919",

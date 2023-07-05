@@ -1,4 +1,4 @@
-import { Grid, GridItem, GridProps } from "@chakra-ui/react";
+import { Divider, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 
 export interface BaseGridProps extends GridProps {
@@ -18,7 +18,10 @@ export default function GridType1({
       gridTemplateRows={"repeat(13, 1fr)"}
       gridTemplateColumns={"repeat(6, 1fr)"}
       h="750px"
-      gap="2.5"
+      bg="#29292D"
+      // bg="none"
+      // border={"white solid 1px"}
+      borderRadius={"6px"}
       color="white"
       fontWeight="bold"
       {...props}
@@ -26,20 +29,20 @@ export default function GridType1({
       <GridItem
         rowSpan={1}
         colSpan={6}
-        borderRadius={"15px"}
-        pl="2"
-        bg="#29292D"
+        pl={2}
+        pt={1}
+        borderBottom={"white solid 1px"}
+        bg="none"
         area={"header"}
-        pt={0.5}
       >
         <NavBar />
       </GridItem>
       <GridItem
         display={{ base: "flex", md: "flex" }}
-        rowSpan={11}
+        rowSpan={12}
         colSpan={4}
-        borderRadius={"15px"}
-        bg="#29292D"
+        bg="none"
+        borderRight={"white solid 1px"}
         area={"main1"}
         px={5}
         py={3}
@@ -48,10 +51,9 @@ export default function GridType1({
       </GridItem>
       <GridItem
         display={{ base: "flex", md: "flex" }}
-        rowSpan={11}
+        rowSpan={12}
         colSpan={2}
-        borderRadius={"15px"}
-        bg="#29292D"
+        bg="none"
         area={"main2"}
         px={5}
         py={3}

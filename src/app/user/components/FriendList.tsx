@@ -19,10 +19,7 @@ const userData = {
 
 export default function FriendList() {
   return (
-    <Box flex={2} pl={4} borderLeft="1px solid #E2E8F0">
-      <Heading size="md" mb={2}>
-        Friend List
-      </Heading>
+    <Box>
       <Stack spacing={2}>
         {userData.friends.map((friend) => (
           <Flex key={friend.id} align="center">

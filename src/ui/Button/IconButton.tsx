@@ -8,11 +8,14 @@ export interface BaseIconButtonProps extends IconButtonProps {
 export default function BaseIconButton({ icon, ...props }: IconButtonProps) {
   return (
     <IconButton
-      bg="#3B3D41"
+      bg="none"
+      // bg="#3B3D41"
       m="5px"
       color={"white"}
-      borderRadius="15px"
+      borderRadius="8px"
       _hover={{
+        // bg: "none",
+
         background: "#3B3D41",
       }}
       icon={icon}

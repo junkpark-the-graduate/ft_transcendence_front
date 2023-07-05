@@ -4,7 +4,12 @@ export interface BaseBoxProps extends BoxProps {}
 
 export default function BaseBox({ children, ...props }: BaseBoxProps) {
   return (
-    <Box bg="#29292D" p="40px 60px" borderRadius={"15px"}>
+    <Box
+      bg="none"
+      borderRadius={"8px"}
+      border={"white solid 1px"}
+      p="40px 60px"
+    >
       {children}
     </Box>
   );
