@@ -31,7 +31,7 @@ export default function GridType1({
         colSpan={6}
         pl={2}
         pt={1}
-        borderBottom={"white solid 1px"}
+        borderBottom={"#3B3D41 solid 2px"}
         bg="none"
         area={"header"}
       >
@@ -42,7 +42,7 @@ export default function GridType1({
         rowSpan={12}
         colSpan={4}
         bg="none"
-        borderRight={"white solid 1px"}
+        borderRight={"#3B3D41 solid 2px"}
         area={"main1"}
         px={5}
         py={3}

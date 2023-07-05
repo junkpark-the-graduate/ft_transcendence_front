@@ -13,7 +13,6 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
       h="750px"
       bg="#29292D"
       borderRadius={"8px"}
-      // border={"white solid 1px"}
       color="white"
       fontWeight="bold"
     >
@@ -22,7 +21,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
         colSpan={6}
         pl={2}
         pt={1}
-        borderBottom={"white solid 1px"}
+        borderBottom={"#3B3D41 solid 2px"}
         bg="none"
         area={"header"}
       >

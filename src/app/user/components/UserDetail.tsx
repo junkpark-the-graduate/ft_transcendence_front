@@ -1,10 +1,9 @@
 import { Box, Flex, Avatar, Heading, Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 import LinkButton from "@/ui/Button/LinkButton";
 
-export interface UserData {
+interface UserData {
   id: number;
   name: string;
   email: string;
@@ -18,8 +17,6 @@ export function getTokenClient() {
 }
 
 export function getUserData() {
-  const router = useRouter();
-
   const token = getTokenClient();
   const [userData, setUserData] = useState<UserData>();
   const [isLoading, setIsLoading] = useState(true);
