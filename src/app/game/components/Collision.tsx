@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import * as THREE from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
@@ -15,6 +16,8 @@ const PLANE_HEIGHT = 100;
 const ENDPOINT = "ws://localhost:4242/game";
 
 export default function Collision() {
+  const [score, setScore] = useState("0 : 0");
+
   let isPlayer1: boolean = false;
 
   useEffect(() => {
@@ -33,9 +36,13 @@ export default function Collision() {
       console.log("game_test: ", data);
     });
 
+    socket.on("score", (data) => {
+      console.log("score: ", data);
+      setScore(`${data.score.player1} : ${data.score.player2}`);
+    });
+
     socket.on("game_init", (data) => {
       console.log("game_init: ", data);
-      isPlayer1 = data.isPlayer1;
       camera.position.z = 10; // move the camera back
       if (data.isPlayer1) {
         // 3인칭
@@ -46,8 +53,10 @@ export default function Collision() {
         //camera.lookAt(0, 1, 0);
       } else {
         // 3인칭
+        camera.up.set(0, -1, 0);
         camera.position.y = 50;
         camera.lookAt(0, -4, -1);
+        //camera.rotation.y = 1;
         // 1인칭
         //camera.position.y = 30;
         //camera.lookAt(0, -1, 0);
@@ -70,7 +79,7 @@ export default function Collision() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      75, // fov
+      90, // fov
       window.innerWidth / window.innerHeight, // aspect
       0.1, // near
       1000 // far
@@ -95,36 +104,31 @@ export default function Collision() {
     //    bevelEnabled: false, // 베벨 효과 사용 여부
     //  });
 
-    const loader = new FontLoader();
+    // score text
+    // const loader = new FontLoader();
+    // loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
+    //   let me = 0;
+    //   let you = 0;
+    //   let score = `${me} : ${you}`;
+    //   const geometry = new TextGeometry(score, {
+    //     font: font,
+    //     size: 5,
+    //     height: 3,
+    //     curveSegments: 12,
+    //     bevelEnabled: false,
+    //     // bevelThickness: 10,
+    //     // bevelSize: 3,
+    //     // bevelOffset: 0,
+    //     // bevelSegments: 5,
+    //   });
 
-    loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
-      let me = 0;
-      let you = 0;
-      let score = `${me} : ${you}`;
-      const geometry = new TextGeometry(score, {
-        font: font,
-        size: 5,
-        height: 3,
-        curveSegments: 12,
-        bevelEnabled: false,
-        // bevelThickness: 10,
-        // bevelSize: 3,
-        // bevelOffset: 0,
-        // bevelSegments: 5,
-      });
-
-      // scnene 에 mesh 추가
-      const textMesh = new THREE.Mesh(geometry, material);
-      textMesh.lookAt(0, -1, 0);
-      textMesh.geometry.center();
-      textMesh.position.z = 25;
-      scene.add(textMesh);
-    });
-    // 텍스트를 나타낼 Material 생성
-    //const textMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    // 텍스트를 나타낼 Mesh 생성
-    //const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    //scene.add(textMesh);
+    //   // scnene 에 mesh 추가
+    //   const textMesh = new THREE.Mesh(geometry, material);
+    //   textMesh.lookAt(0, -1, 0);
+    //   textMesh.geometry.center();
+    //   textMesh.position.z = 25;
+    //   scene.add(textMesh);
+    // });
 
     const backgroundTextureLoader = new THREE.TextureLoader();
     const backgroundTexture = backgroundTextureLoader.load("Junkpark.png");
@@ -205,5 +209,20 @@ export default function Collision() {
     animate();
   }, []);
 
-  return <div id="canvas">Collision</div>;
+  return (
+    <div id="canvas">
+      <Text
+        position="absolute"
+        top="10px"
+        fontSize="30px"
+        color="tomato"
+        width="100%"
+        textAlign="center"
+        z-index="100"
+        display="block"
+      >
+        {score}
+      </Text>
+    </div>
+  );
 }
