@@ -1,40 +1,52 @@
-import { redirect } from "next/navigation";
+"use client";
 
-async function verify(twoFactorCode: string) {
-  try {
-    const res = await fetch(
-      `http://back:3001/auth/tfa-verification?twoFactorCode=${twoFactorCode}`,
-      {
-        method: "POST",
-      }
-    );
-    return res;
-  } catch (err) {
-    return { ok: false };
-  }
-}
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
   searchParams: {
     twoFactorCode?: string;
   };
 }) {
+  const router = useRouter();
+  const [isVerified, setIsVerified] = useState(false);
   const { twoFactorCode } = searchParams;
 
-  if (twoFactorCode === undefined) {
-  } else {
-    const res = await verify(twoFactorCode);
-    if (res.ok) {
-      return (
+  async function verify(twoFactorCode: string) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth/tfa-verification?twoFactorCode=${twoFactorCode}`,
+      {
+        method: "POST",
+      }
+    );
+    if (!res.ok) {
+      alert("2차 인증 실패");
+      router.push("/");
+    }
+    setIsVerified(true);
+  }
+
+  useEffect(() => {
+    if (twoFactorCode === undefined) {
+      alert("2차 인증 코드가 없습니다.");
+      router.push("/");
+    } else {
+      verify(twoFactorCode);
+    }
+  }, []);
+
+  return (
+    <>
+      {isVerified ? (
         <div>
           <h1>인증 완료</h1>
           <h1>기존 페이지로 돌아가세요.</h1>
         </div>
-      );
-    } else {
-      return <h1>2차인증 실패. 다시 로그인을 시도해주세요</h1>;
-    }
-  }
+      ) : (
+        <h1>2차 인증 하는중...</h1>
+      )}
+    </>
+  );
 }
