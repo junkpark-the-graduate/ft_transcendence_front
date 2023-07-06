@@ -2,10 +2,6 @@
 
 import Channel from "./components/Channel";
 
-export default async function Page() {
-  return (
-    <>
-      <Channel />
-    </>
-  );
+export default function Page() {
+  return <Channel />;
 }

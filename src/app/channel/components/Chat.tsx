@@ -11,7 +11,11 @@ type ChatType = {
   message: string;
 };
 
-const Chat: React.FC = () => {
+interface ChatProps {
+  channelId: number; // 여기서는 channelId라는 이름의 문자열 속성을 예시로 들었습니다.
+}
+
+const Chat: React.FC<ChatProps> = ({ channelId }) => {
   const [username, setUsername] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [chatList, setChatList] = useState<ChatType[]>([]);
@@ -33,6 +37,7 @@ const Chat: React.FC = () => {
     const socketIo = io(ENDPOINT, {
       query: {
         token: accessToken, // pass the token to the server
+        channelId: channelId,
       },
     });
 
@@ -56,9 +61,10 @@ const Chat: React.FC = () => {
     });
 
     return () => {
+      console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
     };
-  }, [ENDPOINT, accessToken]); // Add accessToken as a dependency
+  }, [accessToken, channelId]);
 
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
