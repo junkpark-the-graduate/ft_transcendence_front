@@ -27,14 +27,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
       >
         <NavBar />
       </GridItem>
-      <GridItem
-        rowSpan={12}
-        colSpan={6}
-        bg="none"
-        area={"main1"}
-        px={10}
-        py={5}
-      >
+      <GridItem rowSpan={12} colSpan={6} bg="none" area={"main1"} px={10}>
         {children}
       </GridItem>
     </Grid>

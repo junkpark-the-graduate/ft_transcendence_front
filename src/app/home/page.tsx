@@ -1,9 +1,9 @@
 "use client";
 
 import GridType1 from "@/ui/Grid/GridType1";
-import FriendList from "../user/components/FriendList";
 import BaseTabs from "@/ui/Tab/Tab";
 import GameHome from "./components/GameHome";
+import FriendList from "@/ui/Lists/FriendList";
 
 export default function MainPage() {
   return (

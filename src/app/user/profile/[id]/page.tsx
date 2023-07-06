@@ -11,9 +11,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import FriendList from "../../components/FriendList";
 import UserHistory from "../../components/UserHistory";
 import LinkButton from "@/ui/Button/LinkButton";
+import FriendList from "@/ui/Lists/FriendList";
 
 interface UserData {
   id: number;
