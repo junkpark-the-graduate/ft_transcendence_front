@@ -40,9 +40,12 @@ export default function Page({
 
   async function signIn() {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/auth?code=${code}`, {
-        method: "POST",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth?code=${code}`,
+        {
+          method: "POST",
+        }
+      );
 
       console.log(res.status);
       // true -> res자체가 redirect된 상태
@@ -51,7 +54,7 @@ export default function Page({
           const json = await res.json();
           if (json.twoFactorToken) {
             Cookies.set("twoFactorToken", json.twoFactorToken);
-            router.push("http://127.0.0.1:3000/auth/tfa-loading");
+            router.push("/auth/tfa-loading");
           } else {
             Cookies.set("accessToken", json.accessToken);
             router.push("/user");

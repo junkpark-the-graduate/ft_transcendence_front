@@ -40,7 +40,7 @@ const VerifyButton = () => {
         console.log("twoFactorToken!!!!!!!!!", twoFactorToken);
 
         const res = await fetch(
-          `http://127.0.0.1:3001/auth/tfa?twoFactorToken=${twoFactorToken}`,
+          `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth/tfa?twoFactorToken=${twoFactorToken}`,
           {
             method: "POST",
           }
