@@ -18,11 +18,11 @@ import {
 import React from "react";
 import BaseIconButton from "../Button/IconButton";
 import {
-  GoPersonFill,
   GoComment,
   GoKebabHorizontal,
   GoCircleSlash,
   GoNoEntry,
+  GoPerson,
 } from "react-icons/go";
 
 const userData = {
@@ -54,7 +54,7 @@ export default function FriendList() {
               <Flex>
                 <BaseIconButton
                   size="sm"
-                  icon={<GoPersonFill />}
+                  icon={<GoPerson />}
                   aria-label="info"
                 />
                 <BaseIconButton
@@ -86,6 +86,7 @@ export default function FriendList() {
                     </MenuItem>
                     <MenuItem
                       icon={<GoCircleSlash />}
+                      textColor="red"
                       bg="#3B3D41"
                       fontSize="11pt"
                       onClick={() => {}}

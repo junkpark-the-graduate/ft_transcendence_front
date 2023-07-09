@@ -1,23 +1,21 @@
 import { getUserData } from "@/app/user/components/UserDetail";
-import {
-  Avatar,
-  AvatarProps,
-  Box,
-  Flex,
-  Text,
-  textDecoration,
-} from "@chakra-ui/react";
+import { Avatar, AvatarBadge, AvatarProps, Flex } from "@chakra-ui/react";
 
 export interface BaseAvatarProps extends AvatarProps {}
 
 export default function BaseAvatar({ ...props }: BaseAvatarProps) {
   const userData = getUserData();
+  const status: string = "online";
   return (
     <Flex>
-      {/* <Text textColor="white" my="auto" mr="25px" fontWeight={700}>
-        {userData?.name}
-      </Text> */}
-      <Avatar size="sm" src={userData?.image} />
+      <Avatar size="sm" src={userData?.image}>
+        <AvatarBadge
+          bg={status === "online" ? "green" : "red"}
+          border="2px"
+          borderColor="white"
+          boxSize="1em"
+        />
+      </Avatar>
     </Flex>
   );
 }
