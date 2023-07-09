@@ -10,7 +10,7 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import BaseAvatar from "../Avatar/Avatar";
 import Search from "../Search/Search";
 import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
@@ -23,6 +23,8 @@ const Links = [
 
 const NavLink = ({ children, path }: { children: ReactNode; path: string }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const isActive = pathname === path;
 
   const handleLinkClick = (path: string) => {
     router.push(path);
@@ -35,7 +37,7 @@ const NavLink = ({ children, path }: { children: ReactNode; path: string }) => {
       px={2}
       py={1}
       bg="none"
-      textColor="white"
+      textColor={isActive ? "white" : "gray"}
       rounded={"md"}
       _hover={{
         textDecoration: "none",
@@ -53,7 +55,7 @@ const Divider = () => (
     key="divider"
     w={0.5}
     h={4}
-    bg="white"
+    bg="gray"
     mx={2}
     display={{ base: "flex", md: "flex" }}
   />
