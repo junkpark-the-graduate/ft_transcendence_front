@@ -64,6 +64,11 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     router.push(`/channel/${channelId}/admin`); // Change this path to your admin page's path
   }
 
+  function goToAdminPage(e: React.MouseEvent, channelId: number) {
+    e.stopPropagation(); // Prevent the event from propagating up to the parent element
+    router.push(`/channel/${channelId}/info`); // Change this path to your admin page's path
+  }
+
   return (
     <Box>
       <Text fontSize="xl" mt={5}>
