@@ -1,9 +1,7 @@
 import { Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import * as THREE from "three";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { socket } from "../socket";
 
 const PADDLE_WIDTH = 8;
 const PADDLE_HEIGHT = 1;
@@ -15,33 +13,22 @@ const PLANE_HEIGHT = 100;
 
 const ENDPOINT = "ws://localhost:4242/game";
 
-export default function Collision() {
+export default function Game() {
   const [score, setScore] = useState("0 : 0");
 
   let isPlayer1: boolean = false;
 
   useEffect(() => {
-    //const socket = io(`${process.env.NEXT_PUBLIC_BACK_END_POINT}`);
-    const socket = io(ENDPOINT);
-
-    socket.on("connect", () => {
-      console.log("socket connected");
-    });
-
-    socket.on("disconnect", () => {
-      console.log("socket disconnected");
-    });
-
-    socket.on("game_test", (data) => {
+    socket.on("game_test", (data: any) => {
       console.log("game_test: ", data);
     });
 
-    socket.on("score", (data) => {
+    socket.on("score", (data: any) => {
       console.log("score: ", data);
       setScore(`${data.score.player1} : ${data.score.player2}`);
     });
 
-    socket.on("game_init", (data) => {
+    socket.on("game_init", (data: any) => {
       console.log("game_init: ", data);
       camera.position.z = 10; // move the camera back
       if (data.isPlayer1) {
@@ -63,7 +50,7 @@ export default function Collision() {
       }
     });
 
-    socket.on("game", (data) => {
+    socket.on("game", (data: any) => {
       // data : paddle1, paddle2, ball position
       //console.log(data);
 
