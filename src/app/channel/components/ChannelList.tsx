@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { Box, Flex, Text, Heading } from "@chakra-ui/react";
+import { Box, Flex, Text, Button } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -36,11 +38,15 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     router.push(`/channel/${channelId}/chat`);
   }
 
+  function goToAdminPage(e: React.MouseEvent, channelId: number) {
+    e.stopPropagation(); // Prevent the event from propagating up to the parent element
+    router.push(`/channel/${channelId}/info`); // Change this path to your admin page's path
+  }
+
   return (
     <Flex direction="column" gap={5}>
       {channels.map((channel: any) => (
         <Box
-          as="button"
           key={channel.id}
           padding={3}
           shadow="md"
@@ -48,7 +54,16 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
           borderRadius="md"
           onClick={() => onClickChannel(channel.id)}
           textAlign={"left"}
+          position={"relative"} // Add relative positioning so we can use absolute positioning on child
         >
+          <Button
+            onClick={(e) => goToAdminPage(e, channel.id)}
+            position={"absolute"} // Set the position to absolute
+            top={2} // Adjust these values as needed
+            right={2} // Adjust these values as needed
+          >
+            관리자 페이지
+          </Button>
           <Text fontSize="xl">{channel.name}</Text>
           <Text fontSize="sm">ID: {channel.id}</Text>
           <Text fontSize="sm">Owner ID: {channel.ownerId}</Text>

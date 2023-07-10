@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
-import { Input, Button, Text, Box, Flex } from "@chakra-ui/react";
+import { Input, Button, Text, Box, Flex, useToast } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 
 type ChatType = {
@@ -22,6 +23,8 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
+  const router = useRouter();
+  const toast = useToast();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -58,6 +61,17 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
 
     socketIo.on("disconnect", () => {
       console.log(`disconnected : ${socketIo.id}`);
+    });
+
+    socketIo.on("kicked", () => {
+      console.log("kicked");
+      toast({
+        title: "You are kicked out from the channel",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      router.push("/channel");
     });
 
     return () => {
