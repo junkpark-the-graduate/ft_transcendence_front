@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, Flex, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, Text, Button, useToast } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 
 import { EChannelType } from "../types/EChannelType";
@@ -14,6 +14,8 @@ interface Props {
 
 const ChannelList: React.FC<Props> = ({ channels }) => {
   const router = useRouter();
+  const toast = useToast();
+
   if (!Array.isArray(channels)) {
     return <div>Loading...</div>;
   }
@@ -30,16 +32,36 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
         },
       }
     );
+
     console.log(await res.json());
+    return res;
   }
 
   async function onClickChannel(channelId: number) {
-    await joinChannel(channelId);
-    router.push(`/channel/${channelId}/chat`);
+    const res = await joinChannel(channelId);
+
+    if (res.status == 201) {
+      router.push(`/channel/${channelId}/chat`);
+    } else if (res.status == 401) {
+      toast({
+        title: "You are banned member at this channel",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "You cannot enter this channel",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   }
 
   function goToAdminPage(e: React.MouseEvent, channelId: number) {
     e.stopPropagation(); // Prevent the event from propagating up to the parent element
+    //TODO : 관리자 아니면 못들어가게 막음
     router.push(`/channel/${channelId}/info`); // Change this path to your admin page's path
   }
 

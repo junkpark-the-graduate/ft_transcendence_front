@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 // import { useRouter } from "next/navigation";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, Button, useToast } from "@chakra-ui/react";
 import { SmallCloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import Cookies from "js-cookie";
 
@@ -15,6 +15,7 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
   const [mutedMembers, setMutedMembers] = useState<any[]>([]);
   const [bannedMembers, setBannedMembers] = useState<any[]>([]);
   const accessToken = Cookies.get("accessToken");
+  const toast = useToast();
   // const router = useRouter();
 
   async function getMemberList() {
@@ -96,6 +97,15 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
       }
     );
     console.log("createBannedMemeber", channelId, userId);
+    if (res.status > 299) {
+      toast({
+        title: "This user cannot ban",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      return;
+    }
     const newMembers = members.filter((member) => member.userId !== userId);
     setMembers(newMembers);
     getBannedMemberList();
@@ -117,6 +127,10 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
   ) {
     e.stopPropagation(); // Prevent the event from propagating up to the parent element
     await createBannedMemeber(channelId, userId);
+  }
+
+  async function deleteChannelHandler(e) {
+    console.log("hi");
   }
 
   return (
@@ -187,6 +201,7 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
           <Text>Banned at: {member.createdAt}</Text>
         </Box>
       ))}
+      <Button onClick={(e) => deleteChannelHandler(e)}>Delete channel</Button>
     </Box>
   );
 };
