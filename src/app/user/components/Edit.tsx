@@ -17,6 +17,7 @@ import {
   Spacer,
   Flex,
   useToast,
+  Text,
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
@@ -63,6 +64,30 @@ const Edit = () => {
 
   async function onSubmit(data: FormData) {
     const { name } = data;
+
+    // 이름 유효성 검사 1 ---------------------------------------------
+    if (name.length > 20) {
+      toast({
+        title: "이름 변경 실패",
+        description: "새로운 이름은 20자 이하여야 합니다.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+    // 이름 유효성 검사 2 ---------------------------------------------
+    if (name.includes("#")) {
+      toast({
+        title: "이름 변경 실패",
+        description: '새로운 이름에는 "#"가 포함될 수 없습니다.',
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+    // ------------------------------------------------------------
     const formData = new FormData();
     if (selectedFile) {
       formData.append("file", selectedFile);
@@ -107,11 +132,13 @@ const Edit = () => {
         <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
           <FormControl>
             <FormLabel mb="10px" htmlFor="name">
-              이름 변경하기
+              {">"} 이름 변경하기
             </FormLabel>
+            <Text fontSize={13} ml={1} mb={2} textColor="gray">
+              20자 이내이며 '#' 문자를 포함하지 않은 이름만 가능합니다.
+            </Text>
             <Flex>
               <Input
-                required
                 placeholder={userData?.name}
                 borderRadius="8px"
                 border="none"
@@ -127,18 +154,16 @@ const Edit = () => {
                   background: "#191919",
                   borderColor: "#191919",
                 }}
-                {...register("name", { required: "이름을 입력해주세요." })}
+                {...register("name", {
+                  required: "이름을 입력해주세요.",
+                })}
               />
               <BaseButton text="중복 검사" onClick={() => {}} />
             </Flex>
-            <FormErrorMessage>
-              {errors.name && errors.name.message}
-            </FormErrorMessage>
             <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
-              프로필 이미지 변경하기
+              {">"} 프로필 이미지 변경하기
             </FormLabel>
-
             <Flex alignItems="center">
               <div>
                 {selectedImage ? (
@@ -162,13 +187,15 @@ const Edit = () => {
               <Spacer />
               <Flex flexDirection="column"></Flex>
             </Flex>
+            <Text fontSize={13} ml={1} my={2} textColor="gray">
+              .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
+            </Text>
             <Input
               borderRadius="8px"
               border="none"
               bg="#3B3D41"
               type="file"
               pt="5px"
-              mt="15px"
               _hover={{
                 background: "#191919",
               }}
@@ -184,10 +211,9 @@ const Edit = () => {
                 }
               }}
             />
-
             <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
-              2FA 설정 변경하기{" "}
+              {">"} 2FA 설정 변경하기{" "}
             </FormLabel>
             <Switch
               colorScheme="gray"
