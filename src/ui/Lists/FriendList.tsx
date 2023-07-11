@@ -25,16 +25,16 @@ import {
   GoPerson,
 } from "react-icons/go";
 
-const userData = {
-  friends: [
-    { id: 2, name: "junkpark", status: "online" },
-    { id: 3, name: "mher", status: "offline" },
-    { id: 4, name: "seunghye", status: "offline" },
-    { id: 5, name: "jnam", status: "online" },
-  ],
-};
+const FriendList = () => {
+  const userData = {
+    friends: [
+      { id: 2, name: "junkpark", status: "online" },
+      { id: 3, name: "mher", status: "offline" },
+      { id: 4, name: "seunghye", status: "offline" },
+      { id: 5, name: "jnam", status: "online" },
+    ],
+  };
 
-export default function FriendList() {
   return (
     <Box>
       <Stack spacing={2}>
@@ -63,12 +63,7 @@ export default function FriendList() {
                   aria-label="dm"
                 />
                 <Menu>
-                  <MenuButton
-                    as={Button}
-                    rounded={"full"}
-                    variant={"link"}
-                    cursor={"pointer"}
-                  >
+                  <MenuButton as="span" rounded={"full"} cursor={"pointer"}>
                     <BaseIconButton
                       size="sm"
                       icon={<GoKebabHorizontal />}
@@ -105,4 +100,6 @@ export default function FriendList() {
       </Stack>
     </Box>
   );
-}
+};
+
+export default FriendList;

@@ -24,19 +24,19 @@ import {
   GoPeople,
 } from "react-icons/go";
 
-const userData = {
-  friends: [
-    { id: 2, name: "channel #1" },
-    { id: 3, name: "channel #2" },
-    { id: 4, name: "channel #3" },
-  ],
-};
+const ChannelList = () => {
+  const userData = {
+    channels: [
+      { id: 2, name: "channel #1" },
+      { id: 3, name: "channel #2" },
+      { id: 4, name: "channel #3" },
+    ],
+  };
 
-export default function ChannelList() {
   return (
     <Box>
       <Stack spacing={2}>
-        {userData.friends.map((friend, index) => (
+        {userData.channels.map((friend, index) => (
           <React.Fragment key={friend.id}>
             <Flex align="center" my={1}>
               <Avatar size="sm" name={friend.name} mr={4} />
@@ -55,10 +55,9 @@ export default function ChannelList() {
                 />
                 <Menu>
                   <MenuButton
-                    as={Button}
-                    rounded={"full"}
-                    variant={"link"}
-                    cursor={"pointer"}
+                    as="span" // 변경된 부분: <span> 요소로 수정
+                    rounded="full"
+                    cursor="pointer"
                   >
                     <BaseIconButton
                       size="sm"
@@ -66,7 +65,7 @@ export default function ChannelList() {
                       aria-label="else"
                     />
                   </MenuButton>
-                  <MenuList p="5px 10px" bg="#3B3D41" border={"none"}>
+                  <MenuList p="5px 10px" bg="#3B3D41" border="none">
                     <MenuItem
                       icon={<GoGear />}
                       bg="#3B3D41"
@@ -88,7 +87,7 @@ export default function ChannelList() {
                 </Menu>
               </Flex>
             </Flex>
-            {index !== userData.friends.length && (
+            {index !== userData.channels.length - 1 && ( // 변경된 부분: 마지막 요소 제외
               <Divider borderColor="#3B3D41" />
             )}
           </React.Fragment>
@@ -96,4 +95,6 @@ export default function ChannelList() {
       </Stack>
     </Box>
   );
-}
+};
+
+export default ChannelList;
