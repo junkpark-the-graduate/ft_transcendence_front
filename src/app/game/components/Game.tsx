@@ -28,10 +28,21 @@ export default function Game() {
       setScore(`${data.score.player1} : ${data.score.player2}`);
     });
 
+    socket.on("game_over", (data: any) => {
+      console.log("game_over: ", data);
+      if (data) {
+        setScore("Win!");
+      } else {
+        setScore("Lose");
+      }
+      //setScore(`${data.score.player1} : ${data.score.player2}`);
+    });
+
     socket.on("game_init", (data: any) => {
       console.log("game_init: ", data);
+      isPlayer1 = data.isPlayer1;
       camera.position.z = 10; // move the camera back
-      if (data.isPlayer1) {
+      if (isPlayer1) {
         // 3인칭
         camera.position.y = -50;
         camera.lookAt(0, 4, -1);
