@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Button } from "@chakra-ui/react";
+import { Box, Button, Center, Divider, Heading } from "@chakra-ui/react";
+import BaseButton from "@/ui/Button/Button";
 
 const Timer: React.FC = () => {
   const [milliseconds, setMilliseconds] = useState(300000);
@@ -33,8 +34,10 @@ const VerifyButton = () => {
   const router = useRouter();
 
   return (
-    <Button
+    <BaseButton
+      text="verify"
       variant="contained"
+      mt={3}
       onClick={async () => {
         const twoFactorToken = Cookies.get("twoFactorToken");
         console.log("twoFactorToken!!!!!!!!!", twoFactorToken);
@@ -52,20 +55,28 @@ const VerifyButton = () => {
         } else {
           Cookies.set("accessToken", json.accessToken);
           router.refresh();
-          router.push("/user");
+          router.push("/home");
         }
       }}
     >
       verify
-    </Button>
+    </BaseButton>
   );
 };
 
 export default async function Page() {
   return (
-    <div>
-      <Timer />
-      <VerifyButton />
-    </div>
+    <Center>
+      <Box pt={20}>
+        <Heading fontFamily="DungGeunMo" size="md" color="white">
+          two-factor authentication
+        </Heading>
+        <Center flexDirection="column" my={3}>
+          <Divider mb={3} />
+          <Timer />
+          <VerifyButton />
+        </Center>
+      </Box>
+    </Center>
   );
 }
