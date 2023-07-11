@@ -10,7 +10,7 @@ interface ChatProps {
   channelId: number;
 }
 
-const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
+const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
   const [members, setMembers] = useState<any[]>([]);
   const [mutedMembers, setMutedMembers] = useState<any[]>([]);
   const [bannedMembers, setBannedMembers] = useState<any[]>([]);
@@ -232,4 +232,4 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
   );
 };
 
-export default ChannelInfo;
+export default ChannelAdmin;

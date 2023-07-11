@@ -3,7 +3,6 @@
 import React from "react";
 import { Box, Flex, Text, Button, useToast } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -62,7 +61,7 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
   function goToAdminPage(e: React.MouseEvent, channelId: number) {
     e.stopPropagation(); // Prevent the event from propagating up to the parent element
     //TODO : 관리자 아니면 못들어가게 막음
-    router.push(`/channel/${channelId}/info`); // Change this path to your admin page's path
+    router.push(`/channel/${channelId}/admin`); // Change this path to your admin page's path
   }
 
   return (
