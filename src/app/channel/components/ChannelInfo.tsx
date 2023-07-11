@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Box, Text, Button, useToast } from "@chakra-ui/react";
 import { SmallCloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import Cookies from "js-cookie";
@@ -16,7 +16,7 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
   const [bannedMembers, setBannedMembers] = useState<any[]>([]);
   const accessToken = Cookies.get("accessToken");
   const toast = useToast();
-  // const router = useRouter();
+  const router = useRouter();
 
   async function getMemberList() {
     const res = await fetch(
@@ -111,6 +111,28 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
     getBannedMemberList();
   }
 
+  async function deleteChannel(channelId: number) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("deleteChannel", channelId);
+    if (res.status > 299) {
+      toast({
+        title: "Cannot delete channel",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }
+
   async function deleteBannedMemeberHandler(
     e: React.MouseEvent,
     channelId: number,
@@ -129,8 +151,10 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
     await createBannedMemeber(channelId, userId);
   }
 
-  async function deleteChannelHandler(e) {
-    console.log("hi");
+  async function deleteChannelHandler(e: React.MouseEvent, channelId: number) {
+    e.stopPropagation();
+    await deleteChannel(channelId);
+    router.push(`/channel`);
   }
 
   return (
@@ -201,7 +225,9 @@ const ChannelInfo: React.FC<ChatProps> = ({ channelId }) => {
           <Text>Banned at: {member.createdAt}</Text>
         </Box>
       ))}
-      <Button onClick={(e) => deleteChannelHandler(e)}>Delete channel</Button>
+      <Button onClick={(e) => deleteChannelHandler(e, channelId)}>
+        Delete channel
+      </Button>
     </Box>
   );
 };

@@ -40,7 +40,7 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
   async function onClickChannel(channelId: number) {
     const res = await joinChannel(channelId);
 
-    if (res.status == 201) {
+    if (res.status < 300) {
       router.push(`/channel/${channelId}/chat`);
     } else if (res.status == 401) {
       toast({
