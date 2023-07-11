@@ -8,12 +8,23 @@ import {
   Divider,
   Flex,
   Heading,
+  Spacer,
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import UserHistory from "../../components/UserHistory";
 import LinkButton from "@/ui/Button/LinkButton";
 import FriendList from "@/ui/Lists/FriendList";
+import BaseHeading from "@/ui/Typo/Heading";
+import BaseIconButton from "@/ui/Button/IconButton";
+import {
+  GoCircleSlash,
+  GoComment,
+  GoNoEntry,
+  GoPerson,
+  GoPersonAdd,
+} from "react-icons/go";
+import BaseButton from "@/ui/Button/Button";
 
 interface UserData {
   id: number;
@@ -48,7 +59,6 @@ export default function UserProfile({ params }: { params: any }) {
   return (
     <GridType2>
       <Flex p={4} direction="column">
-        <Divider my={6} />
         <Box position="relative">
           <Flex align="center" mb={4}>
             <Avatar size="xl" name={userData?.name} src={userData?.image} />
@@ -59,23 +69,38 @@ export default function UserProfile({ params }: { params: any }) {
               <Text>42 ID: {userData?.id}</Text>
               <Text>status: </Text>
             </Box>
-            <Box position="absolute" bottom={4} right={0}>
-              <LinkButton text="Send DM" size="sm" goTo="#" />
-              <LinkButton text="Follow" size="sm" goTo="#" />
-            </Box>
+            <Spacer />
+            <Flex flexDirection={"column"}>
+              <BaseButton
+                text="follow"
+                size="sm"
+                leftIcon={<GoPersonAdd />}
+                onClick={() => {}}
+              />
+              <BaseButton
+                my={2}
+                size="sm"
+                text="message"
+                leftIcon={<GoComment />}
+                onClick={() => {}}
+              />
+              <BaseButton
+                size="sm"
+                text="block"
+                leftIcon={<GoCircleSlash />}
+                onClick={() => {}}
+              />
+            </Flex>
           </Flex>
         </Box>
-        <Divider my={2} />
-        <Flex mt={4}>
+        <Divider mt={2} mb={6} />
+        <Flex>
           <UserHistory />
           <Box flex={2} pl={4} borderLeft="1px solid #E2E8F0">
-            <Heading size="md" mb={2}>
-              Friend List
-            </Heading>
+            <BaseHeading text="Friend List" size="md" mb={2} />
             <FriendList />
           </Box>
         </Flex>
-        <Divider my={4} />
       </Flex>
     </GridType2>
   );

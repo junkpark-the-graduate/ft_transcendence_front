@@ -2,6 +2,7 @@ import { Box, Flex, Avatar, Heading, Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import LinkButton from "@/ui/Button/LinkButton";
+import { GoGear } from "react-icons/go";
 
 interface UserData {
   id: number;
@@ -62,7 +63,7 @@ export default function UserData() {
           </Text>
         </Box>
         <Box position="absolute" bottom={4} right={0}>
-          <LinkButton text="Edit Profile" size="sm" goTo="/user/edit" />
+          <LinkButton text="edit profile" goTo="/user/edit" />
         </Box>
       </Flex>
     </Box>

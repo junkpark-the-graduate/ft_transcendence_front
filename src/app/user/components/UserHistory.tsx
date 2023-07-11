@@ -21,23 +21,23 @@ export default function UserHistory() {
   return (
     <Box flex={4} px={4}>
       <BaseHeading text="Stats" size="md" mb={2} />
-      <Stack ml={3} spacing={2}>
+      <Stack ml={4} spacing={2}>
         <Text>Wins: {userData.stats.wins}</Text>
         <Text>Losses: {userData.stats.losses}</Text>
         <Text>Ladder Level: {userData.stats.ladderLevel}</Text>
       </Stack>
-      <Divider my={4} />
+      <Divider my={5} />
       <BaseHeading text="Achievements" size="sm" />
-      <Stack ml={3} spacing={2}>
+      <Stack ml={4} spacing={2}>
         {userData.stats.achievements.map((achievement) => (
           <Flex key={achievement}>
             <Badge key={achievement}>{achievement}</Badge>
           </Flex>
         ))}
       </Stack>
-      <Divider my={4} />
+      <Divider my={5} />
       <BaseHeading text="Match Hisory" size="md" mb={2} />
-      <Stack ml={3} spacing={2}>
+      <Stack ml={4} spacing={2}>
         {userData.matchHistory.map((match) => (
           <Flex key={match.id} align="center">
             <Text>{match.type}: </Text>

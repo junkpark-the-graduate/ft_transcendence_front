@@ -1,4 +1,11 @@
-import { Grid, GridItem, GridProps } from "@chakra-ui/react";
+import {
+  Center,
+  Container,
+  Flex,
+  Grid,
+  GridItem,
+  GridProps,
+} from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 
 export interface BaseGridProps extends GridProps {}
@@ -27,7 +34,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
       >
         <NavBar />
       </GridItem>
-      <GridItem rowSpan={12} colSpan={6} bg="none" area={"main1"} px={10}>
+      <GridItem rowSpan={12} colSpan={6} bg="none" area={"main1"} p={10}>
         {children}
       </GridItem>
     </Grid>
