@@ -21,7 +21,7 @@ const Edit = () => {
   async function handleSubmit(event: any) {
     event.preventDefault();
     const token = getToken();
-    const res = await fetch("NEXT_PUBLIC_BACK_END_POINT/user", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -30,7 +30,7 @@ const Edit = () => {
       body: JSON.stringify({
         name: name,
         email: email,
-        twoFactorEnabled: twoFactor,
+        twoFactor: twoFactor,
       }),
     });
     if (res.ok) {
