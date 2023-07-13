@@ -13,7 +13,7 @@ const PLANE_HEIGHT = 100;
 
 const ENDPOINT = "ws://localhost:4242/game";
 
-export default function Game() {
+export default function Game({ setIsMatchFound, setIsMatching }: any) {
   const [score, setScore] = useState("0 : 0");
 
   let isPlayer1: boolean = false;
@@ -35,7 +35,10 @@ export default function Game() {
       } else {
         setScore("Lose");
       }
-      //setScore(`${data.score.player1} : ${data.score.player2}`);
+      setTimeout(() => {
+        setIsMatchFound(false);
+        setIsMatching(false);
+      }, 3000);
     });
 
     socket.on("game_init", (data: any) => {
@@ -62,9 +65,6 @@ export default function Game() {
     });
 
     socket.on("game", (data: any) => {
-      // data : paddle1, paddle2, ball position
-      //console.log(data);
-
       paddle.position.x = data.paddle1.x;
       paddle.position.y = data.paddle1.y;
 
@@ -88,45 +88,8 @@ export default function Game() {
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    //    // add to div
+    // add to div
     document.querySelector("#canvas")!.appendChild(renderer.domElement);
-
-    // 텍스트
-    //  const loader = new FontLoader();
-    //loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-    //  const textGeometry = new TextGeometry("Hello, World!", {
-    //    //font: new THREE.FontLoader().parse(fontData), // 폰트 데이터 로드 (폰트 파일 또는 JSON 데이터)
-    //    size: 10, // 텍스트 크기
-    //    height: 1, // 텍스트 높이
-    //    curveSegments: 12, // 곡선 세그먼트 수
-    //    bevelEnabled: false, // 베벨 효과 사용 여부
-    //  });
-
-    // score text
-    // const loader = new FontLoader();
-    // loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
-    //   let me = 0;
-    //   let you = 0;
-    //   let score = `${me} : ${you}`;
-    //   const geometry = new TextGeometry(score, {
-    //     font: font,
-    //     size: 5,
-    //     height: 3,
-    //     curveSegments: 12,
-    //     bevelEnabled: false,
-    //     // bevelThickness: 10,
-    //     // bevelSize: 3,
-    //     // bevelOffset: 0,
-    //     // bevelSegments: 5,
-    //   });
-
-    //   // scnene 에 mesh 추가
-    //   const textMesh = new THREE.Mesh(geometry, material);
-    //   textMesh.lookAt(0, -1, 0);
-    //   textMesh.geometry.center();
-    //   textMesh.position.z = 25;
-    //   scene.add(textMesh);
-    // });
 
     const backgroundTextureLoader = new THREE.TextureLoader();
     const backgroundTexture = backgroundTextureLoader.load("Junkpark.png");

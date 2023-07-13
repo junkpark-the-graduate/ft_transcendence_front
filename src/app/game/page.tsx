@@ -14,28 +14,21 @@ export default function Page() {
   const [isMatching, setIsMatching] = useState(false);
   //const [matchingTime, setmatchingTime] = useState("00:00");
 
+  function matchingButton(emit: string) {
+    setIsMatching(true);
+    socket.emit(emit);
+  }
+
   useEffect(() => {
     socket.on("match_found", (data: any) => {
       setIsMatchFound(true);
     });
   });
-  function normalMatching() {
-    setIsMatching(true);
-    socket.emit("normal_matching");
-  }
-  function ladderMatching() {
-    setIsMatching(true);
-    socket.emit("ladder_matching");
-  }
-  function cancelMatching() {
-    setIsMatching(false);
-    socket.emit("cancel_matching");
-  }
   return (
     <div>
       {}
       {isMatchFound ? (
-        <Game />
+        <Game setIsMatchFound={setIsMatchFound} setIsMatching={setIsMatching} />
       ) : isMatching ? (
         <div>
           <Spinner
@@ -46,12 +39,18 @@ export default function Page() {
             size="xl"
           />
           {/*{matchingTime}*/}
-          <Button onClick={cancelMatching}>Cancel Matching</Button>
+          <Button onClick={() => matchingButton("cancel_matching")}>
+            Cancel Matching
+          </Button>
         </div>
       ) : (
         <>
-          <Button onClick={normalMatching}>Normal Game</Button>
-          <Button onClick={ladderMatching}>Ladder Game</Button>
+          <Button onClick={() => matchingButton("normal_matching")}>
+            Normal Game
+          </Button>
+          <Button onClick={() => matchingButton("ladder_matching")}>
+            Ladder Game
+          </Button>
         </>
       )}
     </div>
