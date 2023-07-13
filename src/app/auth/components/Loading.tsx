@@ -3,7 +3,6 @@
 import React from "react";
 import { Box, Center, Heading } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
-import BaseBox from "@/ui/Box/Box";
 
 export const Loading = () => {
   return (

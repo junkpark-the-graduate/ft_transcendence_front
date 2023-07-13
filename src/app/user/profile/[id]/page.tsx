@@ -4,61 +4,25 @@ import GridType2 from "@/ui/Grid/GridType2";
 import {
   Avatar,
   Box,
-  Center,
   Divider,
   Flex,
   Heading,
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import UserHistory from "../../components/UserHistory";
-import LinkButton from "@/ui/Button/LinkButton";
 import FriendList from "@/ui/Lists/FriendList";
 import BaseHeading from "@/ui/Typo/Heading";
-import BaseIconButton from "@/ui/Button/IconButton";
-import {
-  GoCircleSlash,
-  GoComment,
-  GoNoEntry,
-  GoPerson,
-  GoPersonAdd,
-} from "react-icons/go";
+import { GoCircleSlash, GoComment } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import FollowButton from "@/ui/Button/FollowButton";
-import { getUserData } from "../../components/UserDetail";
-
-interface UserData {
-  id: number;
-  name: string;
-  image: string;
-}
-
-function searchUserData(id: number) {
-  const [userData, setUserData] = useState<UserData>();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchUserInfo = async (id: number) => {
-    try {
-      const res = await fetch(`http://127.0.0.1:3001/user/${id}`);
-      const userData = await res.json();
-      setUserData(userData);
-      setIsLoading(false);
-    } catch (err) {
-      console.log("cannot load the user data");
-    }
-  };
-  useEffect(() => {
-    fetchUserInfo(id);
-  }, []);
-
-  return isLoading ? null : userData;
-}
+import { useMyData } from "@/hooks/useMyData";
+import { useUserData } from "@/hooks/useUserData";
 
 export default function UserProfile({ params }: { params: any }) {
-  const myId: number | undefined = getUserData()?.id;
+  const myId: number | undefined = useMyData()?.id;
   const userId = myId ? myId : 0; // 변환: number | undefined -> number
-  const userData = searchUserData(params.id);
+  const userData = useUserData(params.id);
 
   return (
     <GridType2>

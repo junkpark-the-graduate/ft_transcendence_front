@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-// import { Router } from "next/router";
 
 async function getAccessToken(twoFactorToken: string) {
   try {

@@ -5,7 +5,6 @@ import {
   TabPanels,
   TabPanel,
   TabsProps,
-  Center,
 } from "@chakra-ui/react";
 
 export interface BaseTabsProps extends TabsProps {

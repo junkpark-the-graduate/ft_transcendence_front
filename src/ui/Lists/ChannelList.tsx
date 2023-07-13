@@ -12,7 +12,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Button,
 } from "@chakra-ui/react";
 import React from "react";
 import BaseIconButton from "../Button/IconButton";

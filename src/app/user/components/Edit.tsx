@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
-  FormErrorMessage,
   FormLabel,
   FormControl,
   Input,
@@ -21,7 +20,8 @@ import {
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
-import { getTokenClient, getUserData } from "./UserDetail";
+import { useTokenClient } from "@/hooks/useTokenClient";
+import { useMyData } from "@/hooks/useMyData";
 
 type FormData = {
   name: string;
@@ -30,7 +30,7 @@ type FormData = {
 };
 
 const Edit = () => {
-  const userData = getUserData();
+  const userData = useMyData();
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   //--------------------------------------------------------------
@@ -96,7 +96,7 @@ const Edit = () => {
       const res = await fetch("http://127.0.0.1:3001/user/upload", {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
+          Authorization: `Bearer ${useTokenClient()}`,
         },
         body: formData,
       });
@@ -109,7 +109,7 @@ const Edit = () => {
     const res = await fetch("http://127.0.0.1:3001/user", {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${getTokenClient()}`,
+        Authorization: `Bearer ${useTokenClient()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

@@ -1,4 +1,4 @@
-import { Divider, Grid, GridItem, GridProps } from "@chakra-ui/react";
+import { Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 
 export interface BaseGridProps extends GridProps {
@@ -19,8 +19,6 @@ export default function GridType1({
       gridTemplateColumns={"repeat(6, 1fr)"}
       h="750px"
       bg="#29292D"
-      // bg="none"
-      // border={"white solid 1px"}
       borderRadius={"6px"}
       color="white"
       fontWeight="bold"

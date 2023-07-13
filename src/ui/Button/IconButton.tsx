@@ -4,7 +4,6 @@ export interface BaseIconButtonProps extends IconButtonProps {
   icon: any;
 }
 
-// https://react-icons.github.io/react-icons/search?q=search
 export default function BaseIconButton({ icon, ...props }: IconButtonProps) {
   return (
     <IconButton

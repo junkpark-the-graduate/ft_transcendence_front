@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Box, Button, Center, Divider, Heading } from "@chakra-ui/react";
+import { Box, Center, Divider, Heading } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 
 const Timer: React.FC = () => {

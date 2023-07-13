@@ -1,11 +1,4 @@
-import {
-  Center,
-  Container,
-  Flex,
-  Grid,
-  GridItem,
-  GridProps,
-} from "@chakra-ui/react";
+import { Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 
 export interface BaseGridProps extends GridProps {}

@@ -1,50 +1,9 @@
 import { Box, Flex, Avatar, Heading, Text, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import LinkButton from "@/ui/Button/LinkButton";
-import { GoGear } from "react-icons/go";
-
-interface UserData {
-  id: number;
-  name: string;
-  email: string;
-  image: string;
-  twoFactorEnabled: boolean;
-}
-
-export function getTokenClient() {
-  const tokenCookie = Cookies.get("accessToken");
-  return tokenCookie ? tokenCookie : null;
-}
-
-export function getUserData() {
-  const [userData, setUserData] = useState<UserData>();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchUser = async () => {
-    try {
-      const res = await fetch(`http://127.0.0.1:3001/user`, {
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-        },
-      });
-      const userData = await res.json();
-      setUserData(userData);
-      setIsLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  return isLoading ? null : userData;
-}
+import { useMyData } from "@/hooks/useMyData";
 
 export default function UserData() {
-  const userData = getUserData();
+  const userData = useMyData();
   const toast = useToast();
 
   return (

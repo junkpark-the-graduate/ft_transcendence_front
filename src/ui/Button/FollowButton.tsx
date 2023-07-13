@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
-import { getTokenClient } from "../../app/user/components/UserDetail";
-import { getFollowingList } from "../Lists/FollowingList";
-import { GoNoEntry, GoPersonAdd, GoPlusCircle } from "react-icons/go";
-import { Box, Flex } from "@chakra-ui/react";
+import { GoNoEntry, GoPlusCircle } from "react-icons/go";
+import { Box } from "@chakra-ui/react";
+import { useTokenClient } from "@/hooks/useTokenClient";
+import { useFollowingList } from "@/hooks/useFollowingList";
 
 export default function FollowButton({
   userId,
@@ -13,7 +13,7 @@ export default function FollowButton({
   following: number;
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
-  const followingList = getFollowingList(userId);
+  const followingList = useFollowingList(userId);
   console.log(`userId: ${userId}, following: ${following}`);
   console.log(followingList);
 
@@ -28,7 +28,7 @@ export default function FollowButton({
       const res: Response = await fetch("http://127.0.0.1:3001/follow", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
+          Authorization: `Bearer ${useTokenClient()}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -50,7 +50,7 @@ export default function FollowButton({
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${getTokenClient()}`,
+            Authorization: `Bearer ${useTokenClient()}`,
           },
           body: JSON.stringify({
             userId: userId,
