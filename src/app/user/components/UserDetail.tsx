@@ -18,7 +18,6 @@ export function getTokenClient() {
 }
 
 export function getUserData() {
-  const token = getTokenClient();
   const [userData, setUserData] = useState<UserData>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,7 +25,7 @@ export function getUserData() {
     try {
       const res = await fetch(`http://127.0.0.1:3001/user`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getTokenClient()}`,
         },
       });
       const userData = await res.json();

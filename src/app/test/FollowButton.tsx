@@ -1,8 +1,7 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { getTokenClient } from "../user/components/UserDetail";
+import { getFollowingList } from "./FollowingList";
 
 export default function FollowButton({
   userId,
@@ -12,6 +11,13 @@ export default function FollowButton({
   following: number;
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
+  const followingList = getFollowingList(userId);
+
+  useEffect(() => {
+    setIsFollowing(
+      followingList && followingList.includes(following) ? true : false
+    );
+  }, [followingList, following]);
 
   const handleFollow = async () => {
     try {
@@ -27,7 +33,7 @@ export default function FollowButton({
         }),
       });
       setIsFollowing(true);
-      console.log(res);
+      localStorage.setItem("isFollowing", JSON.stringify(true));
     } catch (error) {
       console.error(error);
     }
@@ -49,7 +55,7 @@ export default function FollowButton({
         }
       );
       setIsFollowing(false);
-      console.log(res);
+      localStorage.setItem("isFollowing", JSON.stringify(false));
     } catch (error) {
       console.error(error);
     }
@@ -58,9 +64,9 @@ export default function FollowButton({
   return (
     <div>
       {isFollowing ? (
-        <BaseButton text="unfollow" onClick={handleUnfollow} />
+        <BaseButton mb={3} text="unfollow" onClick={handleUnfollow} />
       ) : (
-        <BaseButton text="follow" onClick={handleFollow} />
+        <BaseButton mb={3} text="follow" onClick={handleFollow} />
       )}
     </div>
   );

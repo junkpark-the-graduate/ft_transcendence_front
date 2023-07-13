@@ -1,20 +1,17 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { getUserData } from "../user/components/UserDetail";
 import { Box } from "@chakra-ui/react";
 
-export function getFollowings(id: number) {
-  const [followings, setFollowings] = useState([]);
+export function getFollowingList(userId: number) {
+  const [followings, setFollowings] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchFollowings = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/follow/${id}`);
+      const res = await fetch(`http://127.0.0.1:3001/follow/${userId}`);
       const data = await res.json();
-      console.log(data);
-      setFollowings(data.followings);
       setIsLoading(false);
+      setFollowings(data.map((x: any) => x.following));
     } catch (err) {
       console.log(err);
     }
@@ -22,24 +19,24 @@ export function getFollowings(id: number) {
 
   useEffect(() => {
     fetchFollowings();
-  }, [id]);
+  }, [userId]);
 
-  return isLoading ? null : (
-    <Box>
-      {followings &&
-        followings.map((following) => (
-          <div key={following.id}>
-            <p>User ID: {following.following}</p>
-          </div>
-        ))}
-    </Box>
-  );
+  return isLoading ? null : followings;
 }
 
 export default function FollowingList() {
   const userData = getUserData();
+  const userId = userData?.id ?? 0; // Default to 0 if `id` is undefined or null
+  const followings = getFollowingList(userId);
 
-  const followings = getFollowings(userData?.id);
-
-  return <Box>{followings}</Box>;
+  return (
+    <Box>
+      {followings &&
+        followings.map((following) => (
+          <div key={following}>
+            <p>User ID: {following}</p>
+          </div>
+        ))}
+    </Box>
+  );
 }
