@@ -14,8 +14,6 @@ export default function FollowButton({
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
   const followingList = useFollowingList(userId);
-  console.log(`userId: ${userId}, following: ${following}`);
-  console.log(followingList);
 
   useEffect(() => {
     setIsFollowing(

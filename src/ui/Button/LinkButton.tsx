@@ -16,7 +16,6 @@ export default function LinkButton({ text, goTo }: LinkButtonProps) {
     <BaseButton
       text={text}
       onClick={() => {
-        console.log(router);
         router.push(goTo);
       }}
     />

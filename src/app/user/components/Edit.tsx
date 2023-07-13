@@ -104,7 +104,6 @@ const Edit = () => {
         console.log("Failed to update user image");
       }
     }
-    console.log(selectedFile);
     setUploading(true);
     const res = await fetch("http://127.0.0.1:3001/user", {
       method: "PATCH",

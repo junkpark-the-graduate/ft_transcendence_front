@@ -32,7 +32,6 @@ async function getUserInfo() {
 
 async function getUserComponent() {
   const userInfo = await getUserInfo();
-  console.log("user info: ", userInfo);
 
   if (!userInfo) {
     return null;
