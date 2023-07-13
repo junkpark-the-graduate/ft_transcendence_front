@@ -25,6 +25,8 @@ import {
   GoPersonAdd,
 } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
+import FollowButton from "@/ui/Button/FollowButton";
+import { getUserData } from "../../components/UserDetail";
 
 interface UserData {
   id: number;
@@ -54,6 +56,8 @@ function searchUserData(id: number) {
 }
 
 export default function UserProfile({ params }: { params: any }) {
+  const myId: number | undefined = getUserData()?.id;
+  const userId = myId ? myId : 0; // 변환: number | undefined -> number
   const userData = searchUserData(params.id);
 
   return (
@@ -71,12 +75,7 @@ export default function UserProfile({ params }: { params: any }) {
             </Box>
             <Spacer />
             <Flex flexDirection={"column"}>
-              <BaseButton
-                text="follow"
-                size="sm"
-                leftIcon={<GoPersonAdd />}
-                onClick={() => {}}
-              />
+              <FollowButton userId={userId} following={params.id} />
               <BaseButton
                 my={2}
                 size="sm"

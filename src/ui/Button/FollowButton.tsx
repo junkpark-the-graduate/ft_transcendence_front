@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
-import { getTokenClient } from "../user/components/UserDetail";
-import { getFollowingList } from "./FollowingList";
+import { getTokenClient } from "../../app/user/components/UserDetail";
+import { getFollowingList } from "../Lists/FollowingList";
+import { GoNoEntry, GoPersonAdd, GoPlusCircle } from "react-icons/go";
+import { Box, Flex } from "@chakra-ui/react";
 
 export default function FollowButton({
   userId,
@@ -12,10 +14,12 @@ export default function FollowButton({
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
   const followingList = getFollowingList(userId);
+  console.log(`userId: ${userId}, following: ${following}`);
+  console.log(followingList);
 
   useEffect(() => {
     setIsFollowing(
-      followingList && followingList.includes(following) ? true : false
+      followingList && followingList.includes(Number(following)) ? true : false
     );
   }, [followingList, following]);
 
@@ -29,7 +33,7 @@ export default function FollowButton({
         },
         body: JSON.stringify({
           userId: userId,
-          following: following,
+          following: Number(following),
         }),
       });
       setIsFollowing(true);
@@ -50,7 +54,7 @@ export default function FollowButton({
           },
           body: JSON.stringify({
             userId: userId,
-            following: following,
+            following: Number(following),
           }),
         }
       );
@@ -62,12 +66,22 @@ export default function FollowButton({
   };
 
   return (
-    <div>
+    <Box>
       {isFollowing ? (
-        <BaseButton mb={3} text="unfollow" onClick={handleUnfollow} />
+        <BaseButton
+          size="sm"
+          leftIcon={<GoNoEntry />}
+          text="unfollow"
+          onClick={handleUnfollow}
+        />
       ) : (
-        <BaseButton mb={3} text="follow" onClick={handleFollow} />
+        <BaseButton
+          size="sm"
+          leftIcon={<GoPlusCircle />}
+          text="follow"
+          onClick={handleFollow}
+        />
       )}
-    </div>
+    </Box>
   );
 }

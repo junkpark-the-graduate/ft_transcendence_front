@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserData } from "../user/components/UserDetail";
+import { getUserData } from "../../app/user/components/UserDetail";
 import { Box } from "@chakra-ui/react";
 
 export function getFollowingList(userId: number) {

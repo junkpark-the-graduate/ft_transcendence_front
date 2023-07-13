@@ -1,8 +1,8 @@
 "use client";
 
 import { Box, Divider, Flex } from "@chakra-ui/react";
-import FollowButton from "./FollowButton";
-import FollowingList from "./FollowingList";
+import FollowButton from "../../ui/Button/FollowButton";
+import FollowingList from "../../ui/Lists/FollowingList";
 
 export default function Test() {
   return (
