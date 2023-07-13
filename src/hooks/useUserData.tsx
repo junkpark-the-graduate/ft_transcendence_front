@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface UserData {
+export interface UserData {
   id: number;
   name: string;
   image: string;

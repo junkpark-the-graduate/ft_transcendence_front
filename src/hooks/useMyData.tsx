@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTokenClient } from "./useTokenClient";
 
-interface UserData {
+interface MyData {
   id: number;
   name: string;
   email: string;
@@ -10,7 +10,7 @@ interface UserData {
 }
 
 export function useMyData() {
-  const [userData, setUserData] = useState<UserData>();
+  const [userData, setUserData] = useState<MyData>();
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUser = async () => {
