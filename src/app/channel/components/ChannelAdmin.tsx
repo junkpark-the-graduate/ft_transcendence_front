@@ -201,6 +201,54 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     await muteMember(channelId, memberId);
   }
 
+  async function updateChannelAdmin(channelId: number, memberId: number) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/admin?memberId=${memberId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("updateChannelAdmin", channelId, memberId);
+    console.log(await res.json());
+    if (res.status > 299) {
+      toast({
+        title: "Cannot update channel admin",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: `Updated channel admin ${memberId}`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }
+
+  async function updateChannelAdminHandler(
+    e: React.MouseEvent,
+    channelId: number,
+    memberId: number
+  ) {
+    e.stopPropagation();
+    await updateChannelAdmin(channelId, memberId);
+    // member list refresh
+
+    const newMembers = members.map((member) => {
+      if (member.userId === memberId) {
+        member.isAdmin = true;
+      }
+      return member;
+    });
+    setMembers(newMembers);
+  }
+
   return (
     <Box padding={5}>
       <Text fontSize="xl" marginBottom={3}>
@@ -237,6 +285,13 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
           <Text>Member ID: {member.userId}</Text>
           <Text>Is Admin: {member.isAdmin ? "Yes" : "No"}</Text>
           <Text>Joined at: {member.createdAt}</Text>
+          <Button
+            onClick={(e) =>
+              updateChannelAdminHandler(e, channelId, member.userId)
+            }
+          >
+            관리자로 만들기
+          </Button>
         </Box>
       ))}
 
