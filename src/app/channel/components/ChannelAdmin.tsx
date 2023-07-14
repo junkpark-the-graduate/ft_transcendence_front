@@ -1,8 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Text, Button, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Button,
+  Switch,
+  useToast,
+  FormControl,
+  FormLabel,
+  Stack,
+} from "@chakra-ui/react";
 import {
   SmallCloseIcon,
   DeleteIcon,
@@ -10,18 +19,37 @@ import {
   UnlockIcon,
 } from "@chakra-ui/icons";
 import Cookies from "js-cookie";
+import { get } from "http";
 
 interface ChatProps {
   channelId: number;
 }
 
 const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
+  const [channel, setChannel] = useState<any>({});
   const [members, setMembers] = useState<any[]>([]);
   const [mutedMembers, setMutedMembers] = useState<any[]>([]);
   const [bannedMembers, setBannedMembers] = useState<any[]>([]);
   const accessToken = Cookies.get("accessToken");
   const toast = useToast();
   const router = useRouter();
+
+  const getChannels = async () => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3001/channel/${channelId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const tmp = await res.json();
+      console.log(tmp);
+      setChannel(tmp);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   async function getMemberList() {
     const res = await fetch(
@@ -66,6 +94,7 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
   }
 
   useEffect(() => {
+    getChannels();
     getMemberList();
     getMutedMemberList();
     getBannedMemberList();
@@ -232,7 +261,7 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
   }
 
   async function updateChannelAdminHandler(
-    e: React.MouseEvent,
+    e: ChangeEvent<HTMLInputElement>,
     channelId: number,
     memberId: number
   ) {
@@ -242,7 +271,7 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
 
     const newMembers = members.map((member) => {
       if (member.userId === memberId) {
-        member.isAdmin = true;
+        member.isAdmin = !member.isAdmin;
       }
       return member;
     });
@@ -283,15 +312,19 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
             right={2} // Adjust these values as needed
           />
           <Text>Member ID: {member.userId}</Text>
-          <Text>Is Admin: {member.isAdmin ? "Yes" : "No"}</Text>
+          {channel.ownerId !== member.userId && (
+            <Stack align="center" direction="row">
+              <Text>Is Admin: {member.isAdmin ? "Yes" : "No"}</Text>
+              <Switch
+                isChecked={member.isAdmin}
+                onChange={(e) =>
+                  updateChannelAdminHandler(e, channelId, member.userId)
+                }
+                size="sm"
+              />
+            </Stack>
+          )}
           <Text>Joined at: {member.createdAt}</Text>
-          <Button
-            onClick={(e) =>
-              updateChannelAdminHandler(e, channelId, member.userId)
-            }
-          >
-            관리자로 만들기
-          </Button>
         </Box>
       ))}
 
