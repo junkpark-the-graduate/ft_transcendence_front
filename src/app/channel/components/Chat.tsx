@@ -10,6 +10,7 @@ type ChatType = {
   socketId: string;
   username: string;
   message: string;
+  userId: number;
 };
 
 interface ChatProps {
@@ -17,6 +18,7 @@ interface ChatProps {
 }
 
 const Chat: React.FC<ChatProps> = ({ channelId }) => {
+  const [userId, setUserId] = useState<number>(0); // [1
   const [username, setUsername] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [chatList, setChatList] = useState<ChatType[]>([]);
@@ -25,6 +27,32 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
   const router = useRouter();
   const toast = useToast();
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    const getUserInfo = async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const data = await res.json();
+      console.log(
+        "data!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+        data
+      );
+      setUserId(data.id);
+      setUsername(data.name);
+    };
+
+    getUserInfo();
+  }, [accessToken]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -74,6 +102,15 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
       router.push("/channel");
     });
 
+    socketIo.on("muted", () => {
+      toast({
+        title: "You are muted",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    });
+
     return () => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
@@ -83,7 +120,7 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
     if (message && socket) {
-      const chatData = { username, message, socketId: socket.id };
+      const chatData = { username, message, socketId: socket.id, userId };
       socket.emit("submit_chat", chatData);
       setChatList((oldChatList) => [...oldChatList, chatData]);
       setMessage("");

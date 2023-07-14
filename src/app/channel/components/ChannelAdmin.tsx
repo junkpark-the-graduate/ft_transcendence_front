@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Text, Button, useToast } from "@chakra-ui/react";
-import { SmallCloseIcon, DeleteIcon } from "@chakra-ui/icons";
+import {
+  SmallCloseIcon,
+  DeleteIcon,
+  LockIcon,
+  UnlockIcon,
+} from "@chakra-ui/icons";
 import Cookies from "js-cookie";
 
 interface ChatProps {
@@ -157,6 +162,45 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     router.push(`/channel`);
   }
 
+  async function muteMember(channelId: number, memberId: number) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/muted-member?memberId=${memberId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("muteMember", channelId, memberId);
+    console.log(await res.json());
+    if (res.status > 299) {
+      toast({
+        title: "Cannot mute member",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: `Muted member ${memberId}`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }
+
+  async function muteMemberHandler(
+    e: React.MouseEvent,
+    channelId: number,
+    memberId: number
+  ) {
+    e.stopPropagation();
+    await muteMember(channelId, memberId);
+  }
+
   return (
     <Box padding={5}>
       <Text fontSize="xl" marginBottom={3}>
@@ -171,6 +215,17 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
           marginBottom={3}
           position={"relative"} // Add relative positioning so we can use absolute positioning on child
         >
+          <LockIcon
+            onClick={(e) => muteMemberHandler(e, channelId, member.userId)}
+            position={"absolute"} // Set the position to absolute
+            top={2} // Adjust these values as needed
+            right={16} // Adjust these values as needed
+          />
+          <UnlockIcon
+            position={"absolute"} // Set the position to absolute
+            top={2} // Adjust these values as needed
+            right={9} // Adjust these values as needed
+          />
           <DeleteIcon
             onClick={(e) =>
               createBannedMemeberHandler(e, channelId, member.userId)
@@ -197,7 +252,7 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
           marginBottom={3}
         >
           <Text>Member ID: {member.userId}</Text>
-          <Text>Muted at: {member.mutedAt}</Text>
+          <Text>Muted at: {member.createdAt}</Text>
         </Box>
       ))}
 
