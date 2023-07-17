@@ -12,9 +12,10 @@ export default function BaseButton({
 }: BaseButtonProps) {
   return (
     <Button
-      bg="none"
+      // bg="none"
+      bg="#414147"
       borderRadius={"8px"}
-      border={"white solid 1px"}
+      // border={"white solid 1px"}
       textColor="white"
       fontSize={15}
       px="25px"

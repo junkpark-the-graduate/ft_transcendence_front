@@ -1,20 +1,18 @@
 import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
+import BaseTabs from "../Tab/Tab";
+import ChannelList from "../Lists/ChannelList";
+import FollowingList from "../Lists/FollowingList";
 
 export interface BaseGridProps extends GridProps {
-  children1: React.ReactNode;
-  children2: React.ReactNode;
+  children: React.ReactNode;
 }
 
-export default function GridType1({
-  children1,
-  children2,
-  ...props
-}: BaseGridProps) {
+export default function GridType1({ children, ...props }: BaseGridProps) {
   return (
     <Grid
       gridTemplateRows={"repeat(15, 1fr)"}
-      gridTemplateColumns={"repeat(6, 1fr)"}
+      gridTemplateColumns={"repeat(3, 1fr)"}
       w="100%"
       h="100%"
       bg="#29292D"
@@ -25,7 +23,7 @@ export default function GridType1({
     >
       <GridItem
         rowSpan={1}
-        colSpan={6}
+        colSpan={3}
         pl={2}
         pt={1}
         borderBottom={"#414147 solid 2px"}
@@ -36,25 +34,28 @@ export default function GridType1({
       <GridItem
         display={{ base: "flex", md: "flex" }}
         rowSpan={14}
-        colSpan={4}
+        colSpan={2}
         bg="none"
         borderRight={"#414147 solid 2px"}
         px={5}
         py={3}
       >
         <Box w="100%" h="100%">
-          {children1}
+          {children}
         </Box>
       </GridItem>
       <GridItem
         display={{ base: "flex", md: "flex" }}
         rowSpan={14}
-        colSpan={2}
+        colSpan={1}
         bg="none"
         px={5}
         py={5}
       >
-        {children2}
+        <BaseTabs children1={<FollowingList />} children2={<ChannelList />}>
+          <div>Content 1</div>
+          <div>Content 2</div>
+        </BaseTabs>
       </GridItem>
     </Grid>
   );

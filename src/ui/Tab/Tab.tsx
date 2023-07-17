@@ -21,24 +21,30 @@ export default function BaseTabs({
     <Tabs variant="unstyled" w="100%" isFitted>
       <TabList w="100%" mx="auto">
         <Tab
-          textColor="#949494"
           borderRadius={"6px"}
+          mx={1}
+          opacity={"30%"}
+          bg="#414147"
+          textColor={"white"}
           _selected={{
-            bg: "#414147",
             fontWeight: "800",
-            textColor: "white",
+            opacity: "100%",
           }}
-          mx="auto"
-        >
-          channels
-        </Tab>
-        <Tab
-          mx="auto"
-          textColor="#949494"
-          borderRadius={"6px"}
-          _selected={{ bg: "#414147", fontWeight: "800", textColor: "white" }}
         >
           friends
+        </Tab>
+        <Tab
+          borderRadius={"6px"}
+          mx={1}
+          opacity={"30%"}
+          bg="#414147"
+          textColor={"white"}
+          _selected={{
+            fontWeight: "800",
+            opacity: "100%",
+          }}
+        >
+          channels
         </Tab>
       </TabList>
       <TabPanels>

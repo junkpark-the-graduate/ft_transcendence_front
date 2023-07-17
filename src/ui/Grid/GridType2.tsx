@@ -7,7 +7,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
   return (
     <Grid
       gridTemplateRows={"repeat(15, 1fr)"}
-      gridTemplateColumns={"repeat(6, 1fr)"}
+      gridTemplateColumns={"repeat(3, 1fr)"}
       bg="#29292D"
       borderRadius={"8px"}
       color="white"
@@ -17,7 +17,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
     >
       <GridItem
         rowSpan={1}
-        colSpan={6}
+        colSpan={3}
         pl={2}
         pt={1}
         borderBottom={"#414147 solid 2px"}
@@ -25,7 +25,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
       >
         <NavBar />
       </GridItem>
-      <GridItem rowSpan={14} colSpan={6} bg="none" px={10} py={5}>
+      <GridItem rowSpan={14} colSpan={3} bg="none" px={10} py={5}>
         {children}
       </GridItem>
     </Grid>

@@ -6,10 +6,12 @@ import {
   CircularProgressLabel,
   Divider,
   Flex,
+  Icon,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { userDummyData } from "./Dashboard";
+import { GoTrophy } from "react-icons/go";
 
 export default function UserStats() {
   return (
@@ -18,6 +20,15 @@ export default function UserStats() {
       <Divider mt={3} mb={4} />
       <Stack spacing={2}>
         <Flex direction={"row"}>
+          <Box flex={1}>
+            <Flex direction="column" alignItems="center">
+              <Badge colorScheme="red" mb={3}>
+                ranking
+              </Badge>
+              <Icon boxSize="60px" as={GoTrophy} mb={6} />
+              <Text>3rd place</Text>
+            </Flex>
+          </Box>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
               <Badge colorScheme="orange" mb={3}>

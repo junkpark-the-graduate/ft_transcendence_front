@@ -49,10 +49,14 @@ export const userDummyData = {
   ],
 };
 
-export default function Dashboard() {
+export interface DashBoardProps {
+  userData: React.ReactNode;
+}
+
+export default function Dashboard({ userData }: DashBoardProps) {
   return (
     <Flex p={4} direction="column">
-      <UserDetail />
+      {userData}
       <Divider my={6} />
       <Box flex={7}>
         <Flex>
