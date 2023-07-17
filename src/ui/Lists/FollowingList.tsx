@@ -15,7 +15,7 @@ import {
 import { useMyData } from "@/hooks/useMyData";
 import { useFollowingList } from "@/hooks/useFollowingList";
 import { useUserData } from "@/hooks/useUserData";
-import React from "react";
+import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
 import {
   GoCircleSlash,
@@ -25,11 +25,36 @@ import {
   GoPerson,
 } from "react-icons/go";
 import { useRouter } from "next/navigation";
+import { useTokenClient } from "@/hooks/useTokenClient";
 
-function FollowingListItem({ userId }: { userId: number }) {
+function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
+  const [isFollowing, setIsFollowing] = useState(true);
   const userData = useUserData(userId);
   const router = useRouter();
   const status: string = "online";
+
+  const handleUnfollow = async () => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:3001/follow/${myId}/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${useTokenClient()}`,
+          },
+          body: JSON.stringify({
+            userId: myId,
+            following: userId,
+          }),
+        }
+      );
+      localStorage.setItem("isFollowing", JSON.stringify(false));
+      setIsFollowing(false);
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Flex align="center" my={1}>
@@ -46,17 +71,17 @@ function FollowingListItem({ userId }: { userId: number }) {
       <Flex>
         <BaseIconButton
           size="sm"
+          icon={<GoComment />}
+          aria-label="dm"
+          onClick={() => {}}
+        />
+        <BaseIconButton
+          size="sm"
           icon={<GoPerson />}
           aria-label="info"
           onClick={() => {
             router.push(`/user/profile/${userData?.id}`);
           }}
-        />
-        <BaseIconButton
-          size="sm"
-          icon={<GoComment />}
-          aria-label="dm"
-          onClick={() => {}}
         />
         <Menu>
           <MenuButton as="span" rounded={"full"} cursor={"pointer"}>
@@ -71,7 +96,7 @@ function FollowingListItem({ userId }: { userId: number }) {
               icon={<GoNoEntry />}
               bg="#414147"
               fontSize="11pt"
-              onClick={() => {}}
+              onClick={handleUnfollow}
             >
               unfollow
             </MenuItem>
@@ -93,8 +118,8 @@ function FollowingListItem({ userId }: { userId: number }) {
 
 export default function FollowingList() {
   const myData = useMyData();
-  const userId = myData?.id ?? 0; // Default to 0 if `id` is undefined or null
-  const followings = useFollowingList(userId);
+  const myId = myData?.id ?? 0; // Default to 0 if `id` is undefined or null
+  const followings = useFollowingList(myId);
 
   return (
     <Box>
@@ -102,7 +127,7 @@ export default function FollowingList() {
         {followings &&
           followings.map((following) => (
             <React.Fragment key={following}>
-              <FollowingListItem userId={Number(following)} />
+              <FollowingListItem myId={myId} userId={Number(following)} />
               <Divider borderColor="#414147" />
             </React.Fragment>
           ))}

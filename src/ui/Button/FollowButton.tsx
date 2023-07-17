@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { GoNoEntry, GoPlusCircle } from "react-icons/go";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useTokenClient } from "@/hooks/useTokenClient";
 import { useFollowingList } from "@/hooks/useFollowingList";
 
@@ -64,9 +64,10 @@ export default function FollowButton({
   };
 
   return (
-    <Box>
+    <Flex>
       {isFollowing ? (
         <BaseButton
+          flex="1"
           size="sm"
           leftIcon={<GoNoEntry />}
           text="unfollow"
@@ -74,12 +75,13 @@ export default function FollowButton({
         />
       ) : (
         <BaseButton
+          flex="1"
           size="sm"
           leftIcon={<GoPlusCircle />}
           text="follow"
           onClick={handleFollow}
         />
       )}
-    </Box>
+    </Flex>
   );
 }
