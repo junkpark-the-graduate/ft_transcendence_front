@@ -51,7 +51,7 @@ export default function Search() {
             mr={3}
             borderRadius="8px"
             border="none"
-            bg="#3B3D41"
+            bg="#414147"
             _hover={{
               background: "#191919",
             }}

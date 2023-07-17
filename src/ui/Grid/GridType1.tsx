@@ -28,7 +28,7 @@ export default function GridType1({
         colSpan={6}
         pl={2}
         pt={1}
-        borderBottom={"#3B3D41 solid 2px"}
+        borderBottom={"#414147 solid 2px"}
         bg="none"
       >
         <NavBar />
@@ -38,7 +38,7 @@ export default function GridType1({
         rowSpan={14}
         colSpan={4}
         bg="none"
-        borderRight={"#3B3D41 solid 2px"}
+        borderRight={"#414147 solid 2px"}
         px={5}
         py={3}
       >

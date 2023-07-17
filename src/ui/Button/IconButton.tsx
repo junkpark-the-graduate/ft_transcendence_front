@@ -11,8 +11,7 @@ export default function BaseIconButton({ icon, ...props }: IconButtonProps) {
       color={"white"}
       borderRadius="8px"
       _hover={{
-        // bg: "none",
-        background: "#3B3D41",
+        background: "#414147",
       }}
       icon={icon}
       {...props}

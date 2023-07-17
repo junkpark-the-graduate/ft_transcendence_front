@@ -40,7 +40,7 @@ const NavLink = ({ children, path }: { children: ReactNode; path: string }) => {
       rounded={"md"}
       _hover={{
         textDecoration: "none",
-        bg: "#3B3D41",
+        bg: "#414147",
       }}
       onClick={() => handleLinkClick(path)}
     >
@@ -91,10 +91,10 @@ export default function NavBar() {
             >
               <BaseAvatar />
             </MenuButton>
-            <MenuList p="5px 10px" bg="#3B3D41" border={"none"}>
+            <MenuList p="5px 10px" bg="#414147" border={"none"}>
               <MenuItem
                 icon={<GoPersonFill />}
-                bg="#3B3D41"
+                bg="#414147"
                 fontSize="11pt"
                 onClick={() => {
                   handleLinkClick("/user/profile");
@@ -104,7 +104,7 @@ export default function NavBar() {
               </MenuItem>
               <MenuItem
                 icon={<GoPencil />}
-                bg="#3B3D41"
+                bg="#414147"
                 fontSize="11pt"
                 onClick={() => {
                   handleLinkClick("/user/edit");
@@ -114,7 +114,7 @@ export default function NavBar() {
               </MenuItem>
               <MenuItem
                 icon={<GoSignOut />}
-                bg="#3B3D41"
+                bg="#414147"
                 fontSize="10pt"
                 textColor={"red"}
                 onClick={() => {

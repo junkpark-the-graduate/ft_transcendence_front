@@ -20,7 +20,7 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
         colSpan={6}
         pl={2}
         pt={1}
-        borderBottom={"#3B3D41 solid 2px"}
+        borderBottom={"#414147 solid 2px"}
         bg="none"
       >
         <NavBar />

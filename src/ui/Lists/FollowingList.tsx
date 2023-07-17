@@ -66,10 +66,10 @@ function FollowingListItem({ userId }: { userId: number }) {
               aria-label="else"
             />
           </MenuButton>
-          <MenuList p="5px 10px" bg="#3B3D41" border={"none"}>
+          <MenuList p="5px 10px" bg="#414147" border={"none"}>
             <MenuItem
               icon={<GoNoEntry />}
-              bg="#3B3D41"
+              bg="#414147"
               fontSize="11pt"
               onClick={() => {}}
             >
@@ -78,7 +78,7 @@ function FollowingListItem({ userId }: { userId: number }) {
             <MenuItem
               icon={<GoCircleSlash />}
               textColor="red"
-              bg="#3B3D41"
+              bg="#414147"
               fontSize="11pt"
               onClick={() => {}}
             >
@@ -103,7 +103,7 @@ export default function FollowingList() {
           followings.map((following) => (
             <React.Fragment key={following}>
               <FollowingListItem userId={Number(following)} />
-              <Divider borderColor="#3B3D41" />
+              <Divider borderColor="#414147" />
             </React.Fragment>
           ))}
       </Stack>

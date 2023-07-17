@@ -16,7 +16,7 @@ export default function BaseInput({}: BaseInputProps) {
         borderColor: "#191919",
         background: "#191919",
       }}
-      bg="#3B3D41"
+      bg="#414147"
     />
   );
 }

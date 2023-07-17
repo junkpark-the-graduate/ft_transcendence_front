@@ -130,6 +130,7 @@ const Edit = () => {
       <Center>
         <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
           <FormControl>
+            <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
               {">"} 이름 변경하기
             </FormLabel>
@@ -141,11 +142,11 @@ const Edit = () => {
                 placeholder={userData?.name}
                 borderRadius="8px"
                 border="none"
-                bg="#3B3D41"
+                bg="#414147"
                 textColor="white"
                 type="name"
                 id="name"
-                mr={3}
+                mr={2}
                 _hover={{
                   background: "#191919",
                 }}
@@ -192,7 +193,7 @@ const Edit = () => {
             <Input
               borderRadius="8px"
               border="none"
-              bg="#3B3D41"
+              bg="#414147"
               type="file"
               pt="5px"
               _hover={{

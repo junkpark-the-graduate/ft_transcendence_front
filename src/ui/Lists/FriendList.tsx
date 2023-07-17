@@ -69,10 +69,10 @@ const FriendList = () => {
                       aria-label="else"
                     />
                   </MenuButton>
-                  <MenuList p="5px 10px" bg="#3B3D41" border={"none"}>
+                  <MenuList p="5px 10px" bg="#414147" border={"none"}>
                     <MenuItem
                       icon={<GoNoEntry />}
-                      bg="#3B3D41"
+                      bg="#414147"
                       fontSize="11pt"
                       onClick={() => {}}
                     >
@@ -81,7 +81,7 @@ const FriendList = () => {
                     <MenuItem
                       icon={<GoCircleSlash />}
                       textColor="red"
-                      bg="#3B3D41"
+                      bg="#414147"
                       fontSize="11pt"
                       onClick={() => {}}
                     >
@@ -92,7 +92,7 @@ const FriendList = () => {
               </Flex>
             </Flex>
             {index !== userData.friends.length && (
-              <Divider borderColor="#3B3D41" />
+              <Divider borderColor="#414147" />
             )}
           </React.Fragment>
         ))}
