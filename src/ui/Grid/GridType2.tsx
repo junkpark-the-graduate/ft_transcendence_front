@@ -6,15 +6,14 @@ export interface BaseGridProps extends GridProps {}
 export default function GridType2({ children, ...props }: BaseGridProps) {
   return (
     <Grid
-      templateAreas={`"header header"
-                  "main1 main2"`}
-      gridTemplateRows={"repeat(13, 1fr)"}
+      gridTemplateRows={"repeat(15, 1fr)"}
       gridTemplateColumns={"repeat(6, 1fr)"}
-      h="750px"
       bg="#29292D"
       borderRadius={"8px"}
       color="white"
       fontWeight="bold"
+      w="100%"
+      h="100%"
     >
       <GridItem
         rowSpan={1}
@@ -23,11 +22,10 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
         pt={1}
         borderBottom={"#3B3D41 solid 2px"}
         bg="none"
-        area={"header"}
       >
         <NavBar />
       </GridItem>
-      <GridItem rowSpan={12} colSpan={6} bg="none" area={"main1"} p={10}>
+      <GridItem rowSpan={14} colSpan={6} bg="none" px={10} py={5}>
         {children}
       </GridItem>
     </Grid>

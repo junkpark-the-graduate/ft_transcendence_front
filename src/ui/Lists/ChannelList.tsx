@@ -86,7 +86,7 @@ const ChannelList = () => {
                 </Menu>
               </Flex>
             </Flex>
-            {index !== userData.channels.length - 1 && ( // 변경된 부분: 마지막 요소 제외
+            {index !== userData.channels.length && ( // 변경된 부분: 마지막 요소 제외
               <Divider borderColor="#3B3D41" />
             )}
           </React.Fragment>

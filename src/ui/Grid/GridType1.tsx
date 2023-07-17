@@ -1,4 +1,4 @@
-import { Grid, GridItem, GridProps } from "@chakra-ui/react";
+import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 
 export interface BaseGridProps extends GridProps {
@@ -13,11 +13,10 @@ export default function GridType1({
 }: BaseGridProps) {
   return (
     <Grid
-      templateAreas={`"header header"
-                  "main1 main2"`}
-      gridTemplateRows={"repeat(13, 1fr)"}
+      gridTemplateRows={"repeat(15, 1fr)"}
       gridTemplateColumns={"repeat(6, 1fr)"}
-      h="750px"
+      w="100%"
+      h="100%"
       bg="#29292D"
       borderRadius={"6px"}
       color="white"
@@ -31,30 +30,29 @@ export default function GridType1({
         pt={1}
         borderBottom={"#3B3D41 solid 2px"}
         bg="none"
-        area={"header"}
       >
         <NavBar />
       </GridItem>
       <GridItem
         display={{ base: "flex", md: "flex" }}
-        rowSpan={12}
+        rowSpan={14}
         colSpan={4}
         bg="none"
         borderRight={"#3B3D41 solid 2px"}
-        area={"main1"}
         px={5}
         py={3}
       >
-        {children1}
+        <Box w="100%" h="100%">
+          {children1}
+        </Box>
       </GridItem>
       <GridItem
         display={{ base: "flex", md: "flex" }}
-        rowSpan={12}
+        rowSpan={14}
         colSpan={2}
         bg="none"
-        area={"main2"}
         px={5}
-        py={3}
+        py={5}
       >
         {children2}
       </GridItem>

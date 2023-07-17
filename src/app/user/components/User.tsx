@@ -1,3 +1,5 @@
+// 사용 안함.
+
 import Image from "next/image";
 import { cookies } from "next/headers";
 

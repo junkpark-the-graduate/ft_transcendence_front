@@ -18,11 +18,16 @@ export default function BaseTabs({
   ...props
 }: BaseTabsProps) {
   return (
-    <Tabs variant="enclosed" w="100%">
+    <Tabs variant="unstyled" w="100%" isFitted>
       <TabList w="100%" mx="auto">
         <Tab
           textColor="#949494"
-          _selected={{ fontWeight: "800", textColor: "white" }}
+          borderRadius={"6px"}
+          _selected={{
+            bg: "#414147",
+            fontWeight: "800",
+            textColor: "white",
+          }}
           mx="auto"
         >
           channels
@@ -30,7 +35,8 @@ export default function BaseTabs({
         <Tab
           mx="auto"
           textColor="#949494"
-          _selected={{ fontWeight: "800", textColor: "white" }}
+          borderRadius={"6px"}
+          _selected={{ bg: "#414147", fontWeight: "800", textColor: "white" }}
         >
           friends
         </Tab>

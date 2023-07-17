@@ -10,7 +10,6 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import UserHistory from "../../components/UserHistory";
 import FriendList from "@/ui/Lists/FriendList";
 import BaseHeading from "@/ui/Typo/Heading";
 import { GoCircleSlash, GoComment } from "react-icons/go";
@@ -18,6 +17,9 @@ import BaseButton from "@/ui/Button/Button";
 import FollowButton from "@/ui/Button/FollowButton";
 import { useMyData } from "@/hooks/useMyData";
 import { useUserData } from "@/hooks/useUserData";
+import UserStats from "../../components/UserStats";
+import UserAchievement from "../../components/UserAchievement";
+import UserMatchHistory from "../../components/UserMatchHistory";
 
 export default function UserProfile({ params }: { params: any }) {
   const myId: number | undefined = useMyData()?.id;
@@ -58,7 +60,14 @@ export default function UserProfile({ params }: { params: any }) {
         </Box>
         <Divider mt={2} mb={6} />
         <Flex>
-          <UserHistory />
+          <Box flex={4} px={4}>
+            <Flex>
+              <UserStats />
+              <UserAchievement />
+            </Flex>
+            <Divider my={5} />
+            <UserMatchHistory />
+          </Box>
           <Box flex={2} pl={4} borderLeft="1px solid #E2E8F0">
             <BaseHeading text="Friend List" size="md" mb={2} />
             <FriendList />
