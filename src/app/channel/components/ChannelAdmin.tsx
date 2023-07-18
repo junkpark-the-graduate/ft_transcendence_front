@@ -17,6 +17,7 @@ import {
   DeleteIcon,
   LockIcon,
   UnlockIcon,
+  CloseIcon,
 } from "@chakra-ui/icons";
 import Cookies from "js-cookie";
 import { get } from "http";
@@ -278,6 +279,40 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     setMembers(newMembers);
   }
 
+  async function kickedMemeber(channelId: number, userId: number) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/kicked-member?memberId=${userId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("kickedMemeber", channelId, userId);
+    if (res.status > 299) {
+      toast({
+        title: "This user cannot kick",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      return;
+    }
+    const newMembers = members.filter((member) => member.userId !== userId);
+    setMembers(newMembers);
+  }
+
+  async function kickedMemeberHandler(
+    e: React.MouseEvent,
+    channelId: number,
+    userId: number
+  ) {
+    e.stopPropagation();
+    await kickedMemeber(channelId, userId);
+  }
+
   return (
     <Box padding={5}>
       <Text fontSize="xl" marginBottom={3}>
@@ -296,12 +331,12 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
             onClick={(e) => muteMemberHandler(e, channelId, member.userId)}
             position={"absolute"} // Set the position to absolute
             top={2} // Adjust these values as needed
-            right={16} // Adjust these values as needed
+            right={32} // Adjust these values as needed
           />
           <UnlockIcon
             position={"absolute"} // Set the position to absolute
             top={2} // Adjust these values as needed
-            right={9} // Adjust these values as needed
+            right={24} // Adjust these values as needed
           />
           <DeleteIcon
             onClick={(e) =>
@@ -309,7 +344,13 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
             }
             position={"absolute"} // Set the position to absolute
             top={2} // Adjust these values as needed
-            right={2} // Adjust these values as needed
+            right={16} // Adjust these values as needed
+          />
+          <CloseIcon
+            onClick={(e) => kickedMemeberHandler(e, channelId, member.userId)}
+            position={"absolute"} // Set the position to absolute
+            top={2} // Adjust these values as needed
+            right={8} // Adjust these values as needed
           />
           <Text>Member ID: {member.userId}</Text>
           {channel.ownerId !== member.userId && (
