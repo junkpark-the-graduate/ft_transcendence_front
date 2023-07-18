@@ -14,16 +14,21 @@ export default function Page() {
   const [isMatching, setIsMatching] = useState(false);
   //const [matchingTime, setmatchingTime] = useState("00:00");
 
+  socket.on("match_found", (data: any) => {
+    setIsMatchFound(true);
+    setIsMatching(false);
+  });
+
   function matchingButton(emit: string) {
     setIsMatching(true);
     socket.emit(emit);
   }
 
   useEffect(() => {
-    socket.on("match_found", (data: any) => {
-      setIsMatchFound(true);
+    socket.emit("reconnect", (isDisconnected: boolean) => {
+      if (isDisconnected) setIsMatchFound(true);
     });
-  });
+  }, []);
   return (
     <div>
       {}
