@@ -2,6 +2,7 @@ import { Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { socket } from "../socket";
+import { useRouter } from "next/navigation";
 
 interface KeyState {
   [key: number]: boolean;
@@ -14,7 +15,8 @@ const keyState: KeyState = {
   39: false, // right
 };
 
-export default function Game({ setIsMatchFound, setIsMatching }: any) {
+export default function Game() {
+  const router = useRouter();
   const [score, setScore] = useState("0 : 0");
 
   let isPlayer1: boolean = false;
@@ -35,7 +37,7 @@ export default function Game({ setIsMatchFound, setIsMatching }: any) {
   // add to div
 
   const backgroundTextureLoader = new THREE.TextureLoader();
-  const backgroundTexture = backgroundTextureLoader.load("Junkpark.png");
+  const backgroundTexture = backgroundTextureLoader.load("/Junkpark.png");
   const backgroundGeometry = new THREE.BoxGeometry(50, 100, 100);
   const backgroundmaterial = new THREE.MeshBasicMaterial({
     map: backgroundTexture,
@@ -86,8 +88,7 @@ export default function Game({ setIsMatchFound, setIsMatching }: any) {
         setScore("Lose");
       }
       setTimeout(() => {
-        setIsMatchFound(false);
-        setIsMatching(false);
+        router.push(`/game`);
       }, 3000);
     });
 
