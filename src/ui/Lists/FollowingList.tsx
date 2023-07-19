@@ -22,10 +22,10 @@ import {
   GoPerson,
 } from "react-icons/go";
 import { useRouter } from "next/navigation";
-import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getUserData } from "@/utils/user/getUserData";
 import { getMyData } from "@/utils/user/getMyData";
+import { unfollow } from "@/utils/user/follow";
 
 function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
   const [isFollowing, setIsFollowing] = useState(true);
@@ -34,26 +34,7 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
   const status: string = "online";
 
   const handleUnfollow = async () => {
-    try {
-      const res = await fetch(
-        `http://127.0.0.1:3001/follow/${myId}/${userId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${getTokenClient()}`,
-          },
-          body: JSON.stringify({
-            userId: myId,
-            following: userId,
-          }),
-        }
-      );
-      localStorage.setItem("isFollowing", JSON.stringify(false));
-      setIsFollowing(false);
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-    }
+    await unfollow(myId, userId, setIsFollowing);
   };
 
   return (
@@ -120,6 +101,7 @@ export default function FollowingList() {
   const myData = getMyData();
   const myId = myData?.id ?? 0; // Default to 0 if `id` is undefined or null
   const followings = getFollowingList(myId);
+  const [followingList, SetFollowingList] = useState(followings);
 
   return (
     <Box>

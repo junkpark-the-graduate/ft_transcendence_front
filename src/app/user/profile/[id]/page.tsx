@@ -37,7 +37,7 @@ export default function UserProfile({ params }: { params: any }) {
         </Box>
         <Spacer />
         <Flex flexDirection={"column"}>
-          <FollowButton userId={userId} following={params.id} />
+          <FollowButton myId={userId} userId={params.id} />
           <BaseButton
             my={2}
             size="sm"

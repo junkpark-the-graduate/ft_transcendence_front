@@ -6,27 +6,27 @@ import { follow, unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 
 export default function FollowButton({
+  myId,
   userId,
-  following,
 }: {
+  myId: number;
   userId: number;
-  following: number;
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
-  const followingList = getFollowingList(userId);
+  const followingList = getFollowingList(myId);
 
   useEffect(() => {
     setIsFollowing(
-      followingList && followingList.includes(Number(following)) ? true : false
+      followingList && followingList.includes(Number(userId)) ? true : false
     );
-  }, [followingList, following]);
+  }, [followingList, userId]);
 
   const handleFollow = async () => {
-    await follow(userId, following, setIsFollowing);
+    await follow(myId, userId, setIsFollowing);
   };
 
   const handleUnfollow = async () => {
-    await unfollow(userId, following, setIsFollowing);
+    await unfollow(myId, userId, setIsFollowing);
   };
 
   return (
