@@ -20,6 +20,7 @@ export default function LinkButton({ text, goTo, icon }: LinkButtonProps) {
         router.push(goTo);
       }}
       leftIcon={icon}
+      my={1}
     >
       <Flex align="center">
         {icon && <span style={{ marginRight: "0.5em" }}>{icon}</span>}

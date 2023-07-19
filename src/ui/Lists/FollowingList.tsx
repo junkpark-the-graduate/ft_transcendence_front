@@ -6,7 +6,6 @@ import {
   Flex,
   Menu,
   MenuButton,
-  MenuItem,
   MenuList,
   Spacer,
   Stack,
@@ -14,28 +13,20 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
-import {
-  GoCircleSlash,
-  GoComment,
-  GoKebabHorizontal,
-  GoNoEntry,
-  GoPerson,
-} from "react-icons/go";
+import { GoComment, GoKebabHorizontal, GoPerson } from "react-icons/go";
 import { useRouter } from "next/navigation";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getUserData } from "@/utils/user/getUserData";
 import { getMyData } from "@/utils/user/getMyData";
-import { unfollow } from "@/utils/user/follow";
+import FollowButton from "../Button/FollowButton";
+import BlockButton from "../Button/BlockButton";
 
 function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
   const [isFollowing, setIsFollowing] = useState(true);
+  const [isBlocking, setIsBlocking] = useState(false);
   const userData = getUserData(userId);
   const router = useRouter();
   const status: string = "online";
-
-  const handleUnfollow = async () => {
-    await unfollow(myId, userId, setIsFollowing);
-  };
 
   return (
     <Flex align="center" my={1}>
@@ -73,23 +64,8 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
             />
           </MenuButton>
           <MenuList p="5px 10px" bg="#414147" border={"none"}>
-            <MenuItem
-              icon={<GoNoEntry />}
-              bg="#414147"
-              fontSize="11pt"
-              onClick={handleUnfollow}
-            >
-              unfollow
-            </MenuItem>
-            <MenuItem
-              icon={<GoCircleSlash />}
-              textColor="red"
-              bg="#414147"
-              fontSize="11pt"
-              onClick={() => {}}
-            >
-              block this user
-            </MenuItem>
+            <FollowButton myId={myId} userId={userId} />
+            <BlockButton myId={myId} userId={userId} />
           </MenuList>
         </Menu>
       </Flex>
@@ -101,7 +77,6 @@ export default function FollowingList() {
   const myData = getMyData();
   const myId = myData?.id ?? 0; // Default to 0 if `id` is undefined or null
   const followings = getFollowingList(myId);
-  const [followingList, SetFollowingList] = useState(followings);
 
   return (
     <Box>

@@ -4,6 +4,8 @@ import { GoNoEntry, GoPlusCircle } from "react-icons/go";
 import { Flex } from "@chakra-ui/react";
 import { follow, unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
+import { getBlockingList } from "@/utils/user/getBlockingList";
+import { unblock } from "@/utils/user/block";
 
 export default function FollowButton({
   myId,
@@ -13,7 +15,9 @@ export default function FollowButton({
   userId: number;
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
   const followingList = getFollowingList(myId);
+  const blockingList = getBlockingList(myId);
 
   useEffect(() => {
     setIsFollowing(
@@ -23,6 +27,7 @@ export default function FollowButton({
 
   const handleFollow = async () => {
     await follow(myId, userId, setIsFollowing);
+    await unblock(myId, userId, setIsBlocking);
   };
 
   const handleUnfollow = async () => {
@@ -31,23 +36,14 @@ export default function FollowButton({
 
   return (
     <Flex>
-      {isFollowing ? (
-        <BaseButton
-          flex="1"
-          size="sm"
-          leftIcon={<GoNoEntry />}
-          text="unfollow"
-          onClick={handleUnfollow}
-        />
-      ) : (
-        <BaseButton
-          flex="1"
-          size="sm"
-          leftIcon={<GoPlusCircle />}
-          text="follow"
-          onClick={handleFollow}
-        />
-      )}
+      <BaseButton
+        flex="1"
+        size="sm"
+        leftIcon={isFollowing ? <GoNoEntry /> : <GoPlusCircle />}
+        text={isFollowing ? "unfollow" : "follow"}
+        onClick={isFollowing ? handleUnfollow : handleFollow}
+        bg={isFollowing ? "#191919" : "#414147"}
+      />
     </Flex>
   );
 }

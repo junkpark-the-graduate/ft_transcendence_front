@@ -9,7 +9,7 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import { GoCircleSlash, GoComment } from "react-icons/go";
+import { GoComment } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import FollowButton from "@/ui/Button/FollowButton";
 import UserStats from "../../components/UserStats";
@@ -18,6 +18,7 @@ import UserMatchHistory from "../../components/UserMatchHistory";
 import GridType1 from "@/ui/Grid/GridType1";
 import { getMyData } from "@/utils/user/getMyData";
 import { getUserData } from "@/utils/user/getUserData";
+import BlockButton from "@/ui/Button/BlockButton";
 
 export default function UserProfile({ params }: { params: any }) {
   const myId: number | undefined = getMyData()?.id;
@@ -36,7 +37,12 @@ export default function UserProfile({ params }: { params: any }) {
           <Text fontSize={16}>status: </Text>
         </Box>
         <Spacer />
-        <Flex flexDirection={"column"}>
+        <Flex
+          flexDirection={"column"}
+          position={"absolute"}
+          right={0}
+          bottom={0}
+        >
           <FollowButton myId={userId} userId={params.id} />
           <BaseButton
             my={2}
@@ -45,12 +51,7 @@ export default function UserProfile({ params }: { params: any }) {
             leftIcon={<GoComment />}
             onClick={() => {}}
           />
-          <BaseButton
-            size="sm"
-            text="block"
-            leftIcon={<GoCircleSlash />}
-            onClick={() => {}}
-          />
+          <BlockButton myId={userId} userId={params.id} />
         </Flex>
       </Flex>
     </Box>

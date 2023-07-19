@@ -1,6 +1,6 @@
 import { Box, Flex, Avatar, Heading, Text, Spacer } from "@chakra-ui/react";
 import LinkButton from "@/ui/Button/LinkButton";
-import { GoCircleSlash, GoGear } from "react-icons/go";
+import { GoCircleSlash, GoGear, GoTrash } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import { getMyData } from "@/utils/user/getMyData";
 
@@ -22,15 +22,26 @@ export default function MyDetail() {
           </Text>
         </Box>
         <Spacer />
-        <Flex flexDirection={"column"}>
-          <BaseButton
-            my={2}
-            size="sm"
+        <Flex
+          flexDirection={"column"}
+          position={"absolute"}
+          right={0}
+          bottom={0}
+        >
+          <LinkButton icon={<GoGear />} text="edit profile" goTo="/user/edit" />
+          <LinkButton
+            icon={<GoCircleSlash />}
             text="blocked users"
-            leftIcon={<GoCircleSlash />}
+            goTo="/user/block"
+          />
+          <BaseButton
+            my={1}
+            size="sm"
+            textColor={"red"}
+            text="delete account"
+            leftIcon={<GoTrash />}
             onClick={() => {}}
           />
-          <LinkButton icon={<GoGear />} text="edit profile" goTo="/user/edit" />
         </Flex>
       </Flex>
     </Box>
