@@ -1,10 +1,10 @@
-import { useMyData } from "@/hooks/useMyData";
+import { getMyData } from "@/utils/user/getMyData";
 import { Avatar, AvatarBadge, AvatarProps, Flex } from "@chakra-ui/react";
 
 export interface BaseAvatarProps extends AvatarProps {}
 
 export default function BaseAvatar({ ...props }: BaseAvatarProps) {
-  const userData = useMyData();
+  const userData = getMyData();
   const status: string = "online";
   return (
     <Flex>

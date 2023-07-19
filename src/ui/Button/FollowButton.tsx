@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { GoNoEntry, GoPlusCircle } from "react-icons/go";
-import { Box, Flex } from "@chakra-ui/react";
-import { useTokenClient } from "@/hooks/useTokenClient";
-import { useFollowingList } from "@/hooks/useFollowingList";
+import { Flex } from "@chakra-ui/react";
+import { follow, unfollow } from "@/utils/user/follow";
+import { getFollowingList } from "@/utils/user/getFollowingList";
 
 export default function FollowButton({
   userId,
@@ -13,7 +13,7 @@ export default function FollowButton({
   following: number;
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
-  const followingList = useFollowingList(userId);
+  const followingList = getFollowingList(userId);
 
   useEffect(() => {
     setIsFollowing(
@@ -22,45 +22,11 @@ export default function FollowButton({
   }, [followingList, following]);
 
   const handleFollow = async () => {
-    try {
-      const res: Response = await fetch("http://127.0.0.1:3001/follow", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${useTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-          following: Number(following),
-        }),
-      });
-      setIsFollowing(true);
-      localStorage.setItem("isFollowing", JSON.stringify(true));
-    } catch (error) {
-      console.error(error);
-    }
+    await follow(userId, following, setIsFollowing);
   };
 
   const handleUnfollow = async () => {
-    try {
-      const res: Response = await fetch(
-        `http://127.0.0.1:3001/follow/${userId}/${following}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${useTokenClient()}`,
-          },
-          body: JSON.stringify({
-            userId: userId,
-            following: Number(following),
-          }),
-        }
-      );
-      setIsFollowing(false);
-      localStorage.setItem("isFollowing", JSON.stringify(false));
-    } catch (error) {
-      console.error(error);
-    }
+    await unfollow(userId, following, setIsFollowing);
   };
 
   return (

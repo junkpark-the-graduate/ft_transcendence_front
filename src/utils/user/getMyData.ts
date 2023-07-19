@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTokenClient } from "./useTokenClient";
+import { getTokenClient } from "../auth/getTokenClient";
 
 interface MyData {
   id: number;
@@ -11,7 +11,7 @@ interface MyData {
   twoFactorEnabled: boolean;
 }
 
-export function useMyData() {
+export function getMyData() {
   const [userData, setUserData] = useState<MyData>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,7 +19,7 @@ export function useMyData() {
     try {
       const res = await fetch(`http://127.0.0.1:3001/user`, {
         headers: {
-          Authorization: `Bearer ${useTokenClient()}`,
+          Authorization: `Bearer ${getTokenClient()}`,
         },
       });
       const userData = await res.json();

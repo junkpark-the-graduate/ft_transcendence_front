@@ -1,11 +1,11 @@
 import { Box, Flex, Avatar, Heading, Text, Spacer } from "@chakra-ui/react";
 import LinkButton from "@/ui/Button/LinkButton";
-import { useMyData } from "@/hooks/useMyData";
 import { GoCircleSlash, GoGear } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
+import { getMyData } from "@/utils/user/getMyData";
 
 export default function MyDetail() {
-  const userData = useMyData();
+  const userData = getMyData();
 
   return (
     <Box position="relative" px={5} pt={6} borderRadius={8}>

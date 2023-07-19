@@ -6,7 +6,7 @@ export interface UserData {
   image: string;
 }
 
-export function useUserData(id: number) {
+export function getUserData(id: number) {
   const [userData, setUserData] = useState<UserData>();
   const [isLoading, setIsLoading] = useState(true);
 

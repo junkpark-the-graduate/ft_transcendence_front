@@ -20,8 +20,8 @@ import {
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
-import { useTokenClient } from "@/hooks/useTokenClient";
-import { useMyData } from "@/hooks/useMyData";
+import { getTokenClient } from "@/utils/auth/getTokenClient";
+import { getMyData } from "@/utils/user/getMyData";
 
 type FormData = {
   name: string;
@@ -30,7 +30,7 @@ type FormData = {
 };
 
 const Edit = () => {
-  const userData = useMyData();
+  const userData = getMyData();
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   //--------------------------------------------------------------
@@ -96,7 +96,7 @@ const Edit = () => {
       const res = await fetch("http://127.0.0.1:3001/user/upload", {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${useTokenClient()}`,
+          Authorization: `Bearer ${getTokenClient()}`,
         },
         body: formData,
       });
@@ -108,7 +108,7 @@ const Edit = () => {
     const res = await fetch("http://127.0.0.1:3001/user", {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${useTokenClient()}`,
+        Authorization: `Bearer ${getTokenClient()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

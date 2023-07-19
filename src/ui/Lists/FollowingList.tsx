@@ -12,9 +12,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useMyData } from "@/hooks/useMyData";
-import { useFollowingList } from "@/hooks/useFollowingList";
-import { useUserData } from "@/hooks/useUserData";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
 import {
@@ -25,11 +22,14 @@ import {
   GoPerson,
 } from "react-icons/go";
 import { useRouter } from "next/navigation";
-import { useTokenClient } from "@/hooks/useTokenClient";
+import { getTokenClient } from "@/utils/auth/getTokenClient";
+import { getFollowingList } from "@/utils/user/getFollowingList";
+import { getUserData } from "@/utils/user/getUserData";
+import { getMyData } from "@/utils/user/getMyData";
 
 function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
   const [isFollowing, setIsFollowing] = useState(true);
-  const userData = useUserData(userId);
+  const userData = getUserData(userId);
   const router = useRouter();
   const status: string = "online";
 
@@ -40,7 +40,7 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${useTokenClient()}`,
+            Authorization: `Bearer ${getTokenClient()}`,
           },
           body: JSON.stringify({
             userId: myId,
@@ -117,9 +117,9 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
 }
 
 export default function FollowingList() {
-  const myData = useMyData();
+  const myData = getMyData();
   const myId = myData?.id ?? 0; // Default to 0 if `id` is undefined or null
-  const followings = useFollowingList(myId);
+  const followings = getFollowingList(myId);
 
   return (
     <Box>
