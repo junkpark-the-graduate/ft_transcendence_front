@@ -1,13 +1,15 @@
+// 사용 안함.
+
 import Image from "next/image";
 import { cookies } from "next/headers";
 
-export function getToken() {
+export function getTokenServer() {
   const tokenCookie = cookies().get("accessToken");
   return tokenCookie ? tokenCookie.value : null;
 }
 
 async function getUserInfo() {
-  const token = getToken();
+  const token = getTokenServer();
   if (!token) {
     console.log("Access token is missing.");
     return null;
@@ -32,7 +34,6 @@ async function getUserInfo() {
 
 async function getUserComponent() {
   const userInfo = await getUserInfo();
-  console.log("user info: ", userInfo);
 
   if (!userInfo) {
     return null;
@@ -40,17 +41,12 @@ async function getUserComponent() {
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <Image
-        src={userInfo.image}
-        alt=""
-        width={150}
-        height={150}
-        objectFit="contain"
-      />
+      <Image src={userInfo.image} alt="" width={150} height={150} />
       <div style={{ marginLeft: "20px" }}>
-        <h3>{userInfo.name}</h3>
-        <p>{userInfo.id}</p>
-        <p>{userInfo.email}</p>
+        <h3>name: {userInfo.name}</h3>
+        <p>id: {userInfo.id}</p>
+        <p>email: {userInfo.email}</p>
+        <p>2FA: {userInfo.twoFactorEnabled ? "enabled" : "disabled"}</p>
       </div>
     </div>
   );
