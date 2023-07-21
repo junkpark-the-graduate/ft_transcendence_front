@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { GoCircleSlash } from "react-icons/go";
 import { Flex } from "@chakra-ui/react";

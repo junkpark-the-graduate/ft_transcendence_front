@@ -6,6 +6,7 @@ import {
   Flex,
   Menu,
   MenuButton,
+  MenuItem,
   MenuList,
   Spacer,
   Stack,
@@ -13,20 +14,46 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
-import { GoComment, GoKebabHorizontal, GoPerson } from "react-icons/go";
+import {
+  GoCircleSlash,
+  GoComment,
+  GoKebabHorizontal,
+  GoNoEntry,
+  GoPerson,
+  GoPlusCircle,
+} from "react-icons/go";
 import { useRouter } from "next/navigation";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getUserData } from "@/utils/user/getUserData";
 import { getMyData } from "@/utils/user/getMyData";
-import FollowButton from "../Button/FollowButton";
-import BlockButton from "../Button/BlockButton";
+import BaseButton from "../Button/Button";
+import { block, unblock } from "@/utils/user/block";
+import { follow, unfollow } from "@/utils/user/follow";
 
 function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
-  const [isFollowing, setIsFollowing] = useState(true);
-  const [isBlocking, setIsBlocking] = useState(false);
   const userData = getUserData(userId);
   const router = useRouter();
   const status: string = "online";
+  const [isBlocking, setIsBlocking] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(true);
+
+  const handleFollow = async () => {
+    await follow(myId, userId, () => setIsFollowing(true));
+    await unblock(myId, userId, () => setIsBlocking(false));
+  };
+
+  const handleUnfollow = async () => {
+    await unfollow(myId, userId, () => setIsFollowing(false));
+  };
+
+  const handleBlock = async () => {
+    await block(myId, userId, () => setIsBlocking(true));
+    await unfollow(myId, userId, () => setIsFollowing(false));
+  };
+
+  const handleUnblock = async () => {
+    await unblock(myId, userId, () => setIsBlocking(false));
+  };
 
   return (
     <Flex align="center" my={1}>
@@ -64,8 +91,23 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
             />
           </MenuButton>
           <MenuList p="5px 10px" bg="#414147" border={"none"}>
-            <FollowButton myId={myId} userId={userId} />
-            <BlockButton myId={myId} userId={userId} />
+            <MenuItem
+              icon={isFollowing ? <GoNoEntry /> : <GoPlusCircle />}
+              onClick={isFollowing ? handleUnfollow : handleFollow}
+              fontSize="11pt"
+              bg="#414147"
+            >
+              {isFollowing ? "unfollow" : "follow"}
+            </MenuItem>
+            <MenuItem
+              textColor={"red"}
+              icon={isBlocking ? <GoCircleSlash /> : <GoCircleSlash />}
+              onClick={isBlocking ? handleUnblock : handleBlock}
+              fontSize="11pt"
+              bg="#414147"
+            >
+              {isBlocking ? "unblock" : "block"}
+            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>
