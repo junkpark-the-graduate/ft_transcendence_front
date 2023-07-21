@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { GoNoEntry, GoPlusCircle } from "react-icons/go";
 import { Flex } from "@chakra-ui/react";
@@ -24,7 +24,7 @@ export default function FollowButton({
     setIsFollowing(
       followingList ? followingList.includes(Number(userId)) : false
     );
-  }, [followingList, blockingList, userId]);
+  }, [blockingList, userId]);
 
   const handleFollow = async () => {
     await follow(myId, userId, () => setIsFollowing(true));
