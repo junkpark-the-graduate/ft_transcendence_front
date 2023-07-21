@@ -65,33 +65,38 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
   }
 
   return (
-    <Flex direction="column" gap={5}>
-      {channels.map((channel: any) => (
-        <Box
-          key={channel.id}
-          padding={3}
-          shadow="md"
-          borderWidth={1}
-          borderRadius="md"
-          onClick={() => onClickChannel(channel.id)}
-          textAlign={"left"}
-          position={"relative"} // Add relative positioning so we can use absolute positioning on child
-        >
-          <Button
-            onClick={(e) => goToAdminPage(e, channel.id)}
-            position={"absolute"} // Set the position to absolute
-            top={2} // Adjust these values as needed
-            right={2} // Adjust these values as needed
+    <Box>
+      <Text fontSize="xl" mt={5}>
+        Channel List
+      </Text>
+      <Flex direction="column" gap={5}>
+        {channels.map((channel: any) => (
+          <Box
+            key={channel.id}
+            padding={3}
+            shadow="md"
+            borderWidth={1}
+            borderRadius="md"
+            onClick={() => onClickChannel(channel.id)}
+            textAlign={"left"}
+            position={"relative"} // Add relative positioning so we can use absolute positioning on child
           >
-            관리자 페이지
-          </Button>
-          <Text fontSize="xl">{channel.name}</Text>
-          <Text fontSize="sm">ID: {channel.id}</Text>
-          <Text fontSize="sm">Owner ID: {channel.ownerId}</Text>
-          <Text fontSize="sm">Type: {EChannelType[channel.type]}</Text>
-        </Box>
-      ))}
-    </Flex>
+            <Button
+              onClick={(e) => goToAdminPage(e, channel.id)}
+              position={"absolute"} // Set the position to absolute
+              top={2} // Adjust these values as needed
+              right={2} // Adjust these values as needed
+            >
+              관리자 페이지
+            </Button>
+            <Text fontSize="xl">{channel.name}</Text>
+            <Text fontSize="sm">ID: {channel.id}</Text>
+            <Text fontSize="sm">Owner ID: {channel.ownerId}</Text>
+            <Text fontSize="sm">Type: {EChannelType[channel.type]}</Text>
+          </Box>
+        ))}
+      </Flex>
+    </Box>
   );
 };
 

@@ -4,31 +4,54 @@ import React, { useEffect, useState } from "react";
 import { Box, Heading } from "@chakra-ui/react";
 import CreateChannel from "./CreateChannel";
 import ChannelList from "./ChannelList";
+import JoinedChannelList from "./JoinedChannelList";
 import Cookies from "js-cookie";
 
 const Channel: React.FC = () => {
   const accessToken = Cookies.get("accessToken");
   const [channels, setChannels] = useState<any>([]);
+  const [joinedChannels, setJoinedChannels] = useState<any>([]);
 
   const getChannels = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:3001/channel", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-      return res.json();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setChannels(await res.json());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getJoinedChannels = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const tmp = await res.json();
+      setJoinedChannels(tmp);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    getChannels().then((channels) => {
-      setChannels(channels);
-    });
+    getChannels();
+    getJoinedChannels();
   }, []);
 
   const handleCreateChannel = (newChannel: any) => {
@@ -40,6 +63,10 @@ const Channel: React.FC = () => {
       <Heading marginBottom={5}>Channel</Heading>
       <CreateChannel onCreate={handleCreateChannel} />
       <ChannelList channels={channels} />
+      <JoinedChannelList
+        joinedChannels={joinedChannels}
+        setJoinedChannels={setJoinedChannels}
+      />
     </Box>
   );
 };
