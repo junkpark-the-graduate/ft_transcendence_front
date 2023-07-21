@@ -1,14 +1,13 @@
 "use client";
 
 import { Flex, Divider, Box } from "@chakra-ui/react";
-import UserDetail from "./UserDetail";
 import UserStats from "./UserStats";
 import UserAchievement from "./UserAchievement";
 import UserMatchHistory from "./UserMatchHistory";
 
 export const userDummyData = {
   stats: {
-    wins: 10,
+    wins: 11,
     losses: 5,
     ladderLevel: 7,
     achievements: ["First Place", "Master of the Game"],

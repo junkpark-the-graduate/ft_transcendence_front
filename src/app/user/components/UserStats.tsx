@@ -23,7 +23,7 @@ export default function UserStats() {
   return (
     <Box flex={2} bg="#414147" px={5} pt={3} pb={5} borderRadius={8} mr={3}>
       <BaseHeading text="Stats" size="md" />
-      <Divider mt={3} mb={4} />
+      <Divider mt={3} mb={5} />
       <Stack spacing={2}>
         <Flex direction={"row"}>
           <Box flex={1}>

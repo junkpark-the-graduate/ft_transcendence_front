@@ -135,7 +135,7 @@ const Edit = () => {
               {">"} 이름 변경하기
             </FormLabel>
             <Text fontSize={13} ml={1} mb={2} textColor="gray">
-              20자 이내이며 '#' 문자를 포함하지 않은 이름만 가능합니다.
+              알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
             </Text>
             <Flex>
               <Input
