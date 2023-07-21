@@ -22,6 +22,7 @@ import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
 import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { getMyData } from "@/utils/user/getMyData";
+import BaseHeading from "@/ui/Typo/Heading";
 
 type FormData = {
   name: string;
@@ -129,6 +130,7 @@ const Edit = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Center>
         <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
+          <BaseHeading text="edit profile" />
           <FormControl>
             <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
