@@ -9,17 +9,28 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { getUserData } from "@/utils/user/getUserData";
 import { getMyData } from "@/utils/user/getMyData";
-import { follow, unfollow } from "@/utils/user/follow";
+import { unfollow } from "@/utils/user/follow";
 import { getBlockingList } from "@/utils/user/getBlockingList";
-import BlockButton from "../Button/BlockButton";
+import { block, unblock } from "@/utils/user/block";
+import BaseButton from "../Button/Button";
+import { GoCircleSlash } from "react-icons/go";
 
 function BlockingListItem({ myId, userId }: { myId: number; userId: number }) {
   const userData = getUserData(userId);
-  const router = useRouter();
   const status: string = "online";
+  const [isBlocking, setIsBlocking] = useState(true);
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const handleBlock = async () => {
+    await block(myId, userId, () => setIsBlocking(true));
+    await unfollow(myId, userId, () => setIsFollowing(false));
+  };
+
+  const handleUnblock = async () => {
+    await unblock(myId, userId, () => setIsBlocking(false));
+  };
 
   return (
     <Flex align="center" my={1}>
@@ -34,7 +45,15 @@ function BlockingListItem({ myId, userId }: { myId: number; userId: number }) {
       <Text>{userData?.name}</Text>
       <Spacer />
       <Flex>
-        <BlockButton myId={myId} userId={userId} />
+        <BaseButton
+          textColor={"red"}
+          flex="1"
+          size="sm"
+          leftIcon={isBlocking ? <GoCircleSlash /> : <GoCircleSlash />}
+          text={isBlocking ? "unblock" : "block"}
+          onClick={isBlocking ? handleUnblock : handleBlock}
+          bg={isBlocking ? "#191919" : "#414147"}
+        />
       </Flex>
     </Flex>
   );
