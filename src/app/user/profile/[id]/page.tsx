@@ -19,11 +19,26 @@ import GridType1 from "@/ui/Grid/GridType1";
 import { getMyData } from "@/utils/user/getMyData";
 import { getUserData } from "@/utils/user/getUserData";
 import BlockButton from "@/ui/Button/BlockButton";
+import { useState } from "react";
 
 export default function UserProfile({ params }: { params: any }) {
   const myId: number | undefined = getMyData()?.id;
   const userId = myId ? myId : 0; // 변환: number | undefined -> number
   const userData = getUserData(params.id);
+
+  // FollowButton과 BlockButton의 상태를 UserProfile 컴포넌트에서 관리
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
+
+  // FollowButton에서 상태 업데이트시 호출되는 함수
+  const handleFollowChange = (newValue: boolean) => {
+    setIsFollowing(newValue);
+  };
+
+  // BlockButton에서 상태 업데이트시 호출되는 함수
+  const handleBlockChange = (newValue: boolean) => {
+    setIsBlocking(newValue);
+  };
 
   const UserDetail = (
     <Box position="relative" px={5} pt={6} borderRadius={8}>
