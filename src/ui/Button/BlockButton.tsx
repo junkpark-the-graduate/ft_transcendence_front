@@ -6,6 +6,7 @@ import { block, unblock } from "@/utils/user/block";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
+import { useAppContext } from "@/app/providers";
 
 export default function BlockButton({
   myId,
@@ -14,27 +15,22 @@ export default function BlockButton({
   myId: number;
   userId: number;
 }) {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isBlocking, setIsBlocking] = useState(false);
+  const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
+    useAppContext();
   const followingList = getFollowingList(myId);
   const blockingList = getBlockingList(myId);
 
   useEffect(() => {
-    setIsFollowing(
-      followingList && followingList.includes(Number(userId)) ? true : false
-    );
-    setIsBlocking(
-      blockingList && blockingList.includes(Number(userId)) ? true : false
-    );
+    setIsBlocking(blockingList ? blockingList.includes(Number(userId)) : false);
   }, [followingList, blockingList, userId]);
 
   const handleBlock = async () => {
-    await block(myId, userId, setIsBlocking);
-    await unfollow(myId, userId, setIsFollowing);
+    await block(myId, userId, () => setIsBlocking(true));
+    await unfollow(myId, userId, () => setIsFollowing(false));
   };
 
   const handleUnblock = async () => {
-    await unblock(myId, userId, setIsBlocking);
+    await unblock(myId, userId, () => setIsBlocking(false));
   };
 
   return (
