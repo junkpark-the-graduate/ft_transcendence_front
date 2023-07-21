@@ -1,13 +1,10 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Box, Center, Heading } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 
-export default function Home() {
-  const router = useRouter();
-
+export const Loading = () => {
   return (
     <Center>
       <Box pt={20}>
@@ -17,13 +14,14 @@ export default function Home() {
         <Center flexDirection="column"></Center>
         <Center mt={6}>
           <BaseButton
-            text="sign in with 42 intra"
-            onClick={() => {
-              router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}`);
-            }}
+            isLoading
+            loadingText="sign in"
+            spinnerPlacement="start"
+            text="sign in 42 intra"
+            onClick={() => {}}
           />
         </Center>
       </Box>
     </Center>
   );
-}
+};

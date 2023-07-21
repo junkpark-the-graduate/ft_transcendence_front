@@ -1,6 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "DungGeunMo";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+html {
+  min-width: 900px;
+}
 
 body {
-  background-color: rgb(18, 18, 18);
+  margin: 55px 80px;
+  background-color: rgb(23, 23, 23);
   color: white;
+  font-family: "DungGeunMo", sans-serif;
 }
