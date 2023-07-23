@@ -16,8 +16,13 @@ html {
 }
 
 body {
-  margin: 55px 80px;
+  margin: 0;
+  padding: 55px 80px;
   background-color: rgb(23, 23, 23);
   color: white;
   font-family: "DungGeunMo", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
