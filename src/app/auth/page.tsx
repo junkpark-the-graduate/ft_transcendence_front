@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loading } from "./components/Loading";
+import { Intro } from "@/ui/Intro/Intro";
 
 export default function Page({
   searchParams,
@@ -47,5 +48,5 @@ export default function Page({
     signIn();
   }, []);
 
-  return <Loading />;
+  return <Intro children={<Loading />} />;
 }
