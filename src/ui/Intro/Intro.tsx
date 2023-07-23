@@ -20,20 +20,20 @@ export const Intro = ({ children }: IntroProps) => {
         <Box>ft_transcendence</Box>
       </Flex>
       <Center>
-        <Box pt="20vh">
+        <Box pt="200px">
           <Title />
           <Center my={10}>{children}</Center>
         </Box>
       </Center>
       <Flex>
-        <Box position="absolute" bottom="5vh">
+        <Box position="absolute" bottom="55px">
           ⓒ copyright blablabla
         </Box>
         <Spacer />
         <Box
           position="absolute"
-          bottom="5vh"
-          right="8vh"
+          bottom="55px"
+          right="80px"
           onClick={() => {
             router.push(
               `https://github.com/orgs/junkpark-the-graduate/repositories`
