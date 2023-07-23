@@ -1,14 +1,12 @@
-"use client";
-
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@chakra-ui/react";
 
-export const Loading = () => {
+export const SignInButton = () => {
+  const router = useRouter();
+
   return (
     <Button
-      isLoading
-      loadingText="signing in"
-      spinnerPlacement="start"
       bg="none"
       borderRadius={0}
       textColor="white"
@@ -17,6 +15,11 @@ export const Loading = () => {
       fontSize="20px"
       _hover={{ background: "#414147" }}
       _focus={{ background: "#414147" }}
-    />
+      onClick={() => {
+        router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}`);
+      }}
+    >
+      sign in with 42 intra
+    </Button>
   );
 };

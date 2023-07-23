@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { GoNoEntry, GoPlusCircle } from "react-icons/go";
 import { Flex } from "@chakra-ui/react";
@@ -6,6 +6,7 @@ import { follow, unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { unblock } from "@/utils/user/block";
+import { useAppContext } from "@/app/providers";
 
 export default function FollowButton({
   myId,
@@ -14,24 +15,24 @@ export default function FollowButton({
   myId: number;
   userId: number;
 }) {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isBlocking, setIsBlocking] = useState(false);
+  const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
+    useAppContext();
   const followingList = getFollowingList(myId);
   const blockingList = getBlockingList(myId);
 
   useEffect(() => {
     setIsFollowing(
-      followingList && followingList.includes(Number(userId)) ? true : false
+      followingList ? followingList.includes(Number(userId)) : false
     );
-  }, [followingList, userId]);
+  }, [followingList, blockingList, userId]);
 
   const handleFollow = async () => {
-    await follow(myId, userId, setIsFollowing);
-    await unblock(myId, userId, setIsBlocking);
+    await follow(myId, userId, () => setIsFollowing(true));
+    await unblock(myId, userId, () => setIsBlocking(false));
   };
 
   const handleUnfollow = async () => {
-    await unfollow(myId, userId, setIsFollowing);
+    await unfollow(myId, userId, () => setIsFollowing(false));
   };
 
   return (
