@@ -12,13 +12,15 @@ import {
 import { GoComment } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import FollowButton from "@/ui/Button/FollowButton";
-import UserStats from "../../components/UserStats";
-import UserRank from "../../components/UserRank";
-import UserMatchHistory from "../../components/UserMatchHistory";
 import GridType1 from "@/ui/Grid/GridType1";
 import { getMyData } from "@/utils/user/getMyData";
 import { getUserData } from "@/utils/user/getUserData";
 import BlockButton from "@/ui/Button/BlockButton";
+import UserRank from "@/ui/Dashboard/UserRank";
+import UserScore from "@/ui/Dashboard/UserScore";
+import UserStats from "@/ui/Dashboard/UserStats";
+import UserMatchHistory from "@/ui/Dashboard/UserMatchHistory";
+import Dashboard from "@/ui/Dashboard/Dashboard";
 
 export default function UserProfile({ params }: { params: any }) {
   const myId: number | undefined = getMyData()?.id;
@@ -57,21 +59,5 @@ export default function UserProfile({ params }: { params: any }) {
     </Box>
   );
 
-  return (
-    <GridType1
-      children={
-        <Flex p={4} direction="column">
-          {UserDetail}
-          <Divider my={6} />
-          <Box flex={7}>
-            <Flex>
-              <UserStats />
-              <UserRank />
-            </Flex>
-            <UserMatchHistory />
-          </Box>
-        </Flex>
-      }
-    />
-  );
+  return <GridType1 children={<Dashboard userData={UserDetail} />} />;
 }

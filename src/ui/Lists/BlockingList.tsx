@@ -2,6 +2,7 @@ import {
   Avatar,
   AvatarBadge,
   Box,
+  Center,
   Divider,
   Flex,
   Spacer,
@@ -42,7 +43,7 @@ function BlockingListItem({ myId, userId }: { myId: number; userId: number }) {
           boxSize="1em"
         />
       </Avatar>
-      <Text>{userData?.name}</Text>
+      <Text fontSize={14}>{userData?.name}</Text>
       <Spacer />
       <Flex>
         <BaseButton
@@ -66,15 +67,22 @@ export default function BlockingList() {
 
   return (
     <Box>
-      <Stack spacing={2}>
-        {blockings &&
-          blockings.map((blockings) => (
+      {blockings && blockings.length > 0 ? (
+        <Stack spacing={2}>
+          {blockings.map((blockings) => (
             <React.Fragment key={blockings}>
               <BlockingListItem myId={myId} userId={Number(blockings)} />
               <Divider borderColor="#414147" />
             </React.Fragment>
           ))}
-      </Stack>
+        </Stack>
+      ) : (
+        <Center>
+          <Text fontSize="16px" fontWeight="bold" color="gray" mb={2}>
+            empty
+          </Text>
+        </Center>
+      )}
     </Box>
   );
 }
