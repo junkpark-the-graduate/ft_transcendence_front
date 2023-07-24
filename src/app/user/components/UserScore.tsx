@@ -2,6 +2,7 @@ import BaseHeading from "@/ui/Typo/Heading";
 import {
   Box,
   Flex,
+  Highlight,
   Stack,
   Stat,
   StatArrow,
@@ -32,7 +33,20 @@ export default function UserScore() {
                   <StatArrow type="increase" />
                   42
                 </StatHelpText>
-                <StatNumber fontSize={"22px"}>4,670 pt</StatNumber>
+                <StatNumber fontSize={"22px"}>
+                  <Highlight
+                    query="4,670"
+                    styles={{
+                      textColor: "white",
+                      px: "2",
+                      py: "1",
+                      rounded: "5px",
+                      bg: "gray",
+                    }}
+                  >
+                    4,670 pt
+                  </Highlight>
+                </StatNumber>
               </Stat>
               <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
                 top 42.42%
