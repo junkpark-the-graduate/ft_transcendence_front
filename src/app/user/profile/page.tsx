@@ -1,6 +1,6 @@
 "use client";
 
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../../../ui/Dashboard/Dashboard";
 import GridType1 from "@/ui/Grid/GridType1";
 import MyDetail from "../components/MyDetail";
 

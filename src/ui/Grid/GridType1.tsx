@@ -39,6 +39,7 @@ export default function GridType1({ children, ...props }: BaseGridProps) {
         borderRight={"#414147 solid 2px"}
         px={5}
         py={3}
+        overflowY="auto"
       >
         <Box w="100%" h="100%">
           {children}

@@ -12,7 +12,8 @@
 }
 
 html {
-  min-width: 900px;
+  min-width: 1200px;
+  min-height: 600px;
 }
 
 body {

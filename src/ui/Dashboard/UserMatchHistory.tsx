@@ -14,7 +14,15 @@ import { userDummyData } from "./Dashboard";
 
 export default function UserMatchHistory() {
   return (
-    <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mt={3}>
+    <Box
+      flex={1}
+      px={2}
+      pb={4}
+      bg="#414147"
+      borderRadius={8}
+      mt={3}
+      overflowY="auto"
+    >
       <Box
         bg="#414147"
         borderBottom={"#A0A0A3 1px solid"}
@@ -25,7 +33,6 @@ export default function UserMatchHistory() {
       >
         <BaseHeading text="Match History" mb={2} />
       </Box>
-      {/* <Divider mb={4} /> */}
       <TableContainer>
         <Table size="sm" variant="striped" colorScheme="blackAlpha">
           <Thead>

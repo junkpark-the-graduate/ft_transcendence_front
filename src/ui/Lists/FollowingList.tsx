@@ -65,7 +65,7 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
           boxSize="1em"
         />
       </Avatar>
-      <Text>{userData?.name}</Text>
+      <Text fontSize={14}>{userData?.name}</Text>
       <Spacer />
       <Flex>
         <BaseIconButton

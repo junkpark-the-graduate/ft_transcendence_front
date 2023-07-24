@@ -39,7 +39,7 @@ const ChannelList = () => {
           <React.Fragment key={friend.id}>
             <Flex align="center" my={1}>
               <Avatar size="sm" name={friend.name} mr={4} />
-              <Text>{friend.name}</Text>
+              <Text fontSize={14}>{friend.name}</Text>
               <Spacer />
               <Flex>
                 <BaseIconButton
