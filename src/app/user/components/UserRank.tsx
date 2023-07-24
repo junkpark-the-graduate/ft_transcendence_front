@@ -2,6 +2,7 @@ import BaseHeading from "@/ui/Typo/Heading";
 import {
   Box,
   Flex,
+  Highlight,
   Stack,
   Stat,
   StatArrow,
@@ -29,9 +30,23 @@ export default function UserRank() {
             <Flex direction="column" alignItems="center">
               <Stat>
                 <StatHelpText>
-                  <StatArrow type="decrease" />1
+                  <StatArrow type="decrease" />
+                  12
                 </StatHelpText>
-                <StatNumber fontSize={"22px"}>42th</StatNumber>
+                <StatNumber fontSize={"22px"}>
+                  <Highlight
+                    query="42"
+                    styles={{
+                      textColor: "white",
+                      px: "2",
+                      py: "1",
+                      rounded: "5px",
+                      bg: "gray",
+                    }}
+                  >
+                    42 th
+                  </Highlight>
+                </StatNumber>
               </Stat>
               <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
                 4,242 players
