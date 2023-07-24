@@ -1,20 +1,14 @@
 import BaseHeading from "@/ui/Typo/Heading";
 import {
-  Badge,
   Box,
-  Divider,
   Flex,
-  Icon,
-  Progress,
   Stack,
   Stat,
   StatArrow,
   StatHelpText,
-  StatLabel,
   StatNumber,
   Text,
 } from "@chakra-ui/react";
-import { GoLog, GoTrophy } from "react-icons/go";
 
 export default function UserScore() {
   return (
