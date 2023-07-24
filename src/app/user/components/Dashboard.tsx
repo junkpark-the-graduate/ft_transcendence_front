@@ -2,8 +2,9 @@
 
 import { Flex, Divider, Box } from "@chakra-ui/react";
 import UserStats from "./UserStats";
-import UserAchievement from "./UserAchievement";
+import UserRank from "./UserRank";
 import UserMatchHistory from "./UserMatchHistory";
+import UserScore from "./UserScore";
 
 export const userDummyData = {
   stats: {
@@ -56,11 +57,12 @@ export default function Dashboard({ userData }: DashBoardProps) {
   return (
     <Flex p={4} direction="column">
       {userData}
-      <Divider my={6} />
+      <Divider borderColor="#A0A0A3" my={6} />
       <Box flex={7}>
         <Flex>
+          <UserRank />
+          <UserScore />
           <UserStats />
-          <UserAchievement />
         </Flex>
         <UserMatchHistory />
       </Box>

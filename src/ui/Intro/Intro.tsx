@@ -31,6 +31,7 @@ export const Intro = ({ children }: IntroProps) => {
         </Box>
         <Spacer />
         <Box
+          as="button"
           position="absolute"
           bottom="5vh"
           right="8vh"

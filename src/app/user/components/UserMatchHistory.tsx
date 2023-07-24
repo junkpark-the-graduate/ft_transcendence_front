@@ -15,9 +15,18 @@ import { userDummyData } from "./Dashboard";
 
 export default function UserMatchHistory() {
   return (
-    <Box bg="#414147" px={5} pt={3} pb={5} borderRadius={8} mt={3}>
-      <BaseHeading text="Match History" size="md" mb={2} />
-      <Divider mt={3} mb={4} />
+    <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mt={3}>
+      <Box
+        bg="#414147"
+        borderBottom={"#A0A0A3 1px solid"}
+        px={2}
+        py={2}
+        mb={4}
+        borderTopRadius={8}
+      >
+        <BaseHeading text="Match History" mb={2} />
+      </Box>
+      {/* <Divider mb={4} /> */}
       <TableContainer>
         <Table size="sm" variant="striped" colorScheme="blackAlpha">
           <Thead>

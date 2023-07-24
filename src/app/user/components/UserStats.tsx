@@ -11,7 +11,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { userDummyData } from "./Dashboard";
-import { GoTrophy } from "react-icons/go";
 
 export default function UserStats() {
   const winRate: number = Math.floor(
@@ -21,23 +20,22 @@ export default function UserStats() {
   );
 
   return (
-    <Box flex={2} bg="#414147" px={5} pt={3} pb={5} borderRadius={8} mr={3}>
-      <BaseHeading text="Stats" size="md" />
-      <Divider mt={3} mb={5} />
+    <Box flex={3} bg="#414147" px={2} pb={4} borderRadius={8}>
+      <Box
+        bg="#414147"
+        borderBottom={"#A0A0A3 1px solid"}
+        px={2}
+        py={2}
+        mb={4}
+        borderTopRadius={8}
+      >
+        <BaseHeading text="Stats" />
+      </Box>
       <Stack spacing={2}>
         <Flex direction={"row"}>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="red" mb={3}>
-                ranking
-              </Badge>
-              <Icon boxSize="60px" as={GoTrophy} mb={3} />
-              <Text fontSize={30}>3rd</Text>
-            </Flex>
-          </Box>
-          <Box flex={1}>
-            <Flex direction="column" alignItems="center">
-              <Badge colorScheme="orange" mb={3}>
+              <Badge colorScheme="orange" mb={3} fontSize="12px">
                 total game
               </Badge>
               <CircularProgress
@@ -49,13 +47,14 @@ export default function UserStats() {
               >
                 <CircularProgressLabel>{winRate} %</CircularProgressLabel>
               </CircularProgress>
-              <Text>wins: {userDummyData.stats.wins}</Text>
-              <Text>losses: {userDummyData.stats.losses}</Text>
+              <Text fontSize={14}>
+                {userDummyData.stats.wins} W / {userDummyData.stats.losses} L
+              </Text>
             </Flex>
           </Box>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="teal" mb={3}>
+              <Badge colorScheme="teal" mb={3} fontSize="12px">
                 1v1 game
               </Badge>
               <CircularProgress
@@ -67,13 +66,14 @@ export default function UserStats() {
               >
                 <CircularProgressLabel>{winRate} %</CircularProgressLabel>
               </CircularProgress>
-              <Text>wins: {userDummyData.stats.wins}</Text>
-              <Text>losses: {userDummyData.stats.losses}</Text>
+              <Text fontSize={14}>
+                {userDummyData.stats.wins} W / {userDummyData.stats.losses} L
+              </Text>
             </Flex>
           </Box>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="teal" mb={3}>
+              <Badge colorScheme="teal" mb={3} fontSize="12px">
                 ladder game
               </Badge>
               <CircularProgress
@@ -85,8 +85,9 @@ export default function UserStats() {
               >
                 <CircularProgressLabel>{winRate} %</CircularProgressLabel>
               </CircularProgress>
-              <Text>wins: {userDummyData.stats.wins}</Text>
-              <Text>losses: {userDummyData.stats.losses}</Text>
+              <Text fontSize={14}>
+                {userDummyData.stats.wins} W / {userDummyData.stats.losses} L
+              </Text>
             </Flex>
           </Box>
         </Flex>
