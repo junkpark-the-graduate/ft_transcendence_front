@@ -2,9 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
-import { Input, Button, Text, Box, Flex, useToast } from "@chakra-ui/react";
 import { Input, Button, Text, Box, Flex, useToast } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 
