@@ -30,7 +30,7 @@ export default function Page({
           const json = await res.json();
           if (json.twoFactorToken) {
             Cookies.set("twoFactorToken", json.twoFactorToken);
-            router.push("/auth/tfa-loading");
+            router.push(`/auth/tfa-loading`);
           } else {
             Cookies.set("accessToken", json.accessToken);
             router.push("/home");
