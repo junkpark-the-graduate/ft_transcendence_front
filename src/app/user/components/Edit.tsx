@@ -38,6 +38,8 @@ const Edit = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File>();
   //--------------------------------------------------------------
+  const [isNameDuplicate, setIsNameDuplicate] = useState<boolean>(false);
+  //--------------------------------------------------------------
   const toast = useToast();
   const [twoFactor, setTwoFactor] = useState(userData?.twoFactorEnabled);
 
@@ -53,6 +55,23 @@ const Edit = () => {
     }
   }, [userData]);
 
+  const checkDuplicateName = async (name: string) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3001/user/check-name`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+      return data.isDuplicate;
+    } catch (error) {
+      console.error("Error checking duplicate name:", error);
+      return false;
+    }
+  };
+
   const handleToggleAuth = () => {
     setTwoFactor(!twoFactor);
     toast({
@@ -64,25 +83,40 @@ const Edit = () => {
   };
 
   async function onSubmit(data: FormData) {
-    const { name } = data;
+    const { name } = data || {};
+    const finalName = name || userData?.name || "";
+
+    const isDuplicate = await checkDuplicateName(finalName);
+
+    if (isDuplicate) {
+      toast({
+        title: "이름 변경 실패",
+        description: "이미 존재하는 이름입니다.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
 
     // 이름 유효성 검사 1 ---------------------------------------------
-    if (name.length > 20) {
+    if (finalName.length > 20) {
       toast({
         title: "이름 변경 실패",
         description: "새로운 이름은 20자 이하여야 합니다.",
-        status: "warning",
+        status: "error",
         duration: 3000,
         isClosable: true,
       });
       return;
     }
     // 이름 유효성 검사 2 ---------------------------------------------
-    if (name.includes("#")) {
+    const nameRegex = /^[a-zA-Z0-9]+$/;
+    if (!nameRegex.test(finalName)) {
       toast({
         title: "이름 변경 실패",
-        description: '새로운 이름에는 "#"가 포함될 수 없습니다.',
-        status: "warning",
+        description: "새로운 이름에는 알파벳과 숫자만 포함되어야 합니다.",
+        status: "error",
         duration: 3000,
         isClosable: true,
       });
@@ -113,7 +147,7 @@ const Edit = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: name,
+        name: finalName,
         twoFactorEnabled: twoFactor,
       }),
     });
@@ -129,7 +163,13 @@ const Edit = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Center>
-        <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
+        <Box
+          bg="#29292D"
+          w="500px"
+          p="40px 60px"
+          borderRadius={"15px"}
+          overflowY="auto"
+        >
           <BaseHeading text="edit profile" />
           <FormControl>
             <Divider m="20px 0px" />
@@ -156,9 +196,7 @@ const Edit = () => {
                   background: "#191919",
                   borderColor: "#191919",
                 }}
-                {...register("name", {
-                  required: "이름을 입력해주세요.",
-                })}
+                {...register("name")}
               />
               <BaseButton text="중복 검사" onClick={() => {}} />
             </Flex>
@@ -198,6 +236,7 @@ const Edit = () => {
               bg="#414147"
               type="file"
               pt="5px"
+              accept=".jpg, .jpeg, .png"
               _hover={{
                 background: "#191919",
               }}
@@ -215,7 +254,7 @@ const Edit = () => {
             />
             <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
-              {">"} 2FA 설정 변경하기{" "}
+              {">"} 2FA 설정 변경하기
             </FormLabel>
             <Switch
               colorScheme="gray"
