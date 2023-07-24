@@ -13,7 +13,7 @@ import { GoComment } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import FollowButton from "@/ui/Button/FollowButton";
 import UserStats from "../../components/UserStats";
-import UserAchievement from "../../components/UserAchievement";
+import UserRank from "../../components/UserRank";
 import UserMatchHistory from "../../components/UserMatchHistory";
 import GridType1 from "@/ui/Grid/GridType1";
 import { getMyData } from "@/utils/user/getMyData";
@@ -66,7 +66,7 @@ export default function UserProfile({ params }: { params: any }) {
           <Box flex={7}>
             <Flex>
               <UserStats />
-              <UserAchievement />
+              <UserRank />
             </Flex>
             <UserMatchHistory />
           </Box>

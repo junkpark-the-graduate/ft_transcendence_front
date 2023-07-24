@@ -11,8 +11,8 @@ export interface BaseGridProps extends GridProps {
 export default function GridType1({ children, ...props }: BaseGridProps) {
   return (
     <Grid
-      gridTemplateRows={"repeat(15, 1fr)"}
-      gridTemplateColumns={"repeat(3, 1fr)"}
+      gridTemplateRows={"repeat(16, 1fr)"}
+      gridTemplateColumns={"repeat(7, 1fr)"}
       w="100%"
       h="100%"
       bg="#29292D"
@@ -23,9 +23,9 @@ export default function GridType1({ children, ...props }: BaseGridProps) {
     >
       <GridItem
         rowSpan={1}
-        colSpan={3}
+        colSpan={7}
         pl={2}
-        pt={1}
+        pt={0}
         borderBottom={"#414147 solid 2px"}
         bg="none"
       >
@@ -33,8 +33,8 @@ export default function GridType1({ children, ...props }: BaseGridProps) {
       </GridItem>
       <GridItem
         display={{ base: "flex", md: "flex" }}
-        rowSpan={14}
-        colSpan={2}
+        rowSpan={15}
+        colSpan={5}
         bg="none"
         borderRight={"#414147 solid 2px"}
         px={5}
@@ -46,11 +46,11 @@ export default function GridType1({ children, ...props }: BaseGridProps) {
       </GridItem>
       <GridItem
         display={{ base: "flex", md: "flex" }}
-        rowSpan={14}
-        colSpan={1}
+        rowSpan={15}
+        colSpan={2}
         bg="none"
-        px={5}
-        py={5}
+        px={3}
+        py={4}
       >
         <BaseTabs children1={<FollowingList />} children2={<ChannelList />}>
           <div>Content 1</div>
