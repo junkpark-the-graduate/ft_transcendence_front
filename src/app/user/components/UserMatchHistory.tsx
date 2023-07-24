@@ -2,7 +2,6 @@ import BaseHeading from "@/ui/Typo/Heading";
 import {
   Badge,
   Box,
-  Divider,
   Table,
   TableContainer,
   Tbody,

@@ -4,9 +4,7 @@ import {
   Box,
   CircularProgress,
   CircularProgressLabel,
-  Divider,
   Flex,
-  Icon,
   Stack,
   Text,
 } from "@chakra-ui/react";
