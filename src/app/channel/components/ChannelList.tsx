@@ -1,28 +1,11 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  Button,
-  useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  FormControl,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import React, { useState } from "react";
+import { Box, Flex, Text, Button, useToast } from "@chakra-ui/react";
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import PasswordModal from "@/ui/Modal/PasswordModal";
 
 interface Props {
   channels: any[];
@@ -32,20 +15,21 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
   const router = useRouter();
   const toast = useToast();
   // const { isOpen, onOpen, onClose } = useDisclosure();
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [selectedChannelId, setSelectedChannelId] = useState<number>(0);
-  const initialRef = useRef<HTMLInputElement>(null);
-  const finalRef = useRef(null);
+  // const initialRef = useRef<HTMLInputElement>(null);
+  // const finalRef = useRef(null);
 
   if (!Array.isArray(channels)) {
     return <div>Loading...</div>;
   }
 
-  function onOpen(channelId: number) {
-    setSelectedChannelId(channelId); // Store the selected channel ID in the state
-    setIsOpen(true); // Open the modal
-  }
+  // function onOpen(channelId: number) {
+  //   setSelectedChannelId(channelId); // Store the selected channel ID in the state
+  //   setIsOpen(true); // Open the modal
+  // }
 
   async function joinChannel(channelId: number) {
     const accessToken = Cookies.get("accessToken");
@@ -102,7 +86,16 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     return res;
   }
 
-  async function onClickProtectedChannel() {
+  const handleOpenModal = (channelId: number) => {
+    setSelectedChannelId(channelId);
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleEnterPassword = async (password: string) => {
     const channelId: number = selectedChannelId; // Access the stored selected channel ID
     const enteredPassword = password; // Access the entered password
     const res = await joinProtectedChannel(enteredPassword, channelId);
@@ -110,27 +103,31 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     const resJson = await res.json();
 
     if (res.status < 300) {
+      setIsOpen(false);
       router.push(`/channel/${channelId}/chat`);
-    } else if (res.status == 401) {
-      toast({
-        title: resJson.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
     } else {
-      toast({
-        title: resJson.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+      setErrorMessage(resJson.message);
     }
+  };
 
-    setIsOpen(false); // Close the modal
-    setSelectedChannelId(0); // Reset the selected channel ID
-    setPassword(""); // Reset the password input
-  }
+  // async function onClickProtectedChannel() {
+  //   const channelId: number = selectedChannelId; // Access the stored selected channel ID
+  //   const enteredPassword = password; // Access the entered password
+  //   const res = await joinProtectedChannel(enteredPassword, channelId);
+
+  //   const resJson = await res.json();
+
+  //   if (res.status < 300) {
+  //     router.push(`/channel/${channelId}/chat`);
+  //   } else {
+  //     setIsOpen(true);
+  //     setErrorModalMessage(resJson.message);
+  //   }
+
+  //   // setIsOpen(false); // Close the modal
+  //   // setSelectedChannelId(0); // Reset the selected channel ID
+  //   setPassword(""); // Reset the password input
+  // }
 
   function goToAdminPage(e: React.MouseEvent, channelId: number) {
     e.stopPropagation(); // Prevent the event from propagating up to the parent element
@@ -144,7 +141,7 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
 
     if (channel) {
       if (channel.type === EChannelType.protected) {
-        onOpen(channelId);
+        handleOpenModal(channelId);
       } else {
         onClickChannel(channelId);
       }
@@ -186,7 +183,13 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
           ))}
         </Flex>
       </Box>
-      <Modal
+      <PasswordModal
+        isOpen={isOpen}
+        onClose={handleCloseModal}
+        onEnter={handleEnterPassword}
+        errorMessage={errorMessage}
+      />
+      {/* <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
@@ -220,7 +223,7 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
             <Button onClick={() => setIsOpen(false)}>취소</Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </>
   );
 };
