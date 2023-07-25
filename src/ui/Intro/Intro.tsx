@@ -20,7 +20,7 @@ export const Intro = ({ children }: IntroProps) => {
         <Box>ft_transcendence</Box>
       </Flex>
       <Center>
-        <Box pt="20vh">
+        <Box pt="25vh">
           <Title />
           <Center my={10}>{children}</Center>
         </Box>
