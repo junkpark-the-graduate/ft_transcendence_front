@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, Center, Flex, Heading, Spacer } from "@chakra-ui/react";
+import { Box, Center, Flex, Spacer } from "@chakra-ui/react";
 import { Title } from "./Title";
 
 interface IntroProps {
