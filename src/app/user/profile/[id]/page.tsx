@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Avatar,
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  Spacer,
-  Text,
-} from "@chakra-ui/react";
+import { Avatar, Box, Flex, Heading, Spacer, Text } from "@chakra-ui/react";
 import { GoComment } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import FollowButton from "@/ui/Button/FollowButton";
@@ -16,10 +8,6 @@ import GridType1 from "@/ui/Grid/GridType1";
 import { getMyData } from "@/utils/user/getMyData";
 import { getUserData } from "@/utils/user/getUserData";
 import BlockButton from "@/ui/Button/BlockButton";
-import UserRank from "@/ui/Dashboard/UserRank";
-import UserScore from "@/ui/Dashboard/UserScore";
-import UserStats from "@/ui/Dashboard/UserStats";
-import UserMatchHistory from "@/ui/Dashboard/UserMatchHistory";
 import Dashboard from "@/ui/Dashboard/Dashboard";
 
 export default function UserProfile({ params }: { params: any }) {

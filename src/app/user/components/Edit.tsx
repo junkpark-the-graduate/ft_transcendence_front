@@ -16,7 +16,6 @@ import {
   Flex,
   useToast,
   Text,
-  Input,
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";

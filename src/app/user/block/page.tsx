@@ -1,7 +1,6 @@
 "use client";
 
 import BaseButton from "@/ui/Button/Button";
-import RedButton from "@/ui/Button/RedButton";
 import BlockingList from "@/ui/Lists/BlockingList";
 import BaseHeading from "@/ui/Typo/Heading";
 import { Box, Center, Divider, Flex, Spacer } from "@chakra-ui/react";

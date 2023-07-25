@@ -2,7 +2,7 @@ import { Input, InputProps } from "@chakra-ui/react";
 
 export interface FileInputProps extends InputProps {}
 
-export default function FileInput({ placeholder }: FileInputProps) {
+export default function FileInput({ ...props }: FileInputProps) {
   return (
     <Input
       type="file"
@@ -17,6 +17,7 @@ export default function FileInput({ placeholder }: FileInputProps) {
         background: "#191919",
         borderColor: "#191919",
       }}
+      {...props}
     />
   );
 }
