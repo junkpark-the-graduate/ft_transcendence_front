@@ -1,14 +1,18 @@
 import { Input, InputProps } from "@chakra-ui/react";
 
-export interface BaseInputProps extends InputProps {}
+export interface BaseInputProps extends InputProps {
+  placeholder: string;
+}
 
-export default function BaseInput({}: BaseInputProps) {
+export default function BaseInput({ placeholder, ...props }: BaseInputProps) {
   return (
     <Input
+      placeholder={placeholder}
+      bg="#414147"
       textColor="white"
       variant="filled"
+      border="none"
       borderRadius="8px"
-      mr="10px"
       _hover={{
         background: "#191919",
       }}
@@ -16,7 +20,7 @@ export default function BaseInput({}: BaseInputProps) {
         borderColor: "#191919",
         background: "#191919",
       }}
-      bg="#414147"
+      {...props}
     />
   );
 }

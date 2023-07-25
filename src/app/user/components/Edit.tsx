@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import {
   FormLabel,
   FormControl,
-  Input,
   Switch,
   Divider,
   Box,
@@ -17,12 +16,15 @@ import {
   Flex,
   useToast,
   Text,
+  Input,
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
 import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { getMyData } from "@/utils/user/getMyData";
 import BaseHeading from "@/ui/Typo/Heading";
+import BaseInput from "@/ui/Input/Input";
+import FileInput from "@/ui/Input/FileInput";
 
 type FormData = {
   name: string;
@@ -33,20 +35,17 @@ type FormData = {
 const Edit = () => {
   const userData = getMyData();
   const router = useRouter();
-  const [uploading, setUploading] = useState(false);
-  //--------------------------------------------------------------
+  const [inputName, setInputName] = useState("");
+  const [isNameValid, setIsNameValid] = useState(0);
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File>();
-  //--------------------------------------------------------------
-  const [isNameDuplicate, setIsNameDuplicate] = useState<boolean>(false);
-  //--------------------------------------------------------------
-  const toast = useToast();
   const [twoFactor, setTwoFactor] = useState(userData?.twoFactorEnabled);
+  const [isUploading, setIsUploading] = useState(false);
+  const toast = useToast();
 
   const {
-    register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<FormData>();
 
   useEffect(() => {
@@ -72,6 +71,72 @@ const Edit = () => {
     }
   };
 
+  const handleNameValidation = async () => {
+    const finalName = inputName || userData?.name || "";
+    const nameRegex = /^[a-zA-Z0-9]+$/;
+
+    if (!inputName) {
+      toast({
+        description: "먼저 이름을 입력해주세요.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(0);
+      return;
+    }
+    if (finalName == userData?.name) {
+      toast({
+        description: "현재 사용 중인 이름입니다.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(1);
+      return;
+    }
+    if (finalName.length > 20) {
+      toast({
+        description: "새로운 이름은 20자 이하여야 합니다.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(2);
+      return;
+    }
+    if (!nameRegex.test(finalName)) {
+      toast({
+        description: "새로운 이름에는 알파벳과 숫자만 포함되어야 합니다.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(2);
+      return;
+    }
+
+    const isDuplicate = await checkDuplicateName(finalName);
+
+    if (isDuplicate) {
+      toast({
+        description: "이미 존재하는 이름입니다.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(2);
+      return;
+    }
+    toast({
+      description: "사용 가능한 이름입니다.",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+    setIsNameValid(1);
+  };
+
   const handleToggleAuth = () => {
     setTwoFactor(!twoFactor);
     toast({
@@ -82,48 +147,21 @@ const Edit = () => {
     });
   };
 
-  async function onSubmit(data: FormData) {
-    const { name } = data || {};
-    const finalName = name || userData?.name || "";
+  async function onSubmit() {
+    const newName = inputName || userData?.name || "";
 
-    const isDuplicate = await checkDuplicateName(finalName);
-
-    if (isDuplicate) {
+    if (isNameValid == 2) {
       toast({
-        title: "이름 변경 실패",
-        description: "이미 존재하는 이름입니다.",
+        description: "이름 검사를 진행해주세요.",
         status: "error",
-        duration: 3000,
+        duration: 2000,
         isClosable: true,
       });
       return;
     }
 
-    // 이름 유효성 검사 1 ---------------------------------------------
-    if (finalName.length > 20) {
-      toast({
-        title: "이름 변경 실패",
-        description: "새로운 이름은 20자 이하여야 합니다.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-    // 이름 유효성 검사 2 ---------------------------------------------
-    const nameRegex = /^[a-zA-Z0-9]+$/;
-    if (!nameRegex.test(finalName)) {
-      toast({
-        title: "이름 변경 실패",
-        description: "새로운 이름에는 알파벳과 숫자만 포함되어야 합니다.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-    // ------------------------------------------------------------
     const formData = new FormData();
+
     if (selectedFile) {
       formData.append("file", selectedFile);
       formData.append("filename", selectedFile.name);
@@ -139,7 +177,7 @@ const Edit = () => {
         console.log("Failed to update user image");
       }
     }
-    setUploading(true);
+    setIsUploading(true);
     const res = await fetch("http://127.0.0.1:3001/user", {
       method: "PATCH",
       headers: {
@@ -147,12 +185,12 @@ const Edit = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: finalName,
+        name: newName,
         twoFactorEnabled: twoFactor,
       }),
     });
     if (res.ok) {
-      setUploading(false);
+      setIsUploading(false);
       router.push("/user/profile");
       router.refresh();
     } else {
@@ -163,16 +201,10 @@ const Edit = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Center>
-        <Box
-          bg="#29292D"
-          w="500px"
-          p="40px 60px"
-          borderRadius={"15px"}
-          overflowY="auto"
-        >
+        <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
           <BaseHeading text="edit profile" />
+          <Divider my="5" />
           <FormControl>
-            <Divider m="20px 0px" />
             <FormLabel mb="10px" htmlFor="name">
               {">"} 이름 변경하기
             </FormLabel>
@@ -180,27 +212,18 @@ const Edit = () => {
               알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
             </Text>
             <Flex>
-              <Input
-                placeholder={userData?.name}
-                borderRadius="8px"
-                border="none"
-                bg="#414147"
-                textColor="white"
+              <BaseInput
                 type="name"
-                id="name"
+                placeholder={userData?.name || ""}
                 mr={2}
-                _hover={{
-                  background: "#191919",
+                onChange={(e) => {
+                  setInputName(e.target.value);
+                  setIsNameValid(2);
                 }}
-                _focus={{
-                  background: "#191919",
-                  borderColor: "#191919",
-                }}
-                {...register("name")}
               />
-              <BaseButton text="중복 검사" onClick={() => {}} />
+              <BaseButton text="검사하기" onClick={handleNameValidation} />
             </Flex>
-            <Divider m="20px 0px" />
+            <Divider my="5" />
             <FormLabel mb="10px" htmlFor="name">
               {">"} 프로필 이미지 변경하기
             </FormLabel>
@@ -230,20 +253,9 @@ const Edit = () => {
             <Text fontSize={13} ml={1} my={2} textColor="gray">
               .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
             </Text>
-            <Input
-              borderRadius="8px"
-              border="none"
-              bg="#414147"
+            <FileInput
               type="file"
-              pt="5px"
               accept=".jpg, .jpeg, .png"
-              _hover={{
-                background: "#191919",
-              }}
-              _focus={{
-                background: "#191919",
-                borderColor: "#191919",
-              }}
               onChange={({ target }) => {
                 if (target.files) {
                   const file = target.files[0];
@@ -252,7 +264,7 @@ const Edit = () => {
                 }
               }}
             />
-            <Divider m="20px 0px" />
+            <Divider my="5" />
             <FormLabel mb="10px" htmlFor="name">
               {">"} 2FA 설정 변경하기
             </FormLabel>
@@ -264,17 +276,10 @@ const Edit = () => {
               {twoFactor ? "2FA enabled" : "2FA disabled"}
             </Switch>
           </FormControl>
-          <Divider m="20px 0px" />
-
+          <Divider my="5" />
           <Flex>
             <Spacer />
-            <RedButton
-              text="취소하기"
-              mr={2}
-              onClick={() => {
-                router.back();
-              }}
-            />
+            <RedButton text="취소하기" mr={2} />
             <BaseButton
               text="저장하기"
               isLoading={isSubmitting}

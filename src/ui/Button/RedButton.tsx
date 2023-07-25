@@ -1,11 +1,15 @@
+"use client";
+
 import { Button, ButtonProps } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 
 export interface RedButtonProps extends ButtonProps {
   text: string;
-  onClick: () => void;
 }
 
 export default function RedButton({ text, onClick, ...props }: RedButtonProps) {
+  const router = useRouter();
+
   return (
     <Button
       variant="outline"
@@ -21,7 +25,9 @@ export default function RedButton({ text, onClick, ...props }: RedButtonProps) {
       _focus={{
         bg: "none",
       }}
-      onClick={onClick}
+      onClick={() => {
+        router.back();
+      }}
       {...props}
     >
       {text}
