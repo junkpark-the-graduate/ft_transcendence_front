@@ -1,12 +1,12 @@
 "use client";
 
-import GridType2 from "@/ui/Grid/GridType2";
-
 import { Button, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { useRouter } from "next/navigation";
+import GridType1 from "@/ui/Grid/GridType1";
+import GridType2 from "@/ui/Grid/GridType2";
 
 export default function Page({
   searchParams,

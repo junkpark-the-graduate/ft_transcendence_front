@@ -1,10 +1,12 @@
 "use client";
 
-import { Spinner } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import Game from "../components/Game";
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
 import { useRouter } from "next/navigation";
+import GridType1 from "@/ui/Grid/GridType1";
+import GridType2 from "@/ui/Grid/GridType2";
 
 export default function Page({ searchParams }: { searchParams: any }) {
   const { roomId } = searchParams;
@@ -24,18 +26,10 @@ export default function Page({ searchParams }: { searchParams: any }) {
   });
 
   return (
-    <div>
-      {isValidRoom ? (
-        <Game />
-      ) : (
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
-          size="xl"
-        />
-      )}
-    </div>
+    <GridType2>
+      {/* <Box backgroundColor={"tomato"} width={"full"} height={"full"}> */}
+      {isValidRoom ? <Game /> : <Spinner />}
+      {/* </Box> */}
+    </GridType2>
   );
 }

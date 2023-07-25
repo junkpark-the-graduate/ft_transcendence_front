@@ -1,4 +1,4 @@
-import { Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { socket } from "../socket";
@@ -15,6 +15,7 @@ const keyState: KeyState = {
   39: false, // right
 };
 
+// TODO refactoring
 export default function Game() {
   const router = useRouter();
   const [score, setScore] = useState("0 : 0");
@@ -33,17 +34,16 @@ export default function Game() {
   light.position.set(0, 0, 10); // 광원의 위치 설정
 
   const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
   // add to div
 
   const backgroundTextureLoader = new THREE.TextureLoader();
   const backgroundTexture = backgroundTextureLoader.load("/Junkpark.png");
   const backgroundGeometry = new THREE.BoxGeometry(50, 100, 100);
-  const backgroundmaterial = new THREE.MeshBasicMaterial({
+  const backgroundMaterial = new THREE.MeshBasicMaterial({
     map: backgroundTexture,
     side: THREE.BackSide,
   });
-  const background = new THREE.Mesh(backgroundGeometry, backgroundmaterial);
+  const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
 
   const paddleGeometry = new THREE.BoxGeometry(PADDLE_WIDTH, PADDLE_HEIGHT, 1); // make a cube class
   const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 }); // make a material class
@@ -125,7 +125,20 @@ export default function Game() {
       }
     });
 
-    document.querySelector("#canvas")!.appendChild(renderer.domElement);
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    console.log(canvas);
+    renderer.setSize(canvas!.clientWidth, canvas!.clientHeight);
+    canvas.appendChild(renderer.domElement);
+
+    const resizeObserver = new ResizeObserver(
+      (entries: ResizeObserverEntry[]) => {
+        const { width, height } = entries[0].contentRect;
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+    );
+    resizeObserver.observe(canvas);
 
     window.addEventListener(
       "keydown",
@@ -160,7 +173,7 @@ export default function Game() {
   }, []);
 
   return (
-    <div id="canvas">
+    <Box id="canvas" height="full" width="full" position="relative">
       <Text
         position="absolute"
         top="10px"
@@ -169,10 +182,10 @@ export default function Game() {
         width="100%"
         textAlign="center"
         z-index="100"
-        display="block"
+        display={"block"}
       >
         {score}
       </Text>
-    </div>
+    </Box>
   );
 }
