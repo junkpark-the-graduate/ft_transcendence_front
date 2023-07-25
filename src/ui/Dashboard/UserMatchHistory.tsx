@@ -31,7 +31,7 @@ export default function UserMatchHistory() {
         mb={4}
         borderTopRadius={8}
       >
-        <BaseHeading text="Match History" mb={2} />
+        <BaseHeading text="Match History" />
       </Box>
       <TableContainer>
         <Table size="sm" variant="striped" colorScheme="blackAlpha">

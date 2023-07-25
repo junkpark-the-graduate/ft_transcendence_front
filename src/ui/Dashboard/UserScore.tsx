@@ -1,8 +1,8 @@
 import BaseHeading from "@/ui/Typo/Heading";
+import { getMyData } from "@/utils/user/getMyData";
 import {
   Box,
   Flex,
-  Highlight,
   Stack,
   Stat,
   StatArrow,
@@ -12,6 +12,9 @@ import {
 } from "@chakra-ui/react";
 
 export default function UserScore() {
+  const userData = getMyData();
+  const userScore = userData?.mmr.toString();
+
   return (
     <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mr={3}>
       <Box
@@ -34,18 +37,12 @@ export default function UserScore() {
                   42
                 </StatHelpText>
                 <StatNumber fontSize={"22px"}>
-                  <Highlight
-                    query="4,670"
-                    styles={{
-                      textColor: "white",
-                      px: "2",
-                      py: "1",
-                      rounded: "5px",
-                      bg: "gray",
-                    }}
-                  >
-                    4,670 pt
-                  </Highlight>
+                  <Flex>
+                    <Text px={2} bg="gray" borderRadius="8px">
+                      {userScore}
+                    </Text>
+                    <Text ml={2}>pt</Text>
+                  </Flex>
                 </StatNumber>
               </Stat>
               <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
