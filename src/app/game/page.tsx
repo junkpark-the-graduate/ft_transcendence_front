@@ -1,12 +1,25 @@
 "use client";
 
-import { Button, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
-import { Spinner } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Spinner,
+  GridItem,
+  Grid,
+  HStack,
+  Spacer,
+  StackDivider,
+  AspectRatio,
+  Image,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { useRouter } from "next/navigation";
 import GridType1 from "@/ui/Grid/GridType1";
 import GridType2 from "@/ui/Grid/GridType2";
+import GameUserCard from "./components/GameUserCard";
 
 export default function Page({
   searchParams,
@@ -42,47 +55,12 @@ export default function Page({
     }
   }, []);
   return (
-    <GridType2
-      children={
-        <div>
-          {isMatching ? (
-            <div>
-              <Spinner
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="blue.500"
-                size="xl"
-              />
-              {/*{matchingTime}*/}
-              <Button onClick={() => matchingButton("cancel_matching")}>
-                Cancel Matching
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Button onClick={() => matchingButton("normal_matching")}>
-                Normal Game
-              </Button>
-              <Button onClick={() => matchingButton("ladder_matching")}>
-                Ladder Game
-              </Button>
-              <Button
-                onClick={() =>
-                  socket.emit("create_room", (data: any) => {
-                    console.log(data);
-                    router.push(`/game/join?roomId=${data}`);
-                  })
-                }
-              >
-                Create Room
-              </Button>
-            </>
-          )}
-          <RoomIdInput />
-        </div>
-      }
-    />
+    <GridType2>
+      <HStack spacing={"20"} w="100%" h="100%">
+        <GameUserCard />
+        <GameUserCard />
+      </HStack>
+    </GridType2>
   );
 }
 
