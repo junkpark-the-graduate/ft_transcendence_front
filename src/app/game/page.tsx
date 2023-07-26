@@ -64,27 +64,27 @@ export default function Page({
   );
 }
 
-function RoomIdInput() {
-  const [value, setValue] = useState("");
-  const router = useRouter();
+// function RoomIdInput() {
+//   const [value, setValue] = useState("");
+//   const router = useRouter();
 
-  const handleClick = () => {
-    router.push(`/game/join?roomId=${value}`);
-  };
+//   const handleClick = () => {
+//     router.push(`/game/join?roomId=${value}`);
+//   };
 
-  return (
-    <InputGroup size="md">
-      <Input
-        pr="4.5rem"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Enter roomId"
-      />
-      <InputRightElement width="4.5rem">
-        <Button h="1.75rem" size="sm" onClick={handleClick}>
-          Join Room
-        </Button>
-      </InputRightElement>
-    </InputGroup>
-  );
-}
+//   return (
+//     <InputGroup size="md">
+//       <Input
+//         pr="4.5rem"
+//         value={value}
+//         onChange={(e) => setValue(e.target.value)}
+//         placeholder="Enter roomId"
+//       />
+//       <InputRightElement width="4.5rem">
+//         <Button h="1.75rem" size="sm" onClick={handleClick}>
+//           Join Room
+//         </Button>
+//       </InputRightElement>
+//     </InputGroup>
+//   );
+// }
