@@ -5,6 +5,7 @@ import { Flex, Input, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { SearchIcon } from "@chakra-ui/icons";
+import BaseInput from "../Input/Input";
 
 export default function Search() {
   const router = useRouter();
@@ -46,19 +47,9 @@ export default function Search() {
     <>
       <Flex alignItems={"center"}>
         {searchOpen ? (
-          <Input
+          <BaseInput
             h={8}
-            mr={3}
-            borderRadius="8px"
-            border="none"
-            bg="#414147"
-            _hover={{
-              background: "#191919",
-            }}
-            _focus={{
-              borderColor: "#191919",
-              background: "#191919",
-            }}
+            mr={2}
             value={searchId}
             onChange={handleSearchInputChange}
             placeholder="search user"

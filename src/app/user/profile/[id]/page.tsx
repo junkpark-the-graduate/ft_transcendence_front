@@ -9,11 +9,15 @@ import { getMyData } from "@/utils/user/getMyData";
 import { getUserData } from "@/utils/user/getUserData";
 import BlockButton from "@/ui/Button/BlockButton";
 import Dashboard from "@/ui/Dashboard/Dashboard";
+import { EUserStatus } from "../../types/EUserStatus";
+import UserOnlineStatus from "../../components/UserOnlineStatus";
+import { getUserStatus } from "@/utils/user/getUserStatus";
 
 export default function UserProfile({ params }: { params: any }) {
   const myId: number | undefined = getMyData()?.id;
-  const userId = myId ? myId : 0; // 변환: number | undefined -> number
+  const myId2 = myId ? myId : 0; // 변환: number | undefined -> number
   const userData = getUserData(params.id);
+  const userId = userData?.id ? userData?.id : 0;
 
   const UserDetail = (
     <Box position="relative" px={5} pt={6} borderRadius={8}>
@@ -24,7 +28,10 @@ export default function UserProfile({ params }: { params: any }) {
             {userData?.name}
           </Heading>
           <Text fontSize={16}>42 ID: {userData?.id}</Text>
-          <Text fontSize={16}>status: </Text>
+          <Text fontSize={16}>
+            status:{" "}
+            {userData?.status === EUserStatus.online ? "online" : "offline"}
+          </Text>
         </Box>
         <Spacer />
         <Flex
@@ -33,7 +40,7 @@ export default function UserProfile({ params }: { params: any }) {
           right={0}
           bottom={0}
         >
-          <FollowButton myId={userId} userId={params.id} />
+          <FollowButton myId={myId2} userId={params.id} />
           <BaseButton
             my={2}
             size="sm"
