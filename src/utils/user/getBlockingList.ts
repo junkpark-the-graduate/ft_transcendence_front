@@ -6,12 +6,17 @@ export function getBlockingList(userId: number | undefined) {
 
   const fetchBlockings = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/block/${userId}`);
-      const data = await res.json();
-      setIsLoading(false);
-      setBlockings(data.map((x: any) => x.blocking));
+      if (typeof userId !== "undefined") {
+        const res = await fetch(`http://127.0.0.1:3001/block/${userId}`);
+        const data = await res.json();
+        setIsLoading(false);
+        setBlockings(data.map((x: any) => x.blocking));
+      } else {
+        setIsLoading(false);
+      }
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
     }
   };
 
