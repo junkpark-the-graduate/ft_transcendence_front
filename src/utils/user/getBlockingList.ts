@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function getBlockingList(userId: number) {
+export function getBlockingList(userId: number | undefined) {
   const [blockings, setBlockings] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

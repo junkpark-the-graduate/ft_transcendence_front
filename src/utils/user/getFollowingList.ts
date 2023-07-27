@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function getFollowingList(userId: number) {
+export function getFollowingList(userId: number | undefined) {
   const [followings, setFollowings] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
