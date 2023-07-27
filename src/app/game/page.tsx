@@ -19,6 +19,7 @@ export default function Page({
   const [isMatching, setIsMatching] = useState(false);
   const [isMatched, setIsMatched] = useState(false);
   //const [matchingTime, setmatchingTime] = useState("00:00");
+
   const router = useRouter();
 
   socket.on("match_found", (data: any) => {
@@ -27,6 +28,11 @@ export default function Page({
     setTimeout(() => {
       router.push(`/game/join?roomId=${roomId}`);
     }, 3000);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("disconnected from server");
+    router.push(`/`);
   });
 
   useEffect(() => {
