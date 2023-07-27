@@ -12,8 +12,8 @@ export default function FollowButton({
   myId,
   userId,
 }: {
-  myId: number;
-  userId: number;
+  myId: number | undefined;
+  userId: number | undefined;
 }) {
   const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
     useAppContext();

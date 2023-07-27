@@ -24,6 +24,7 @@ import { getMyData } from "@/utils/user/getMyData";
 import BaseHeading from "@/ui/Typo/Heading";
 import BaseInput from "@/ui/Input/Input";
 import FileInput from "@/ui/Input/FileInput";
+import FullBox from "@/ui/Box/FullBox";
 
 type FormData = {
   name: string;
@@ -96,7 +97,7 @@ const Edit = () => {
     }
     if (finalName.length > 20) {
       toast({
-        description: "새로운 이름은 20자 이하여야 합니다.",
+        description: "이름은 20자 이하여야 합니다.",
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -106,7 +107,7 @@ const Edit = () => {
     }
     if (!nameRegex.test(finalName)) {
       toast({
-        description: "새로운 이름에는 알파벳과 숫자만 포함되어야 합니다.",
+        description: "이름은 알파벳과 숫자만 포함해야 합니다.",
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -198,97 +199,99 @@ const Edit = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Center>
-        <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
-          <BaseHeading text="edit profile" />
-          <Divider my="5" />
-          <FormControl>
-            <FormLabel mb="10px" htmlFor="name">
-              {">"} 이름 변경하기
-            </FormLabel>
-            <Text fontSize={13} ml={1} mb={2} textColor="gray">
-              알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
-            </Text>
-            <Flex>
-              <BaseInput
-                type="name"
-                placeholder={userData?.name || ""}
-                mr={2}
-                onChange={(e) => {
-                  setInputName(e.target.value);
-                  setIsNameValid(2);
+    <FullBox>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Center>
+          <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
+            <BaseHeading text="edit profile" />
+            <Divider my="5" />
+            <FormControl>
+              <FormLabel mb="10px" htmlFor="name">
+                {">"} 이름 변경하기
+              </FormLabel>
+              <Text fontSize={13} ml={1} mb={2} textColor="gray">
+                알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
+              </Text>
+              <Flex>
+                <BaseInput
+                  type="name"
+                  placeholder={userData?.name || ""}
+                  mr={2}
+                  onChange={(e) => {
+                    setInputName(e.target.value);
+                    setIsNameValid(2);
+                  }}
+                />
+                <BaseButton text="검사하기" onClick={handleNameValidation} />
+              </Flex>
+              <Divider my="5" />
+              <FormLabel mb="10px" htmlFor="name">
+                {">"} 프로필 이미지 변경하기
+              </FormLabel>
+              <Flex alignItems="center">
+                <div>
+                  {selectedImage ? (
+                    <Image
+                      mx="10px"
+                      borderRadius="full"
+                      boxSize="120px"
+                      src={selectedImage}
+                      alt=""
+                    />
+                  ) : (
+                    <Image
+                      mx="10px"
+                      borderRadius="full"
+                      boxSize="120px"
+                      src={userData?.image}
+                      alt=""
+                    />
+                  )}
+                </div>
+                <Spacer />
+                <Flex flexDirection="column"></Flex>
+              </Flex>
+              <Text fontSize={13} ml={1} my={2} textColor="gray">
+                .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
+              </Text>
+              <FileInput
+                type="file"
+                accept=".jpg, .jpeg, .png"
+                onChange={({ target }) => {
+                  if (target.files) {
+                    const file = target.files[0];
+                    setSelectedImage(URL.createObjectURL(file));
+                    setSelectedFile(file);
+                  }
                 }}
               />
-              <BaseButton text="검사하기" onClick={handleNameValidation} />
-            </Flex>
+              <Divider my="5" />
+              <FormLabel mb="10px" htmlFor="name">
+                {">"} 2FA 설정 변경하기
+              </FormLabel>
+              <Switch
+                colorScheme="gray"
+                isChecked={twoFactor}
+                onChange={handleToggleAuth}
+              >
+                {twoFactor ? "2FA enabled" : "2FA disabled"}
+              </Switch>
+            </FormControl>
             <Divider my="5" />
-            <FormLabel mb="10px" htmlFor="name">
-              {">"} 프로필 이미지 변경하기
-            </FormLabel>
-            <Flex alignItems="center">
-              <div>
-                {selectedImage ? (
-                  <Image
-                    mx="10px"
-                    borderRadius="full"
-                    boxSize="120px"
-                    src={selectedImage}
-                    alt=""
-                  />
-                ) : (
-                  <Image
-                    mx="10px"
-                    borderRadius="full"
-                    boxSize="120px"
-                    src={userData?.image}
-                    alt=""
-                  />
-                )}
-              </div>
+            <Flex>
               <Spacer />
-              <Flex flexDirection="column"></Flex>
+              <RedButton text="취소하기" mr={2} />
+              <BaseButton
+                text="저장하기"
+                isLoading={isSubmitting}
+                type="submit"
+                onClick={() => {}}
+              />
             </Flex>
-            <Text fontSize={13} ml={1} my={2} textColor="gray">
-              .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
-            </Text>
-            <FileInput
-              type="file"
-              accept=".jpg, .jpeg, .png"
-              onChange={({ target }) => {
-                if (target.files) {
-                  const file = target.files[0];
-                  setSelectedImage(URL.createObjectURL(file));
-                  setSelectedFile(file);
-                }
-              }}
-            />
-            <Divider my="5" />
-            <FormLabel mb="10px" htmlFor="name">
-              {">"} 2FA 설정 변경하기
-            </FormLabel>
-            <Switch
-              colorScheme="gray"
-              isChecked={twoFactor}
-              onChange={handleToggleAuth}
-            >
-              {twoFactor ? "2FA enabled" : "2FA disabled"}
-            </Switch>
-          </FormControl>
-          <Divider my="5" />
-          <Flex>
-            <Spacer />
-            <RedButton text="취소하기" mr={2} />
-            <BaseButton
-              text="저장하기"
-              isLoading={isSubmitting}
-              type="submit"
-              onClick={() => {}}
-            />
-          </Flex>
-        </Box>
-      </Center>
-    </form>
+          </Box>
+        </Center>
+      </form>
+    </FullBox>
   );
 };
 

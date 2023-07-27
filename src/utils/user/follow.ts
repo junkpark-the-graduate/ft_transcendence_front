@@ -1,8 +1,8 @@
 import { getTokenClient } from "../auth/getTokenClient";
 
 export const follow = async (
-  userId: number,
-  following: number,
+  userId: number | undefined,
+  following: number | undefined,
   setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
@@ -25,8 +25,8 @@ export const follow = async (
 };
 
 export const unfollow = async (
-  userId: number,
-  following: number,
+  userId: number | undefined,
+  following: number | undefined,
   setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {

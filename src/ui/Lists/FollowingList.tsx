@@ -30,8 +30,15 @@ import { block, unblock } from "@/utils/user/block";
 import { follow, unfollow } from "@/utils/user/follow";
 import { getUserStatus } from "@/utils/user/getUserStatus";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
+import ProfileModal from "../Modal/ProfileModal";
 
-function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
+function FollowingListItem({
+  myId,
+  userId,
+}: {
+  myId: number | undefined;
+  userId: number | undefined;
+}) {
   const userData = getUserData(userId);
   const userStatus = getUserStatus(userId);
   const router = useRouter();
@@ -66,7 +73,7 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
           boxSize="1em"
         />
       </Avatar>
-      <Text fontSize={14}>{userData?.name}</Text>
+      <ProfileModal userData={userData} />
       <Spacer />
       <Flex>
         <BaseIconButton
@@ -118,8 +125,7 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
 
 export default function FollowingList() {
   const myData = getMyData();
-  const myId = myData?.id ?? 0; // Default to 0 if `id` is undefined or null
-  const followings = getFollowingList(myId);
+  const followings = getFollowingList(myData?.id);
 
   return (
     <Box>
@@ -127,7 +133,7 @@ export default function FollowingList() {
         {followings &&
           followings.map((following) => (
             <React.Fragment key={following}>
-              <FollowingListItem myId={myId} userId={Number(following)} />
+              <FollowingListItem myId={myData?.id} userId={Number(following)} />
               <Divider borderColor="#414147" />
             </React.Fragment>
           ))}

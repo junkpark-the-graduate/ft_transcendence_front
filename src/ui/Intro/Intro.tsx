@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Box, Center, Flex, Spacer } from "@chakra-ui/react";
 import { Title } from "./Title";
+import FullBox from "../Box/FullBox";
 
 interface IntroProps {
   children: React.ReactNode;
@@ -13,7 +14,7 @@ export const Intro = ({ children }: IntroProps) => {
   const router = useRouter();
 
   return (
-    <Box h="100%" w="100%">
+    <FullBox>
       <Flex>
         <Box>42 SEOUL</Box>
         <Spacer />
@@ -44,6 +45,6 @@ export const Intro = ({ children }: IntroProps) => {
           ↗ github
         </Box>
       </Flex>
-    </Box>
+    </FullBox>
   );
 };

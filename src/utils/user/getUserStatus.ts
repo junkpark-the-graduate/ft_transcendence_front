@@ -2,7 +2,7 @@ import { socket } from "@/app/user/socket";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { useEffect, useState } from "react";
 
-export function getUserStatus(userId: number) {
+export function getUserStatus(userId: number | undefined) {
   const [userStatus, setUserStatus] = useState<EUserStatus>(
     EUserStatus.offline
   );
