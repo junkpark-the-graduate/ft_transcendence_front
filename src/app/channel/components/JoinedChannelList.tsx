@@ -16,6 +16,7 @@ const JoinedChannelList: React.FC<Props> = ({
   setJoinedChannels,
 }) => {
   const toast = useToast();
+  const router = useRouter();
 
   if (!Array.isArray(joinedChannels)) {
     return <div>Loading...</div>;
@@ -52,6 +53,37 @@ const JoinedChannelList: React.FC<Props> = ({
     }
   }
 
+  async function connectJoinedChannel(channelId: number) {
+    const accessToken = Cookies.get("accessToken");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined/${channelId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return res;
+  }
+
+  async function connectJoinedChannelHandler(channelId: number) {
+    const res = await connectJoinedChannel(channelId);
+    const resJson = await res.json();
+    if (res.status < 300) {
+      router.push(`/channel/${channelId}/chat`);
+    } else {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }
+
   return (
     <Box>
       <Text fontSize="xl" mt={5}>
@@ -67,6 +99,7 @@ const JoinedChannelList: React.FC<Props> = ({
             borderRadius="md"
             textAlign={"left"}
             position={"relative"} // Add relative positioning so we can use absolute positioning on child
+            onClick={() => connectJoinedChannelHandler(channel.id)}
           >
             <Text fontSize="xl">{channel.name}</Text>
             <Text fontSize="sm">ID: {channel.id}</Text>
