@@ -13,7 +13,7 @@ import {
 
 export default function UserScore() {
   const userData = getMyData();
-  const userScore = userData?.mmr.toString();
+  const userScore = userData?.mmr;
 
   return (
     <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mr={3}>

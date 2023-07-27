@@ -26,14 +26,15 @@ import { useRouter } from "next/navigation";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getUserData } from "@/utils/user/getUserData";
 import { getMyData } from "@/utils/user/getMyData";
-import BaseButton from "../Button/Button";
 import { block, unblock } from "@/utils/user/block";
 import { follow, unfollow } from "@/utils/user/follow";
+import { getUserStatus } from "@/utils/user/getUserStatus";
+import { EUserStatus } from "@/app/user/types/EUserStatus";
 
 function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
   const userData = getUserData(userId);
+  const userStatus = getUserStatus(userId);
   const router = useRouter();
-  const status: string = "online";
   const [isBlocking, setIsBlocking] = useState(false);
   const [isFollowing, setIsFollowing] = useState(true);
 
@@ -59,7 +60,7 @@ function FollowingListItem({ myId, userId }: { myId: number; userId: number }) {
     <Flex align="center" my={1}>
       <Avatar size="sm" name={userData?.name} mr={6}>
         <AvatarBadge
-          bg={status === "online" ? "green" : "red"}
+          bg={userStatus === EUserStatus.online ? "green" : "red"}
           border="2px"
           borderColor="white"
           boxSize="1em"

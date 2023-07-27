@@ -1,9 +1,12 @@
+import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { useEffect, useState } from "react";
 
 export interface UserData {
   id: number;
   name: string;
   image: string;
+  status: EUserStatus;
+  mmr: number;
 }
 
 export function getUserData(id: number) {
