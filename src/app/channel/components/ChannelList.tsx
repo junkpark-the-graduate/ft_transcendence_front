@@ -6,6 +6,7 @@ import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import PasswordModal from "@/ui/Modal/PasswordModal";
+import Input from "@/ui/Input/Input";
 
 interface Props {
   channels: any[];
@@ -14,22 +15,14 @@ interface Props {
 const ChannelList: React.FC<Props> = ({ channels }) => {
   const router = useRouter();
   const toast = useToast();
-  // const { isOpen, onOpen, onClose } = useDisclosure();
-  // const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [selectedChannelId, setSelectedChannelId] = useState<number>(0);
-  // const initialRef = useRef<HTMLInputElement>(null);
-  // const finalRef = useRef(null);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   if (!Array.isArray(channels)) {
     return <div>Loading...</div>;
   }
-
-  // function onOpen(channelId: number) {
-  //   setSelectedChannelId(channelId); // Store the selected channel ID in the state
-  //   setIsOpen(true); // Open the modal
-  // }
 
   async function joinChannel(channelId: number) {
     const accessToken = Cookies.get("accessToken");
@@ -110,25 +103,6 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     }
   };
 
-  // async function onClickProtectedChannel() {
-  //   const channelId: number = selectedChannelId; // Access the stored selected channel ID
-  //   const enteredPassword = password; // Access the entered password
-  //   const res = await joinProtectedChannel(enteredPassword, channelId);
-
-  //   const resJson = await res.json();
-
-  //   if (res.status < 300) {
-  //     router.push(`/channel/${channelId}/chat`);
-  //   } else {
-  //     setIsOpen(true);
-  //     setErrorModalMessage(resJson.message);
-  //   }
-
-  //   // setIsOpen(false); // Close the modal
-  //   // setSelectedChannelId(0); // Reset the selected channel ID
-  //   setPassword(""); // Reset the password input
-  // }
-
   function goToAdminPage(e: React.MouseEvent, channelId: number) {
     e.stopPropagation(); // Prevent the event from propagating up to the parent element
     //TODO : 관리자 아니면 못들어가게 막음
@@ -148,14 +122,37 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     }
   }
 
+  // 검색어 입력 시 호출되는 이벤트 핸들러
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(event.target.value);
+  };
+
+  // 검색어를 기준으로 채널을 필터링하는 함수
+  const filterChannelsBySearchKeyword = (channel: any) => {
+    return channel.name.toLowerCase().includes(searchKeyword.toLowerCase());
+  };
+
+  // 검색 결과를 보여주는 채널 리스트
+  const filteredChannels = channels.filter(filterChannelsBySearchKeyword);
+
   return (
     <>
       <Box>
         <Text fontSize="xl" mt={5}>
           Channel List
         </Text>
+        {/* 검색창 추가 */}
+        <Box mt={3}>
+          <Input
+            type="text"
+            placeholder="채널 이름 검색"
+            value={searchKeyword}
+            onChange={handleSearch}
+          />
+        </Box>
         <Flex direction="column" gap={5}>
-          {channels.map((channel: any) => (
+          {/* {channels.map((channel: any) => ( */}
+          {filteredChannels.map((channel: any) => (
             <Box
               key={channel.id}
               padding={3}
@@ -189,41 +186,6 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
         onEnter={handleEnterPassword}
         errorMessage={errorMessage}
       />
-      {/* <Modal
-        initialFocusRef={initialRef}
-        finalFocusRef={finalRef}
-        isOpen={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-          setSelectedChannelId(0); // Reset the selected channel ID when the Modal is closed
-          setPassword(""); // Reset the password input when the Modal is closed
-        }}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader color="black">비밀번호를 입력하세요</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl>
-              <FormLabel color="black">힌트는 없습니다</FormLabel>
-              <Input
-                ref={initialRef}
-                color="black"
-                placeholder="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClickProtectedChannel}>
-              입장
-            </Button>
-            <Button onClick={() => setIsOpen(false)}>취소</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal> */}
     </>
   );
 };
