@@ -19,12 +19,12 @@ type User = {
   mmr: number;
 };
 
-export default function GameUserCard() {
+export default function GameUserCard({ ftId }: { ftId: number }) {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
 
   async function getUser(id: number) {
-    const response = await fetchAsyncToBackEnd("/user/99951");
+    const response = await fetchAsyncToBackEnd(`/user/${ftId}`);
     if (!response.ok) {
       throw new Error("HTTP error " + response.status);
     }
@@ -33,7 +33,7 @@ export default function GameUserCard() {
   }
 
   useEffect(() => {
-    getUser(99951);
+    getUser(ftId);
   }, []);
 
   return (

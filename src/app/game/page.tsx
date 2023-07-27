@@ -1,25 +1,13 @@
 "use client";
 
-import {
-  Button,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Spinner,
-  GridItem,
-  Grid,
-  HStack,
-  Spacer,
-  StackDivider,
-  AspectRatio,
-  Image,
-} from "@chakra-ui/react";
+import { HStack, Skeleton } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { useRouter } from "next/navigation";
 import GridType1 from "@/ui/Grid/GridType1";
 import GridType2 from "@/ui/Grid/GridType2";
 import GameUserCard from "./components/GameUserCard";
+import GameSettingCard from "./components/GameSettingCard";
 
 export default function Page({
   searchParams,
@@ -29,18 +17,17 @@ export default function Page({
   };
 }) {
   const [isMatching, setIsMatching] = useState(false);
+  const [isMatched, setIsMatched] = useState(false);
   //const [matchingTime, setmatchingTime] = useState("00:00");
   const router = useRouter();
 
   socket.on("match_found", (data: any) => {
     const { roomId } = data;
-    router.push(`/game/join?roomId=${roomId}`);
+    setIsMatched(true);
+    setTimeout(() => {
+      router.push(`/game/join?roomId=${roomId}`);
+    }, 3000);
   });
-
-  function matchingButton(emit: string) {
-    setIsMatching(true);
-    socket.emit(emit);
-  }
 
   useEffect(() => {
     socket.emit("reconnect", (data: any) => {
@@ -57,8 +44,18 @@ export default function Page({
   return (
     <GridType2>
       <HStack spacing={"20"} w="100%" h="100%">
-        <GameUserCard />
-        <GameUserCard />
+        {/* TODO 내 ftId 받아오기 */}
+        <GameUserCard ftId={99951} />
+        {isMatching ? (
+          isMatched ? (
+            // TODO 상대방 ftId 받아오기
+            <GameUserCard ftId={99951} />
+          ) : (
+            <Skeleton w={"100%"} h={"100%"} />
+          )
+        ) : (
+          <GameSettingCard setIsMatching={setIsMatching} />
+        )}
       </HStack>
     </GridType2>
   );
