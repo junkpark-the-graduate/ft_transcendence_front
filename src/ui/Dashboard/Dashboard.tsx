@@ -1,10 +1,10 @@
 "use client";
 
 import { Flex, Divider, Box } from "@chakra-ui/react";
-import UserRank from "./UserRank";
-import UserScore from "./UserScore";
-import UserStats from "./UserStats";
-import UserMatchHistory from "./UserMatchHistory";
+import UserRank from "./Rank";
+import UserScore from "./MmrScore";
+import UserStats from "./Stats";
+import UserMatchHistory from "./MatchHistory";
 
 export const userDummyData = {
   stats: {

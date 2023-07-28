@@ -17,10 +17,10 @@ import { getBlockingList } from "@/utils/user/getBlockingList";
 import { block, unblock } from "@/utils/user/block";
 import BaseButton from "../Button/Button";
 import { GoCircleSlash } from "react-icons/go";
+import { EUserStatus } from "@/app/user/types/EUserStatus";
 
 function BlockingListItem({ myId, userId }: { myId: number; userId: number }) {
   const userData = getUserData(userId);
-  const status: string = "online";
   const [isBlocking, setIsBlocking] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
 
@@ -37,7 +37,7 @@ function BlockingListItem({ myId, userId }: { myId: number; userId: number }) {
     <Flex align="center" my={1}>
       <Avatar size="sm" name={userData?.name} mr={6}>
         <AvatarBadge
-          bg={status === "online" ? "green" : "red"}
+          bg={userData?.status === EUserStatus.online ? "green" : "red"}
           border="2px"
           borderColor="white"
           boxSize="1em"

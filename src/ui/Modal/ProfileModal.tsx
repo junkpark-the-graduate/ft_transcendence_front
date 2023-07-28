@@ -3,6 +3,7 @@ import {
   Box,
   Center,
   Flex,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,6 +18,8 @@ import BaseButton from "../Button/Button";
 import { UserData } from "@/utils/user/getUserData";
 import { getMyData } from "@/utils/user/getMyData";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
+import BlockButton from "../Button/BlockButton";
+import FollowButton from "../Button/FollowButton";
 
 export interface ProfileModalProps {
   userData: UserData | null | undefined;
@@ -72,33 +75,24 @@ export default function ProfileModal({
             </Center>
           </ModalBody>
           <ModalFooter>
+            <FollowButton
+              myId={myData?.id}
+              userId={userData?.id}
+              icon={false}
+            />
+            <BlockButton myId={myData?.id} userId={userData?.id} icon={false} />
             <BaseButton
+              flex="1"
               mr={2}
               my={2}
-              flex={1}
               size="sm"
-              text="follow"
+              fontSize={14}
+              text="message"
               onClick={() => {}}
             />
             <BaseButton
-              mr={2}
-              my={2}
-              flex={1}
-              size="sm"
-              text="block"
-              onClick={() => {}}
-            />
-            <BaseButton
-              mr={2}
-              my={2}
-              flex={1}
-              size="sm"
-              text="dm"
-              onClick={() => {}}
-            />
-            <BaseButton
-              my={2}
-              flex={1}
+              flex="1"
+              fontSize={14}
               size="sm"
               text="detail"
               onClick={() => {}}
