@@ -3,6 +3,7 @@ import {
   Box,
   Center,
   Flex,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -69,12 +70,17 @@ export default function ProfileModal({
             borderBottom={"#A0A0A3 1px solid"}
           >
             <Center>
-              <Text px={2} mx={1} bg="gray">
-                user rank
-              </Text>
-              <Text px={2} mx={1} bg="gray">
-                user score
-              </Text>
+              <HStack spacing={3}>
+                <Text px={2} mx={1} bg="gray">
+                  rank
+                </Text>
+                <Text px={2} mx={1} bg="gray">
+                  score
+                </Text>
+                <Text px={2} mx={1} bg="gray">
+                  stats
+                </Text>
+              </HStack>
             </Center>
           </ModalBody>
           <ModalFooter>
