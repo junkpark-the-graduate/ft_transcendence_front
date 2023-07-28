@@ -13,6 +13,7 @@ export const Title = () => {
           color="white"
           fontSize="120px"
           mx={3}
+          textShadow="black 8px 8px"
         >
           Ping
         </Heading>
@@ -22,6 +23,7 @@ export const Title = () => {
           color="white"
           fontSize="120px"
           mx={3}
+          textShadow="black 8px 8px"
         >
           Pong
         </Heading>
