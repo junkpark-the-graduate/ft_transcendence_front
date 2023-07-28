@@ -2,7 +2,7 @@
 
 import { Flex, Divider, Box } from "@chakra-ui/react";
 import UserRank from "./Rank";
-import UserScore from "./MmrScore";
+import UserScore from "./Score";
 import UserStats from "./Stats";
 import UserMatchHistory from "./MatchHistory";
 
@@ -51,20 +51,21 @@ export const userDummyData = {
 
 export interface DashBoardProps {
   userData: React.ReactNode;
+  id: number | undefined;
 }
 
-export default function Dashboard({ userData }: DashBoardProps) {
+export default function Dashboard({ userData, id }: DashBoardProps) {
   return (
     <Flex p={4} direction="column">
       {userData}
       <Divider borderColor="#A0A0A3" my={6} />
       <Box flex={7}>
         <Flex>
-          <UserRank />
-          <UserScore />
-          <UserStats />
+          <UserRank id={id} />
+          <UserScore id={id} />
+          <UserStats id={id} />
         </Flex>
-        <UserMatchHistory />
+        <UserMatchHistory id={id} />
       </Box>
     </Flex>
   );

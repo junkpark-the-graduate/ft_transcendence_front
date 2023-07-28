@@ -1,4 +1,7 @@
 import BaseHeading from "@/ui/Typo/Heading";
+import { getMyData } from "@/utils/user/getMyData";
+import getRank from "@/utils/user/getRank";
+import getRankById from "@/utils/user/getRankById";
 import {
   Box,
   Flex,
@@ -11,7 +14,14 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-export default function UserRank() {
+export interface RankProps {
+  id: number | undefined;
+}
+
+export default function UserRank({ id }: RankProps) {
+  const ranking = getRank();
+  const userRank: number | undefined = getRankById(id);
+
   return (
     <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mr={3}>
       <Box
@@ -30,26 +40,19 @@ export default function UserRank() {
             <Flex direction="column" alignItems="center">
               <Stat>
                 <StatHelpText>
-                  <StatArrow type="decrease" />
-                  12
+                  <StatArrow type="decrease" />-
                 </StatHelpText>
                 <StatNumber fontSize={"22px"}>
-                  <Highlight
-                    query="42"
-                    styles={{
-                      textColor: "white",
-                      px: "2",
-                      py: "1",
-                      rounded: "5px",
-                      bg: "gray",
-                    }}
-                  >
-                    42 th
-                  </Highlight>
+                  <Flex>
+                    <Text px={2} bg="gray" borderRadius="8px">
+                      {userRank}
+                    </Text>
+                    <Text ml={2}>th</Text>
+                  </Flex>
                 </StatNumber>
               </Stat>
               <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
-                4,242 players
+                {ranking?.length} players
               </Text>
             </Flex>
           </Box>

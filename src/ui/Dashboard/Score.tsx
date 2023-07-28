@@ -1,5 +1,6 @@
 import BaseHeading from "@/ui/Typo/Heading";
-import { getMyData } from "@/utils/user/getMyData";
+import { useEffect, useState } from "react";
+import { UserData, getUserData } from "@/utils/user/getUserData";
 import {
   Box,
   Flex,
@@ -11,9 +12,36 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-export default function UserScore() {
-  const userData = getMyData();
-  const userScore = userData?.mmr;
+export interface ScoreProps {
+  id: number | undefined;
+}
+
+export default function UserScore({ id }: ScoreProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState<UserData | undefined>();
+
+  useEffect(() => {
+    const fetchUserInfo = async (id: number | undefined) => {
+      try {
+        if (typeof id !== "undefined") {
+          const res = await fetch(`http://127.0.0.1:3001/user/${id}`);
+          const userData = await res.json();
+          setUserData(userData);
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.log("cannot load the user data");
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserInfo(id);
+  }, [id]);
+
+  if (isLoading) {
+    // Loading state
+    return null;
+  }
 
   return (
     <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mr={3}>
@@ -33,20 +61,19 @@ export default function UserScore() {
             <Flex direction="column" alignItems="center">
               <Stat>
                 <StatHelpText>
-                  <StatArrow type="increase" />
-                  42
+                  <StatArrow type="increase" />-
                 </StatHelpText>
                 <StatNumber fontSize={"22px"}>
                   <Flex>
                     <Text px={2} bg="gray" borderRadius="8px">
-                      {userScore}
+                      {userData?.mmr}
                     </Text>
                     <Text ml={2}>pt</Text>
                   </Flex>
                 </StatNumber>
               </Stat>
               <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
-                top 42.42%
+                top ??.?? %
               </Text>
             </Flex>
           </Box>

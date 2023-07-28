@@ -12,7 +12,11 @@ import {
 } from "@chakra-ui/react";
 import { userDummyData } from "./Dashboard";
 
-export default function UserMatchHistory() {
+export interface MatchHistoryProps {
+  id: number | undefined;
+}
+
+export default function UserMatchHistory({ id }: MatchHistoryProps) {
   return (
     <Box
       flex={1}

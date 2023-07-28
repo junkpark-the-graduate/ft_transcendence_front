@@ -10,7 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { userDummyData } from "./Dashboard";
 
-export default function UserStats() {
+export interface StatsProps {
+  id: number | undefined;
+}
+
+export default function UserStats({ id }: StatsProps) {
   const winRate: number = Math.floor(
     (userDummyData.stats.wins /
       (userDummyData.stats.wins + userDummyData.stats.losses)) *

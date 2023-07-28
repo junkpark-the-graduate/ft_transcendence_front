@@ -3,7 +3,6 @@ import {
   Box,
   Center,
   Flex,
-  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -20,6 +19,7 @@ import { getMyData } from "@/utils/user/getMyData";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import BlockButton from "../Button/BlockButton";
 import FollowButton from "../Button/FollowButton";
+import { useRouter } from "next/navigation";
 
 export interface ProfileModalProps {
   userData: UserData | null | undefined;
@@ -31,6 +31,7 @@ export default function ProfileModal({
 }: ProfileModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const myData = getMyData();
+  const router = useRouter();
 
   return (
     <Box>
@@ -48,8 +49,10 @@ export default function ProfileModal({
                 <Text fontSize={24} mb={2}>
                   {userData?.name}
                 </Text>
-                <Text fontSize={16}>42 id: {userData?.id}</Text>
-                <Text fontSize={16}>
+                <Text fontSize={16} textColor="#A0A0A3">
+                  42 id: {userData?.id}
+                </Text>
+                <Text fontSize={16} textColor="#A0A0A3">
                   status:{" "}
                   {userData?.status === EUserStatus.online
                     ? "online"
@@ -95,7 +98,9 @@ export default function ProfileModal({
               fontSize={14}
               size="sm"
               text="detail"
-              onClick={() => {}}
+              onClick={() => {
+                router.push(`/user/profile/${userData?.id}`);
+              }}
             />
           </ModalFooter>
         </ModalContent>

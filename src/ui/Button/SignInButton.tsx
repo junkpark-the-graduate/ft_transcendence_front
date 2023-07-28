@@ -16,7 +16,6 @@ export const SignInButton = () => {
       _hover={{ background: "#414147" }}
       _focus={{ background: "#414147" }}
       onClick={() => {
-        console.log(`${process.env.NEXT_PUBLIC_AUTH_URL}`);
         router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}`);
       }}
     >

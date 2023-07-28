@@ -9,7 +9,9 @@ export default function UserProfile({ params }: { params: any }) {
 
   return (
     <GridType1
-      children={<Dashboard userData={<UserDetail userId={userId} />} />}
+      children={
+        <Dashboard userData={<UserDetail userId={userId} />} id={userId} />
+      }
     />
   );
 }

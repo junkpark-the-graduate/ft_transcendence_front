@@ -65,9 +65,9 @@ function FollowingListItem({
 
   return (
     <Flex align="center" my={1}>
-      <Avatar size="sm" name={userData?.name} mr={6}>
+      <Avatar size="sm" src={userData?.image} name={userData?.name} mr={6}>
         <AvatarBadge
-          bg={userStatus === EUserStatus.online ? "green" : "red"}
+          bg={userData?.status === EUserStatus.online ? "green" : "red"}
           border="2px"
           borderColor="white"
           boxSize="1em"

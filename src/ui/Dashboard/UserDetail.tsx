@@ -44,7 +44,7 @@ export default function UserDetail({ userId }: { userId: number }) {
                 text="message"
                 onClick={() => {}}
               />
-              <BlockButton myId={userId} userId={userId} icon={true} />
+              <BlockButton myId={myId} userId={userId} icon={true} />
             </Flex>
           </GridItem>
         </Grid>
