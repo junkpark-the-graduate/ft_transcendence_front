@@ -1,9 +1,10 @@
 "use client";
 
 import { Flex, Divider, Box } from "@chakra-ui/react";
-import UserStats from "./UserStats";
-import UserAchievement from "./UserAchievement";
-import UserMatchHistory from "./UserMatchHistory";
+import UserRank from "./Rank";
+import UserScore from "./Score";
+import UserStats from "./Stats";
+import UserMatchHistory from "./MatchHistory";
 
 export const userDummyData = {
   stats: {
@@ -50,19 +51,21 @@ export const userDummyData = {
 
 export interface DashBoardProps {
   userData: React.ReactNode;
+  id: number | undefined;
 }
 
-export default function Dashboard({ userData }: DashBoardProps) {
+export default function Dashboard({ userData, id }: DashBoardProps) {
   return (
     <Flex p={4} direction="column">
       {userData}
-      <Divider my={6} />
+      <Divider borderColor="#A0A0A3" my={6} />
       <Box flex={7}>
         <Flex>
-          <UserStats />
-          <UserAchievement />
+          <UserRank id={id} />
+          <UserScore id={id} />
+          <UserStats id={id} />
         </Flex>
-        <UserMatchHistory />
+        <UserMatchHistory id={id} />
       </Box>
     </Flex>
   );

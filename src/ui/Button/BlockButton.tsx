@@ -11,9 +11,11 @@ import { useAppContext } from "@/app/providers";
 export default function BlockButton({
   myId,
   userId,
+  icon,
 }: {
-  myId: number;
-  userId: number;
+  myId: number | undefined;
+  userId: number | undefined;
+  icon: boolean;
 }) {
   const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
     useAppContext();
@@ -33,7 +35,7 @@ export default function BlockButton({
     await unblock(myId, userId, () => setIsBlocking(false));
   };
 
-  return (
+  return icon ? (
     <Flex>
       <BaseButton
         textColor={"red"}
@@ -43,6 +45,21 @@ export default function BlockButton({
         text={isBlocking ? "unblock" : "block"}
         onClick={isBlocking ? handleUnblock : handleBlock}
         bg={isBlocking ? "#191919" : "#414147"}
+        style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+      />
+    </Flex>
+  ) : (
+    <Flex>
+      <BaseButton
+        w="90px"
+        flex="1"
+        fontSize={14}
+        mr={2}
+        size="sm"
+        text={isBlocking ? "unblock" : "block"}
+        onClick={isBlocking ? handleUnblock : handleBlock}
+        bg={isBlocking ? "#191919" : "#414147"}
+        style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
       />
     </Flex>
   );

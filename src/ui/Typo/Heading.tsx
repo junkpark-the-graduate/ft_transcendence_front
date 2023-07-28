@@ -6,8 +6,8 @@ export interface BaseHeadingProps extends HeadingProps {
 
 export default function BaseHeading({ text, ...props }: BaseHeadingProps) {
   return (
-    <Heading fontFamily="DungGeunMo" size="md" mb={3}>
-      {">"} {text}
+    <Heading fontFamily="DungGeunMo" fontWeight="800" size="sm" {...props}>
+      {text}
     </Heading>
   );
 }

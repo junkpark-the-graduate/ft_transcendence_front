@@ -30,6 +30,7 @@ export default function BaseTabs({
             fontWeight: "800",
             opacity: "100%",
           }}
+          fontSize={14}
         >
           friends
         </Tab>
@@ -43,6 +44,7 @@ export default function BaseTabs({
             fontWeight: "800",
             opacity: "100%",
           }}
+          fontSize={14}
         >
           channels
         </Tab>

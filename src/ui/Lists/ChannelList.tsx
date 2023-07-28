@@ -22,24 +22,30 @@ import {
   GoSignOut,
   GoPeople,
 } from "react-icons/go";
+import ChannelModal from "../Modal/ChannelModal";
+
+export interface ChannelData {
+  id: number;
+  name: string;
+}
+
+const channelData = {
+  channels: [
+    { id: 2, name: "channel #1" },
+    { id: 3, name: "channel #2" },
+    { id: 4, name: "channel #3" },
+  ],
+};
 
 const ChannelList = () => {
-  const userData = {
-    channels: [
-      { id: 2, name: "channel #1" },
-      { id: 3, name: "channel #2" },
-      { id: 4, name: "channel #3" },
-    ],
-  };
-
   return (
     <Box>
       <Stack spacing={2}>
-        {userData.channels.map((friend, index) => (
-          <React.Fragment key={friend.id}>
+        {channelData.channels.map((channel, index) => (
+          <React.Fragment key={channel.id}>
             <Flex align="center" my={1}>
-              <Avatar size="sm" name={friend.name} mr={4} />
-              <Text>{friend.name}</Text>
+              <Avatar size="sm" name={channel.name} mr={4} />
+              <ChannelModal channelData={channel} />
               <Spacer />
               <Flex>
                 <BaseIconButton
@@ -86,7 +92,7 @@ const ChannelList = () => {
                 </Menu>
               </Flex>
             </Flex>
-            {index !== userData.channels.length && ( // 변경된 부분: 마지막 요소 제외
+            {index !== channelData.channels.length && ( // 변경된 부분: 마지막 요소 제외
               <Divider borderColor="#414147" />
             )}
           </React.Fragment>

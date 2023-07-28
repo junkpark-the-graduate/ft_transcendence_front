@@ -11,9 +11,11 @@ import { useAppContext } from "@/app/providers";
 export default function FollowButton({
   myId,
   userId,
+  icon,
 }: {
-  myId: number;
-  userId: number;
+  myId: number | undefined;
+  userId: number | undefined;
+  icon: boolean;
 }) {
   const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
     useAppContext();
@@ -35,7 +37,7 @@ export default function FollowButton({
     await unfollow(myId, userId, () => setIsFollowing(false));
   };
 
-  return (
+  return icon ? (
     <Flex>
       <BaseButton
         flex="1"
@@ -44,6 +46,21 @@ export default function FollowButton({
         text={isFollowing ? "unfollow" : "follow"}
         onClick={isFollowing ? handleUnfollow : handleFollow}
         bg={isFollowing ? "#191919" : "#414147"}
+        style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+      />
+    </Flex>
+  ) : (
+    <Flex>
+      <BaseButton
+        w="90px"
+        fontSize={14}
+        mr={2}
+        flex="1"
+        size="sm"
+        text={isFollowing ? "unfollow" : "follow"}
+        onClick={isFollowing ? handleUnfollow : handleFollow}
+        bg={isFollowing ? "#191919" : "#414147"}
+        style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
       />
     </Flex>
   );

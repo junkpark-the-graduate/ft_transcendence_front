@@ -1,8 +1,8 @@
 import { getTokenClient } from "../auth/getTokenClient";
 
 export const block = async (
-  userId: number,
-  blocking: number,
+  userId: number | undefined,
+  blocking: number | undefined,
   setIsBlocking: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
@@ -25,8 +25,8 @@ export const block = async (
 };
 
 export const unblock = async (
-  userId: number,
-  blocking: number,
+  userId: number | undefined,
+  blocking: number | undefined,
   setIsBlocking: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {

@@ -2,8 +2,9 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, Center, Flex, Heading, Spacer } from "@chakra-ui/react";
+import { Box, Center, Flex, Spacer } from "@chakra-ui/react";
 import { Title } from "./Title";
+import FullBox from "../Box/FullBox";
 
 interface IntroProps {
   children: React.ReactNode;
@@ -13,14 +14,14 @@ export const Intro = ({ children }: IntroProps) => {
   const router = useRouter();
 
   return (
-    <Box h="100%" w="100%">
+    <FullBox>
       <Flex>
         <Box>42 SEOUL</Box>
         <Spacer />
         <Box>ft_transcendence</Box>
       </Flex>
       <Center>
-        <Box pt="20vh">
+        <Box pt="25vh">
           <Title />
           <Center my={10}>{children}</Center>
         </Box>
@@ -31,6 +32,7 @@ export const Intro = ({ children }: IntroProps) => {
         </Box>
         <Spacer />
         <Box
+          as="button"
           position="absolute"
           bottom="5vh"
           right="8vh"
@@ -43,6 +45,6 @@ export const Intro = ({ children }: IntroProps) => {
           ↗ github
         </Box>
       </Flex>
-    </Box>
+    </FullBox>
   );
 };

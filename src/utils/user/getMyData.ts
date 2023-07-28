@@ -1,7 +1,6 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { getTokenClient } from "../auth/getTokenClient";
+import { EUserStatus } from "@/app/user/types/EUserStatus";
 
 interface MyData {
   id: number;
@@ -9,10 +8,12 @@ interface MyData {
   email: string;
   image: string;
   twoFactorEnabled: boolean;
+  status: EUserStatus;
+  mmr: number;
 }
 
 export function getMyData() {
-  const [userData, setUserData] = useState<MyData>();
+  const [userData, setUserData] = useState<MyData | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUser = async () => {
@@ -27,6 +28,7 @@ export function getMyData() {
       setIsLoading(false);
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
     }
   };
 

@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import {
   FormLabel,
   FormControl,
-  Input,
   Switch,
   Divider,
   Box,
@@ -23,6 +22,9 @@ import RedButton from "@/ui/Button/RedButton";
 import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { getMyData } from "@/utils/user/getMyData";
 import BaseHeading from "@/ui/Typo/Heading";
+import BaseInput from "@/ui/Input/Input";
+import FileInput from "@/ui/Input/FileInput";
+import FullBox from "@/ui/Box/FullBox";
 
 type FormData = {
   name: string;
@@ -33,18 +35,17 @@ type FormData = {
 const Edit = () => {
   const userData = getMyData();
   const router = useRouter();
-  const [uploading, setUploading] = useState(false);
-  //--------------------------------------------------------------
+  const [inputName, setInputName] = useState("");
+  const [isNameValid, setIsNameValid] = useState(0);
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File>();
-  //--------------------------------------------------------------
-  const toast = useToast();
   const [twoFactor, setTwoFactor] = useState(userData?.twoFactorEnabled);
+  const [isUploading, setIsUploading] = useState(false);
+  const toast = useToast();
 
   const {
-    register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<FormData>();
 
   useEffect(() => {
@@ -52,6 +53,89 @@ const Edit = () => {
       setTwoFactor(userData.twoFactorEnabled);
     }
   }, [userData]);
+
+  const checkDuplicateName = async (name: string) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3001/user/check-name`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+      return data.isDuplicate;
+    } catch (error) {
+      console.error("Error checking duplicate name:", error);
+      return false;
+    }
+  };
+
+  const handleNameValidation = async () => {
+    const finalName = inputName || userData?.name || "";
+    const nameRegex = /^[a-zA-Z0-9]+$/;
+
+    if (!inputName) {
+      toast({
+        description: "먼저 이름을 입력해주세요.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(0);
+      return;
+    }
+    if (finalName == userData?.name) {
+      toast({
+        description: "현재 사용 중인 이름입니다.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(1);
+      return;
+    }
+    if (finalName.length > 20) {
+      toast({
+        description: "이름은 20자 이하여야 합니다.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(2);
+      return;
+    }
+    if (!nameRegex.test(finalName)) {
+      toast({
+        description: "이름은 알파벳과 숫자만 포함해야 합니다.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(2);
+      return;
+    }
+
+    const isDuplicate = await checkDuplicateName(finalName);
+
+    if (isDuplicate) {
+      toast({
+        description: "이미 존재하는 이름입니다.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(2);
+      return;
+    }
+    toast({
+      description: "사용 가능한 이름입니다.",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+    setIsNameValid(1);
+  };
 
   const handleToggleAuth = () => {
     setTwoFactor(!twoFactor);
@@ -63,33 +147,21 @@ const Edit = () => {
     });
   };
 
-  async function onSubmit(data: FormData) {
-    const { name } = data;
+  async function onSubmit() {
+    const newName = inputName || userData?.name || "";
 
-    // 이름 유효성 검사 1 ---------------------------------------------
-    if (name.length > 20) {
+    if (isNameValid == 2) {
       toast({
-        title: "이름 변경 실패",
-        description: "새로운 이름은 20자 이하여야 합니다.",
-        status: "warning",
-        duration: 3000,
+        description: "이름 검사를 진행해주세요.",
+        status: "error",
+        duration: 2000,
         isClosable: true,
       });
       return;
     }
-    // 이름 유효성 검사 2 ---------------------------------------------
-    if (name.includes("#")) {
-      toast({
-        title: "이름 변경 실패",
-        description: '새로운 이름에는 "#"가 포함될 수 없습니다.',
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-    // ------------------------------------------------------------
+
     const formData = new FormData();
+
     if (selectedFile) {
       formData.append("file", selectedFile);
       formData.append("filename", selectedFile.name);
@@ -105,7 +177,7 @@ const Edit = () => {
         console.log("Failed to update user image");
       }
     }
-    setUploading(true);
+    setIsUploading(true);
     const res = await fetch("http://127.0.0.1:3001/user", {
       method: "PATCH",
       headers: {
@@ -113,12 +185,12 @@ const Edit = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: name,
+        name: newName,
         twoFactorEnabled: twoFactor,
       }),
     });
     if (res.ok) {
-      setUploading(false);
+      setIsUploading(false);
       router.push("/user/profile");
       router.refresh();
     } else {
@@ -127,125 +199,99 @@ const Edit = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Center>
-        <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
-          <BaseHeading text="edit profile" />
-          <FormControl>
-            <Divider m="20px 0px" />
-            <FormLabel mb="10px" htmlFor="name">
-              {">"} 이름 변경하기
-            </FormLabel>
-            <Text fontSize={13} ml={1} mb={2} textColor="gray">
-              알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
-            </Text>
-            <Flex>
-              <Input
-                placeholder={userData?.name}
-                borderRadius="8px"
-                border="none"
-                bg="#414147"
-                textColor="white"
-                type="name"
-                id="name"
-                mr={2}
-                _hover={{
-                  background: "#191919",
+    <FullBox>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Center>
+          <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
+            <BaseHeading text="edit profile" />
+            <Divider my="5" />
+            <FormControl>
+              <FormLabel mb="10px" htmlFor="name">
+                {">"} 이름 변경하기
+              </FormLabel>
+              <Text fontSize={13} ml={1} mb={2} textColor="gray">
+                알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
+              </Text>
+              <Flex>
+                <BaseInput
+                  type="name"
+                  placeholder={userData?.name || ""}
+                  mr={2}
+                  onChange={(e) => {
+                    setInputName(e.target.value);
+                    setIsNameValid(2);
+                  }}
+                />
+                <BaseButton text="검사하기" onClick={handleNameValidation} />
+              </Flex>
+              <Divider my="5" />
+              <FormLabel mb="10px" htmlFor="name">
+                {">"} 프로필 이미지 변경하기
+              </FormLabel>
+              <Flex alignItems="center">
+                <div>
+                  {selectedImage ? (
+                    <Image
+                      mx="10px"
+                      borderRadius="full"
+                      boxSize="120px"
+                      src={selectedImage}
+                      alt=""
+                    />
+                  ) : (
+                    <Image
+                      mx="10px"
+                      borderRadius="full"
+                      boxSize="120px"
+                      src={userData?.image}
+                      alt=""
+                    />
+                  )}
+                </div>
+                <Spacer />
+                <Flex flexDirection="column"></Flex>
+              </Flex>
+              <Text fontSize={13} ml={1} my={2} textColor="gray">
+                .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
+              </Text>
+              <FileInput
+                type="file"
+                accept=".jpg, .jpeg, .png"
+                onChange={({ target }) => {
+                  if (target.files) {
+                    const file = target.files[0];
+                    setSelectedImage(URL.createObjectURL(file));
+                    setSelectedFile(file);
+                  }
                 }}
-                _focus={{
-                  background: "#191919",
-                  borderColor: "#191919",
-                }}
-                {...register("name", {
-                  required: "이름을 입력해주세요.",
-                })}
               />
-              <BaseButton text="중복 검사" onClick={() => {}} />
-            </Flex>
-            <Divider m="20px 0px" />
-            <FormLabel mb="10px" htmlFor="name">
-              {">"} 프로필 이미지 변경하기
-            </FormLabel>
-            <Flex alignItems="center">
-              <div>
-                {selectedImage ? (
-                  <Image
-                    mx="10px"
-                    borderRadius="full"
-                    boxSize="120px"
-                    src={selectedImage}
-                    alt=""
-                  />
-                ) : (
-                  <Image
-                    mx="10px"
-                    borderRadius="full"
-                    boxSize="120px"
-                    src={userData?.image}
-                    alt=""
-                  />
-                )}
-              </div>
+              <Divider my="5" />
+              <FormLabel mb="10px" htmlFor="name">
+                {">"} 2FA 설정 변경하기
+              </FormLabel>
+              <Switch
+                colorScheme="gray"
+                isChecked={twoFactor}
+                onChange={handleToggleAuth}
+              >
+                {twoFactor ? "2FA enabled" : "2FA disabled"}
+              </Switch>
+            </FormControl>
+            <Divider my="5" />
+            <Flex>
               <Spacer />
-              <Flex flexDirection="column"></Flex>
+              <RedButton text="취소하기" mr={2} />
+              <BaseButton
+                text="저장하기"
+                isLoading={isSubmitting}
+                type="submit"
+                onClick={() => {}}
+              />
             </Flex>
-            <Text fontSize={13} ml={1} my={2} textColor="gray">
-              .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
-            </Text>
-            <Input
-              borderRadius="8px"
-              border="none"
-              bg="#414147"
-              type="file"
-              pt="5px"
-              _hover={{
-                background: "#191919",
-              }}
-              _focus={{
-                background: "#191919",
-                borderColor: "#191919",
-              }}
-              onChange={({ target }) => {
-                if (target.files) {
-                  const file = target.files[0];
-                  setSelectedImage(URL.createObjectURL(file));
-                  setSelectedFile(file);
-                }
-              }}
-            />
-            <Divider m="20px 0px" />
-            <FormLabel mb="10px" htmlFor="name">
-              {">"} 2FA 설정 변경하기{" "}
-            </FormLabel>
-            <Switch
-              colorScheme="gray"
-              isChecked={twoFactor}
-              onChange={handleToggleAuth}
-            >
-              {twoFactor ? "2FA enabled" : "2FA disabled"}
-            </Switch>
-          </FormControl>
-          <Divider m="20px 0px" />
-
-          <Flex>
-            <Spacer />
-            <RedButton
-              text="취소하기"
-              mr={2}
-              onClick={() => {
-                router.back();
-              }}
-            />
-            <BaseButton
-              text="저장하기"
-              isLoading={isSubmitting}
-              type="submit"
-              onClick={() => {}}
-            />
-          </Flex>
-        </Box>
-      </Center>
-    </form>
+          </Box>
+        </Center>
+      </form>
+    </FullBox>
   );
 };
 
