@@ -20,7 +20,6 @@ import {
   CloseIcon,
 } from "@chakra-ui/icons";
 import Cookies from "js-cookie";
-import { get } from "http";
 
 interface ChatProps {
   channelId: number;
@@ -36,20 +35,16 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
   const router = useRouter();
 
   const getChannels = async () => {
-    try {
-      const res = await fetch(`http://127.0.0.1:3001/channel/${channelId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const tmp = await res.json();
-      console.log(tmp);
-      setChannel(tmp);
-    } catch (e) {
-      console.log(e);
-    }
+    const res = await fetch(`http://127.0.0.1:3001/channel/${channelId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const tmp = await res.json();
+    console.log(tmp);
+    setChannel(tmp);
   };
 
   async function getMemberList() {
@@ -120,6 +115,15 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     // router.refresh();
   }
 
+  async function deleteBannedMemeberHandler(
+    e: React.MouseEvent,
+    channelId: number,
+    userId: number
+  ) {
+    e.stopPropagation(); // Prevent the event from propagating up to the parent element
+    await deleteBannedMemeber(channelId, userId);
+  }
+
   async function createBannedMemeber(channelId: number, userId: number) {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/banned-member?memberId=${userId}`,
@@ -131,10 +135,24 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
         },
       }
     );
+    return res;
+  }
+
+  async function createBannedMemeberHandler(
+    e: React.MouseEvent,
+    channelId: number,
+    userId: number
+  ) {
+    e.stopPropagation(); // Prevent the event from propagating up to the parent element
+
+    const res = await createBannedMemeber(channelId, userId);
+    const resJson = await res.json();
+
     console.log("createBannedMemeber", channelId, userId);
+
     if (res.status > 299) {
       toast({
-        title: "This user cannot ban",
+        title: resJson.message,
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -157,38 +175,26 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
         },
       }
     );
+    return res;
+  }
+
+  async function deleteChannelHandler(e: React.MouseEvent, channelId: number) {
+    e.stopPropagation();
+
+    const res = await deleteChannel(channelId);
+    const resJson = await res.json();
+
     console.log("deleteChannel", channelId);
+
     if (res.status > 299) {
       toast({
-        title: "Cannot delete channel",
+        title: resJson.message,
         status: "error",
         duration: 9000,
         isClosable: true,
       });
     }
-  }
 
-  async function deleteBannedMemeberHandler(
-    e: React.MouseEvent,
-    channelId: number,
-    userId: number
-  ) {
-    e.stopPropagation(); // Prevent the event from propagating up to the parent element
-    await deleteBannedMemeber(channelId, userId);
-  }
-
-  async function createBannedMemeberHandler(
-    e: React.MouseEvent,
-    channelId: number,
-    userId: number
-  ) {
-    e.stopPropagation(); // Prevent the event from propagating up to the parent element
-    await createBannedMemeber(channelId, userId);
-  }
-
-  async function deleteChannelHandler(e: React.MouseEvent, channelId: number) {
-    e.stopPropagation();
-    await deleteChannel(channelId);
     router.push(`/channel`);
   }
 
@@ -203,23 +209,7 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
         },
       }
     );
-    console.log("muteMember", channelId, memberId);
-    console.log(await res.json());
-    if (res.status > 299) {
-      toast({
-        title: "Cannot mute member",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: `Muted member ${memberId}`,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
+    return res;
   }
 
   async function muteMemberHandler(
@@ -228,7 +218,27 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     memberId: number
   ) {
     e.stopPropagation();
-    await muteMember(channelId, memberId);
+
+    const res = await muteMember(channelId, memberId);
+    const resJson = await res.json();
+
+    console.log("muteMember", channelId, memberId);
+
+    if (res.status < 300) {
+      toast({
+        title: `Muted member ${memberId}`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   }
 
   async function updateChannelAdmin(channelId: number, memberId: number) {
@@ -242,23 +252,7 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
         },
       }
     );
-    console.log("updateChannelAdmin", channelId, memberId);
-    console.log(await res.json());
-    if (res.status > 299) {
-      toast({
-        title: "Cannot update channel admin",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: `Updated channel admin ${memberId}`,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
+    return res;
   }
 
   async function updateChannelAdminHandler(
@@ -267,7 +261,26 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     memberId: number
   ) {
     e.stopPropagation();
-    await updateChannelAdmin(channelId, memberId);
+
+    const res = await updateChannelAdmin(channelId, memberId);
+    const resJson = await res.json();
+
+    console.log("updateChannelAdmin", channelId, memberId);
+    if (res.status < 300) {
+      toast({
+        title: `Updated channel admin ${memberId}`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
     // member list refresh
 
     const newMembers = members.map((member) => {
@@ -290,18 +303,7 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
         },
       }
     );
-    console.log("kickedMemeber", channelId, userId);
-    if (res.status > 299) {
-      toast({
-        title: "This user cannot kick",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-      return;
-    }
-    const newMembers = members.filter((member) => member.userId !== userId);
-    setMembers(newMembers);
+    return res;
   }
 
   async function kickedMemeberHandler(
@@ -310,7 +312,22 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     userId: number
   ) {
     e.stopPropagation();
-    await kickedMemeber(channelId, userId);
+
+    const res = await kickedMemeber(channelId, userId);
+    const resJson = await res.json();
+
+    console.log("kickedMemeber", channelId, userId);
+    if (res.status > 299) {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      return;
+    }
+    const newMembers = members.filter((member) => member.userId !== userId);
+    setMembers(newMembers);
   }
 
   return (

@@ -1,7 +1,16 @@
 "use client";
 
 import React from "react";
-import { Box, Flex, Text, Button, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Button,
+  useToast,
+  Divider,
+  Avatar,
+  Stack,
+} from "@chakra-ui/react";
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -85,32 +94,45 @@ const JoinedChannelList: React.FC<Props> = ({
   }
 
   return (
-    <Box>
-      <Text fontSize="xl" mt={5}>
+    <Box px={1}>
+      <Text
+        align="center"
+        fontSize="14px"
+        bg="#414147"
+        borderRadius="5px"
+        py={2}
+      >
         Joined Channel List
       </Text>
-      <Flex direction="column" gap={5}>
-        {joinedChannels.map((channel: any) => (
-          <Box
-            key={channel.id}
-            padding={3}
-            shadow="md"
-            borderWidth={1}
-            borderRadius="md"
-            textAlign={"left"}
-            position={"relative"} // Add relative positioning so we can use absolute positioning on child
-            onClick={() => connectJoinedChannelHandler(channel.id)}
-          >
-            <Text fontSize="xl">{channel.name}</Text>
-            <Text fontSize="sm">ID: {channel.id}</Text>
-            <Text fontSize="sm">Owner ID: {channel.ownerId}</Text>
-            <Text fontSize="sm">Type: {EChannelType[channel.type]}</Text>
+      <Stack spacing={2} mt={4} px={2}>
+        {joinedChannels.map((channel, index) => (
+          <React.Fragment key={channel.id}>
+            <Flex align="center" my={1}>
+              <Box
+                as="button"
+                key={channel.id}
+                textAlign={"left"}
+                position={"relative"} // Add relative positioning so we can use absolute positioning on child
+                onClick={() => connectJoinedChannelHandler(channel.id)}
+              >
+                <Flex alignItems="center">
+                  <Avatar size="sm" name={channel.name} mr={4} />
+                  <Text fontSize="md">{channel.name}</Text>
+                  {/* <Text fontSize="sm">ID: {channel.id}</Text>
+            <Text fontSize="sm">Owner ID: {channel.ownerId}</Text> */}
+                  {/* <Text fontSize="sm">Type: {EChannelType[channel.type]}</Text>
             <Button size="sm" onClick={() => exitChannelHandler(channel.id)}>
-              exit channel
-            </Button>
-          </Box>
+            exit channel
+          </Button> */}
+                </Flex>
+              </Box>
+            </Flex>
+            {index !== joinedChannels.length && ( // 변경된 부분: 마지막 요소 제외
+              <Divider borderColor="#414147" />
+            )}
+          </React.Fragment>
         ))}
-      </Flex>
+      </Stack>
     </Box>
   );
 };

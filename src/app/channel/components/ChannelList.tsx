@@ -1,22 +1,32 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Flex, Text, Button, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  useToast,
+  Avatar,
+  HStack,
+  Badge,
+} from "@chakra-ui/react";
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import PasswordModal from "@/ui/Modal/PasswordModal";
 import Input from "@/ui/Input/Input";
+import ButtonBox from "@/ui/Box/ButtonBox";
+import CreateChannelModal from "@/ui/Modal/CreateChannelModal";
 
 interface Props {
   channels: any[];
+  setChannels: any;
 }
 
-const ChannelList: React.FC<Props> = ({ channels }) => {
+const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
   const router = useRouter();
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
   const [selectedChannelId, setSelectedChannelId] = useState<number>(0);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
@@ -37,38 +47,15 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
       }
     );
 
-    console.log(await res.json());
     return res;
   }
 
-  async function onClickChannel(channelId: number) {
-    const res = await joinChannel(channelId);
-
-    if (res.status < 300) {
-      router.push(`/channel/${channelId}/chat`);
-    } else if (res.status == 401) {
-      toast({
-        title: "You are banned member at this channel",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: "You cannot enter this channel",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  }
-
-  async function joinProtectedChannel(password: string, channelId: number) {
+  async function connectJoinedChannel(channelId: number) {
     const accessToken = Cookies.get("accessToken");
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member?password=${password}`,
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined/${channelId}`,
       {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -79,29 +66,27 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     return res;
   }
 
-  const handleOpenModal = (channelId: number) => {
-    setSelectedChannelId(channelId);
-    setIsOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-
-  const handleEnterPassword = async (password: string) => {
-    const channelId: number = selectedChannelId; // Access the stored selected channel ID
-    const enteredPassword = password; // Access the entered password
-    const res = await joinProtectedChannel(enteredPassword, channelId);
-
+  async function handleJoinChannel(channelId: number) {
+    const res = await joinChannel(channelId);
     const resJson = await res.json();
 
     if (res.status < 300) {
-      setIsOpen(false);
       router.push(`/channel/${channelId}/chat`);
     } else {
-      setErrorMessage(resJson.message);
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
-  };
+  }
+
+  async function isAlreadyJoinedChannel(channelId: number) {
+    const res = await connectJoinedChannel(channelId);
+    if (res.status < 300) return true;
+    else return false;
+  }
 
   function goToAdminPage(e: React.MouseEvent, channelId: number) {
     e.stopPropagation(); // Prevent the event from propagating up to the parent element
@@ -109,82 +94,88 @@ const ChannelList: React.FC<Props> = ({ channels }) => {
     router.push(`/channel/${channelId}/admin`); // Change this path to your admin page's path
   }
 
-  function onOpenModal(channelId: number) {
+  async function onClickChannel(channelId: number) {
     // "channels" 배열에서 해당 channelId에 맞는 채널을 찾습니다.
     const channel = channels.find((c) => c.id === channelId);
+    setSelectedChannelId(channelId);
 
     if (channel) {
       if (channel.type === EChannelType.protected) {
-        handleOpenModal(channelId);
+        if (await isAlreadyJoinedChannel(channelId)) {
+          router.push(`/channel/${channelId}/chat`);
+        } else setIsOpen(true);
       } else {
-        onClickChannel(channelId);
+        handleJoinChannel(channelId);
       }
     }
   }
 
   // 검색어 입력 시 호출되는 이벤트 핸들러
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(event.target.value);
-  };
+  // const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchKeyword(event.target.value);
+  // };
 
-  // 검색어를 기준으로 채널을 필터링하는 함수
-  const filterChannelsBySearchKeyword = (channel: any) => {
-    return channel.name.toLowerCase().includes(searchKeyword.toLowerCase());
-  };
+  // // 검색어를 기준으로 채널을 필터링하는 함수
+  // const filterChannelsBySearchKeyword = (channel: any) => {
+  //   if (channel.name && searchKeyword) {
+  //     return channel.name.toLowerCase().includes(searchKeyword.toLowerCase());
+  //   }
+  //   return false;
+  // };
 
-  // 검색 결과를 보여주는 채널 리스트
-  const filteredChannels = channels.filter(filterChannelsBySearchKeyword);
+  // // 검색 결과를 보여주는 채널 리스트
+  // const filteredChannels = channels.filter(filterChannelsBySearchKeyword);
 
   return (
     <>
-      <Box>
-        <Text fontSize="xl" mt={5}>
-          Channel List
-        </Text>
-        {/* 검색창 추가 */}
-        <Box mt={3}>
-          <Input
-            type="text"
-            placeholder="채널 이름 검색"
-            value={searchKeyword}
-            onChange={handleSearch}
-          />
+      <Box px={6} py={4}>
+        <Box mt={2}>
+          <Flex direction="row" gap={3} alignItems="center" mb={8}>
+            <Input
+              type="text"
+              placeholder="채널 이름 검색"
+              value={searchKeyword}
+              onChange={() => console.log("검색어 입력")}
+            />
+            <CreateChannelModal channels={channels} setChannels={setChannels} />
+          </Flex>
         </Box>
-        <Flex direction="column" gap={5}>
-          {/* {channels.map((channel: any) => ( */}
-          {filteredChannels.map((channel: any) => (
-            <Box
+        <Flex direction="column" gap={3}>
+          {/* {filteredChannels.map((channel: any) => ( */}
+          {channels.map((channel: any) => (
+            <ButtonBox
               key={channel.id}
-              padding={3}
-              shadow="md"
-              borderWidth={1}
-              borderRadius="md"
               // onClick={() => onClickChannel(channel.id)}
-              onClick={() => onOpenModal(channel.id)}
+              onClick={() => onClickChannel(channel.id)}
               textAlign={"left"}
               position={"relative"} // Add relative positioning so we can use absolute positioning on child
             >
-              <Button
+              {/* <Button
                 onClick={(e) => goToAdminPage(e, channel.id)}
                 position={"absolute"} // Set the position to absolute
                 top={2} // Adjust these values as needed
                 right={2} // Adjust these values as needed
               >
                 관리자 페이지
-              </Button>
-              <Text fontSize="xl">{channel.name}</Text>
-              <Text fontSize="sm">ID: {channel.id}</Text>
-              <Text fontSize="sm">Owner ID: {channel.ownerId}</Text>
-              <Text fontSize="sm">Type: {EChannelType[channel.type]}</Text>
-            </Box>
+              </Button> */}
+              <Flex direction="row" gap={5} alignItems="center">
+                <Avatar size="sm" name={channel.name} />
+                <Text fontSize="lg">{channel.name}</Text>
+                <Box marginLeft="auto">
+                  <HStack spacing={3}>
+                    <Badge fontSize="sm">{EChannelType[channel.type]}</Badge>
+                    <Text fontSize="sm">{channel.createdAt}</Text>
+                  </HStack>
+                </Box>
+              </Flex>
+            </ButtonBox>
           ))}
         </Flex>
       </Box>
       <PasswordModal
         isOpen={isOpen}
-        onClose={handleCloseModal}
-        onEnter={handleEnterPassword}
-        errorMessage={errorMessage}
+        setIsOpen={setIsOpen}
+        channelId={selectedChannelId}
       />
     </>
   );

@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Heading } from "@chakra-ui/react";
-import CreateChannel from "./CreateChannel";
 import ChannelList from "./ChannelList";
 import JoinedChannelList from "./JoinedChannelList";
 import Cookies from "js-cookie";
+import GridType3 from "@/ui/Grid/GridType3";
 
 const Channel: React.FC = () => {
   const accessToken = Cookies.get("accessToken");
@@ -59,15 +58,23 @@ const Channel: React.FC = () => {
   };
 
   return (
-    <Box padding={5}>
-      <Heading marginBottom={5}>Channel</Heading>
-      <CreateChannel onCreate={handleCreateChannel} />
-      <ChannelList channels={channels} />
-      <JoinedChannelList
+    <>
+      <GridType3
+        children={<ChannelList channels={channels} setChannels={setChannels} />}
+        children1={
+          <JoinedChannelList
+            joinedChannels={joinedChannels}
+            setJoinedChannels={setJoinedChannels}
+          />
+        }
+      />
+      {/* <CreateChannel channels={channels} setChannels={setChannels} /> */}
+      {/* <ChannelList channels={channels} /> */}
+      {/* <JoinedChannelList
         joinedChannels={joinedChannels}
         setJoinedChannels={setJoinedChannels}
-      />
-    </Box>
+      /> */}
+    </>
   );
 };
 

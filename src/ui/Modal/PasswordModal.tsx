@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import {
   Modal,
@@ -12,24 +14,62 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { set } from "react-hook-form";
+
+// interface PasswordModalProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   onEnter: (password: string) => void;
+//   errorMessage: string;
+// }
 
 interface PasswordModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  onEnter: (password: string) => void;
-  errorMessage: string;
+  setIsOpen: (isOpen: boolean) => void;
+  channelId: number;
 }
 
 const PasswordModal: React.FC<PasswordModalProps> = ({
   isOpen,
-  onClose,
-  onEnter,
-  errorMessage,
+  setIsOpen,
+  channelId,
 }) => {
+  const router = useRouter();
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const joinProtectedChannel = async (password: string, channelId: number) => {
+    const accessToken = Cookies.get("accessToken");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member?password=${password}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return res;
+  };
+
+  const handleEnter = async () => {
+    const res = await joinProtectedChannel(password, channelId);
+    const resJson = await res.json();
+
+    if (res.status < 300) {
+      setIsOpen(false);
+      router.push(`/channel/${channelId}/chat`);
+    } else {
+      setErrorMessage(resJson.message);
+    }
+  };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="black">비밀번호를 입력하세요</ModalHeader>
@@ -48,10 +88,10 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={() => onEnter(password)}>
+          <Button colorScheme="blue" mr={3} onClick={handleEnter}>
             입장
           </Button>
-          <Button onClick={onClose}>취소</Button>
+          <Button onClick={() => setIsOpen(false)}>취소</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

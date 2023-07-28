@@ -29,7 +29,9 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   const toast = useToast();
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken) {
+      router.push("/channel");
+    }
 
     const getUserInfo = async () => {
       const res = await fetch(
@@ -43,10 +45,6 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
         }
       );
       const data = await res.json();
-      console.log(
-        "data!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-        data
-      );
       setUserId(data.id);
       setUsername(data.name);
     };

@@ -17,7 +17,8 @@ import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
 const Links = [
   { label: "home", path: "/home" },
   { label: "game", path: "/game" },
-  { label: "chat", path: "/chat" },
+  { label: "channel", path: "/channel" },
+  { label: "DM", path: "/dm" },
 ];
 
 const NavLink = ({ children, path }: { children: ReactNode; path: string }) => {
