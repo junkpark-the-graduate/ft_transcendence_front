@@ -58,12 +58,12 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
 
   useEffect(scrollToBottom, [chatList]);
 
-  const ENDPOINT = "ws://localhost:4242/chattings";
+  const ENDPOINT = process.env.NEXT_PUBLIC_CHAT_END_POINT;
 
   useEffect(() => {
     if (!accessToken) return;
 
-    const socketIo = io(ENDPOINT, {
+    const socketIo = io(`${process.env.NEXT_PUBLIC_CHAT_END_POINT}`, {
       query: {
         token: accessToken, // pass the token to the server
         channelId: channelId,
