@@ -10,10 +10,13 @@ import {
   Divider,
   Avatar,
   Stack,
+  Spacer,
+  Badge,
 } from "@chakra-ui/react";
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import ChannelBadge from "./ChannelBadge";
 
 interface Props {
   joinedChannels: any[];
@@ -107,26 +110,21 @@ const JoinedChannelList: React.FC<Props> = ({
       <Stack spacing={2} mt={4} px={2}>
         {joinedChannels.map((channel, index) => (
           <React.Fragment key={channel.id}>
-            <Flex align="center" my={1}>
-              <Box
-                as="button"
-                key={channel.id}
-                textAlign={"left"}
-                position={"relative"} // Add relative positioning so we can use absolute positioning on child
-                onClick={() => connectJoinedChannelHandler(channel.id)}
-              >
-                <Flex alignItems="center">
-                  <Avatar size="sm" name={channel.name} mr={4} />
-                  <Text fontSize="md">{channel.name}</Text>
-                  {/* <Text fontSize="sm">ID: {channel.id}</Text>
-            <Text fontSize="sm">Owner ID: {channel.ownerId}</Text> */}
-                  {/* <Text fontSize="sm">Type: {EChannelType[channel.type]}</Text>
-            <Button size="sm" onClick={() => exitChannelHandler(channel.id)}>
-            exit channel
-          </Button> */}
-                </Flex>
-              </Box>
-            </Flex>
+            <Box
+              as="button"
+              key={channel.id}
+              textAlign={"left"}
+              position={"relative"} // Add relative positioning so we can use absolute positioning on child
+              onClick={() => connectJoinedChannelHandler(channel.id)}
+            >
+              <Flex align="center" alignItems="center" my={1} px={2}>
+                <Avatar size="sm" name={channel.name} mr={4} />
+                <Text fontSize="md">{channel.name}</Text>
+                <Box marginLeft="auto">
+                  <ChannelBadge type={Number(channel.type)} />
+                </Box>
+              </Flex>
+            </Box>
             {index !== joinedChannels.length && ( // 변경된 부분: 마지막 요소 제외
               <Divider borderColor="#414147" />
             )}

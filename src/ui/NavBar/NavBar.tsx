@@ -15,9 +15,9 @@ import Search from "../Search/Search";
 import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
 
 const Links = [
-  { label: "home", path: "/home" },
-  { label: "game", path: "/game" },
-  { label: "channel", path: "/channel" },
+  { label: "Home", path: "/home" },
+  { label: "Game", path: "/game" },
+  { label: "Channel", path: "/channel" },
   { label: "DM", path: "/dm" },
 ];
 
@@ -38,6 +38,7 @@ const NavLink = ({ children, path }: { children: ReactNode; path: string }) => {
       py={1}
       bg="none"
       textColor={isActive ? "white" : "gray"}
+      fontWeight={500}
       rounded={"md"}
       _hover={{
         textDecoration: "none",
