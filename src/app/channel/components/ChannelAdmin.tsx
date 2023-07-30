@@ -35,13 +35,16 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
   const router = useRouter();
 
   const getChannels = async () => {
-    const res = await fetch(`http://127.0.0.1:3001/channel/${channelId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const tmp = await res.json();
     console.log(tmp);
     setChannel(tmp);
@@ -164,39 +167,39 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
     getBannedMemberList();
   }
 
-  async function deleteChannel(channelId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return res;
-  }
+  // async function deleteChannel(channelId: number) {
+  //   const res = await fetch(
+  //     `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
+  //     {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     }
+  //   );
+  //   return res;
+  // }
 
-  async function deleteChannelHandler(e: React.MouseEvent, channelId: number) {
-    e.stopPropagation();
+  // async function deleteChannelHandler(e: React.MouseEvent, channelId: number) {
+  //   e.stopPropagation();
 
-    const res = await deleteChannel(channelId);
-    const resJson = await res.json();
+  //   const res = await deleteChannel(channelId);
+  //   const resJson = await res.json();
 
-    console.log("deleteChannel", channelId);
+  //   console.log("deleteChannel", channelId);
 
-    if (res.status > 299) {
-      toast({
-        title: resJson.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
+  //   if (res.status > 299) {
+  //     toast({
+  //       title: resJson.message,
+  //       status: "error",
+  //       duration: 9000,
+  //       isClosable: true,
+  //     });
+  //   }
 
-    router.push(`/channel`);
-  }
+  //   router.push(`/channel`);
+  // }
 
   async function muteMember(channelId: number, memberId: number) {
     const res = await fetch(
@@ -426,9 +429,9 @@ const ChannelAdmin: React.FC<ChatProps> = ({ channelId }) => {
           <Text>Banned at: {member.createdAt}</Text>
         </Box>
       ))}
-      <Button onClick={(e) => deleteChannelHandler(e, channelId)}>
+      {/* <Button onClick={(e) => deleteChannelHandler(e, channelId)}>
         Delete channel
-      </Button>
+      </Button> */}
     </Box>
   );
 };
