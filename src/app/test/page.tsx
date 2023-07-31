@@ -20,30 +20,21 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import GameResult from "../game/components/GameResult";
+import GridType1 from "@/ui/Grid/GridType1";
 
 export default function page() {
-  // const userData = getUserData(1);
-  // const myData = getMyData();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const gameResult = {
+    score: "10 : 7",
+    isWin: true,
+    mmr: 1016,
+    mmrChange: 0,
+    playTime: 100,
+  };
   return (
-    <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>hello</ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+    <GridType1>
+      <GameResult gameResult={gameResult} />
+    </GridType1>
   );
 }

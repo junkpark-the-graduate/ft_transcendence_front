@@ -22,74 +22,62 @@ export default function Game() {
 
   let isPlayer1: boolean = false;
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    90, // fov
-    window.innerWidth / window.innerHeight, // aspect
-    0.1, // near
-    1000 // far
-  );
-
-  const light = new THREE.PointLight(0xffffff, 1); // 흰색 광원
-  light.position.set(0, 0, 10); // 광원의 위치 설정
-
-  const renderer = new THREE.WebGLRenderer();
-  // add to div
-
-  const backgroundTextureLoader = new THREE.TextureLoader();
-  const backgroundTexture = backgroundTextureLoader.load("/Junkpark.png");
-  const backgroundGeometry = new THREE.BoxGeometry(50, 100, 100);
-  const backgroundMaterial = new THREE.MeshBasicMaterial({
-    map: backgroundTexture,
-    side: THREE.BackSide,
-  });
-  const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-
-  const paddleGeometry = new THREE.BoxGeometry(PADDLE_WIDTH, PADDLE_HEIGHT, 1); // make a cube class
-  const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 }); // make a material class
-
-  const ballGeometry = new THREE.SphereGeometry(1, 100, 100);
-  const ball = new THREE.Mesh(ballGeometry, material);
-
-  const planeGeometry = new THREE.PlaneGeometry(50, 100, 100);
-  const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xf9dadd }); // make a material class
-
-  const paddle = new THREE.Mesh(paddleGeometry, material); // make a mesh class
-  const paddle2 = new THREE.Mesh(paddleGeometry, material); // make a mesh class
-  const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-
-  scene.add(light); // 씬에 광원 추가
-  scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
-  scene.add(paddle); // place the mesh in the scene(0,0,0)
-  scene.add(paddle2);
-  scene.add(ball);
-  scene.add(plane);
-  scene.add(background);
-
-  // paddle.position.y = -30;
-  // paddle2.position.y = 30;
-  plane.position.z = -2;
-
   useEffect(() => {
-    socket.on("game_test", (data: any) => {
-      console.log("game_test: ", data);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      90, // fov
+      window.innerWidth / window.innerHeight, // aspect
+      0.1, // near
+      1000 // far
+    );
+
+    const light = new THREE.PointLight(0xffffff, 1); // 흰색 광원
+    light.position.set(0, 0, 10); // 광원의 위치 설정
+
+    const renderer = new THREE.WebGLRenderer();
+    // add to div
+
+    const backgroundTextureLoader = new THREE.TextureLoader();
+    const backgroundTexture = backgroundTextureLoader.load("/Junkpark.png");
+    const backgroundGeometry = new THREE.BoxGeometry(50, 100, 100);
+    const backgroundMaterial = new THREE.MeshBasicMaterial({
+      map: backgroundTexture,
+      side: THREE.BackSide,
     });
+    const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
+
+    const paddleGeometry = new THREE.BoxGeometry(
+      PADDLE_WIDTH,
+      PADDLE_HEIGHT,
+      1
+    ); // make a cube class
+    const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 }); // make a material class
+
+    const ballGeometry = new THREE.SphereGeometry(1, 100, 100);
+    const ball = new THREE.Mesh(ballGeometry, material);
+
+    const planeGeometry = new THREE.PlaneGeometry(50, 100, 100);
+    const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xf9dadd }); // make a material class
+
+    const paddle = new THREE.Mesh(paddleGeometry, material); // make a mesh class
+    const paddle2 = new THREE.Mesh(paddleGeometry, material); // make a mesh class
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+    scene.add(light); // 씬에 광원 추가
+    scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
+    scene.add(paddle); // place the mesh in the scene(0,0,0)
+    scene.add(paddle2);
+    scene.add(ball);
+    scene.add(plane);
+    scene.add(background);
+
+    // paddle.position.y = -30;
+    // paddle2.position.y = 30;
+    plane.position.z = -2;
 
     socket.on("score", (data: any) => {
       console.log("score: ", data);
       setScore(`${data.score.player1} : ${data.score.player2}`);
-    });
-
-    socket.on("game_over", (data: any) => {
-      console.log("game_over: ", data);
-      if (data) {
-        setScore("Win!");
-      } else {
-        setScore("Lose");
-      }
-      setTimeout(() => {
-        router.push(`/game`);
-      }, 3000);
     });
 
     socket.on("game", (data: any) => {
@@ -170,6 +158,10 @@ export default function Game() {
       renderer.render(scene, camera); // render the scene
     }
     animate();
+
+    return () => {
+      socket.removeAllListeners();
+    };
   }, []);
 
   return (

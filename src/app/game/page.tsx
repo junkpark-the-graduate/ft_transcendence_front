@@ -57,11 +57,14 @@ export default function Page({
         setUser(data);
       });
     });
+
+    return () => {
+      socket.removeAllListeners();
+    };
   }, []);
   return (
-    <GridType2>
+    <GridType1>
       <HStack spacing={"20"} w="100%" h="100%">
-        {/* TODO 내 ftId 받아오기 */}
         {user ? (
           <GameUserCard user={user} />
         ) : (
@@ -70,7 +73,6 @@ export default function Page({
 
         {isMatching ? (
           isMatched ? (
-            // TODO 상대방 ftId 받아오기
             <GameUserCard user={opponent} />
           ) : (
             <Skeleton w={"100%"} h={"100%"} />
@@ -79,6 +81,6 @@ export default function Page({
           <GameSettingCard setIsMatching={setIsMatching} />
         )}
       </HStack>
-    </GridType2>
+    </GridType1>
   );
 }
