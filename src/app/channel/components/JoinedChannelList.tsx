@@ -118,12 +118,6 @@ const JoinedChannelList: React.FC<Props> = ({
                 <Flex alignItems="center">
                   <Avatar size="sm" name={channel.name} mr={4} />
                   <Text fontSize="md">{channel.name}</Text>
-                  {/* <Text fontSize="sm">ID: {channel.id}</Text>
-            <Text fontSize="sm">Owner ID: {channel.ownerId}</Text> */}
-                  {/* <Text fontSize="sm">Type: {EChannelType[channel.type]}</Text>
-            <Button size="sm" onClick={() => exitChannelHandler(channel.id)}>
-            exit channel
-          </Button> */}
                 </Flex>
               </Box>
             </Flex>

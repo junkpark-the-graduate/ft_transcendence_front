@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -24,15 +24,16 @@ import BaseButton from "@/ui/Button/Button";
 
 interface Props {
   channelId: number;
+  channel: { [key: string]: any };
+  setChannel: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
 }
 
-const ChannelEdit: React.FC<Props> = ({ channelId }) => {
-  const [channel, setChannel] = useState<any>({});
+const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   const router = useRouter();
   const accessToken = Cookies.get("accessToken");
-  const [channelName, setChannelName] = useState<string>("");
-  const [channelPassword, setChannelPassword] = useState<string>("");
-  const [channelType, setChannelType] = useState<string>("");
+  const [newChannelName, setNewChannelName] = useState<string>("");
+  const [newChannelPassword, setNewChannelPassword] = useState<string>("");
+  const [newChannelType, setNewChannelType] = useState<string>("");
   const toast = useToast();
 
   async function getChannel() {
@@ -46,12 +47,10 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
         },
       }
     );
-    const tmp = await res.json();
-    console.log(tmp);
-    setChannel(tmp);
-    setChannelName(tmp.name);
-    // setChannelPassword(tmp.password);
-    setChannelType(EChannelType[tmp.type]);
+    const resJson = await res.json();
+    setChannel(resJson);
+    setNewChannelName(resJson.name);
+    setNewChannelType(EChannelType[resJson.type]);
   }
 
   async function updateChannel() {
@@ -64,9 +63,9 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          name: channelName,
-          password: channelPassword,
-          type: EChannelType[channelType as keyof typeof EChannelType],
+          name: newChannelName,
+          password: newChannelPassword,
+          type: EChannelType[newChannelType as keyof typeof EChannelType],
         }),
       }
     );
@@ -92,6 +91,11 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
         isClosable: true,
       });
     }
+    setChannel((prev) => ({
+      ...prev,
+      name: newChannelName,
+      type: EChannelType[newChannelType as keyof typeof EChannelType],
+    }));
   }
 
   async function deleteChannel() {
@@ -145,7 +149,6 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
             icon={<GoArrowLeft size={30} />}
             aria-label={"채팅방으로 돌아가기"}
             onClick={() => {
-              console.log(channel);
               router.push(`/channel/${channel.id}/chat`);
             }}
           />
@@ -161,16 +164,16 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
             <FormLabel>Channel Name</FormLabel>
             <BaseInput
               placeholder="Enter new channel name"
-              value={channelName}
-              onChange={(e) => setChannelName(e.target.value)}
+              value={newChannelName}
+              onChange={(e) => setNewChannelName(e.target.value)}
             />
           </FormControl>
           <Divider my={4} borderColor="#A0A0A3" />
           <FormControl mt={2}>
             <FormLabel>Channel Type</FormLabel>
             <RadioGroup
-              onChange={(value) => setChannelType(value)}
-              value={channelType}
+              onChange={(value) => setNewChannelType(value)}
+              value={newChannelType}
             >
               <Stack direction="row" spacing={6}>
                 {Object.keys(EChannelType)
@@ -186,13 +189,13 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
                   ))}
               </Stack>
             </RadioGroup>
-            {channelType === EChannelType[EChannelType.protected] && (
+            {newChannelType === EChannelType[EChannelType.protected] && (
               <FormControl mt={4}>
                 <FormLabel>Channel Password</FormLabel>
                 <BaseInput
                   placeholder="Enter new channel password"
-                  value={channelPassword}
-                  onChange={(e) => setChannelPassword(e.target.value)}
+                  value={newChannelPassword}
+                  onChange={(e) => setNewChannelPassword(e.target.value)}
                 />
               </FormControl>
             )}
@@ -208,9 +211,8 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
           />
         </Box>
       </Box>
-      <Box display="flex" flexDirection="column" height="5vh">
+      <Box height="10vh">
         <BaseButton
-          alignSelf="flex-end"
           fontSize={14}
           size="sm"
           text="delete channel"
