@@ -139,79 +139,84 @@ const ChannelEdit: React.FC<Props> = ({ channelId }) => {
 
   return (
     <Box px={6} py={4}>
-      <HStack>
-        <BaseIconButton
-          icon={<GoArrowLeft size={30} />}
-          aria-label={"채팅방으로 돌아가기"}
-          onClick={() => {
-            console.log(channel);
-            router.push(`/channel/${channel.id}/chat`);
-          }}
-        />
-        <Text fontSize="2xl" fontWeight="bold">
-          {channel.name}
-        </Text>
-        <Box marginLeft={"auto"}>
-          <Badge fontSize="sm">{EChannelType[channel.type]}</Badge>
-        </Box>
-      </HStack>
-      <Box padding={"20"}>
-        <FormControl>
-          <FormLabel>Channel Name</FormLabel>
-          <BaseInput
-            placeholder="Enter new channel name"
-            value={channelName}
-            onChange={(e) => setChannelName(e.target.value)}
+      <Box display="flex" flexDirection="column" height="70vh">
+        <HStack>
+          <BaseIconButton
+            icon={<GoArrowLeft size={30} />}
+            aria-label={"채팅방으로 돌아가기"}
+            onClick={() => {
+              console.log(channel);
+              router.push(`/channel/${channel.id}/chat`);
+            }}
           />
-        </FormControl>
-        <Divider my={4} borderColor="#A0A0A3" />
-        <FormControl mt={2}>
-          <FormLabel>Channel Type</FormLabel>
-          <RadioGroup
-            onChange={(value) => setChannelType(value)}
-            value={channelType}
-          >
-            <Stack direction="row" spacing={6}>
-              {Object.keys(EChannelType)
-                .filter(
-                  (key) =>
-                    isNaN(Number(key)) &&
-                    key !== EChannelType[EChannelType.direct]
-                )
-                .map((key, i) => (
-                  <Radio key={i} value={key}>
-                    {key}
-                  </Radio>
-                ))}
-            </Stack>
-          </RadioGroup>
-          {channelType === EChannelType[EChannelType.protected] && (
-            <FormControl mt={4}>
-              <FormLabel>Channel Password</FormLabel>
-              <BaseInput
-                placeholder="Enter new channel password"
-                value={channelPassword}
-                onChange={(e) => setChannelPassword(e.target.value)}
-              />
-            </FormControl>
-          )}
-        </FormControl>
+          <Text fontSize="2xl" fontWeight="bold">
+            {channel.name}
+          </Text>
+          <Box marginLeft={"auto"}>
+            <Badge fontSize="sm">{EChannelType[channel.type]}</Badge>
+          </Box>
+        </HStack>
+        <Box padding={"20"}>
+          <FormControl>
+            <FormLabel>Channel Name</FormLabel>
+            <BaseInput
+              placeholder="Enter new channel name"
+              value={channelName}
+              onChange={(e) => setChannelName(e.target.value)}
+            />
+          </FormControl>
+          <Divider my={4} borderColor="#A0A0A3" />
+          <FormControl mt={2}>
+            <FormLabel>Channel Type</FormLabel>
+            <RadioGroup
+              onChange={(value) => setChannelType(value)}
+              value={channelType}
+            >
+              <Stack direction="row" spacing={6}>
+                {Object.keys(EChannelType)
+                  .filter(
+                    (key) =>
+                      isNaN(Number(key)) &&
+                      key !== EChannelType[EChannelType.direct]
+                  )
+                  .map((key, i) => (
+                    <Radio key={i} value={key}>
+                      {key}
+                    </Radio>
+                  ))}
+              </Stack>
+            </RadioGroup>
+            {channelType === EChannelType[EChannelType.protected] && (
+              <FormControl mt={4}>
+                <FormLabel>Channel Password</FormLabel>
+                <BaseInput
+                  placeholder="Enter new channel password"
+                  value={channelPassword}
+                  onChange={(e) => setChannelPassword(e.target.value)}
+                />
+              </FormControl>
+            )}
+          </FormControl>
+          <BaseButton
+            flex="1"
+            fontSize={14}
+            mr={2}
+            my={2}
+            size="sm"
+            text="edit channel"
+            onClick={() => updateChannelHandler()}
+          />
+        </Box>
+      </Box>
+      <Box display="flex" flexDirection="column" height="5vh">
         <BaseButton
-          flex="1"
+          alignSelf="flex-end"
           fontSize={14}
-          mr={2}
-          my={2}
           size="sm"
-          text="edit channel"
-          onClick={() => updateChannelHandler()}
+          text="delete channel"
+          onClick={() => deleteChannelHandler()}
         />
       </Box>
-      <BaseButton
-        fontSize={14}
-        size="sm"
-        text="delete channel"
-        onClick={() => deleteChannelHandler()}
-      />
     </Box>
   );
 };
