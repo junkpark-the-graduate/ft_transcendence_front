@@ -46,12 +46,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
           <GameResult gameResult={gameResult} />
         </GridType2>
       ) : (
-        <GridType1>
-          isValidRoom ? (
-          <Game />
-          ) : (
-          <Spinner />)
-        </GridType1>
+        <GridType1>{isValidRoom ? <Game /> : <Spinner />}</GridType1>
       )}
     </>
   );

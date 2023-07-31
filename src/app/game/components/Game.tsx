@@ -37,31 +37,39 @@ export default function Game() {
     const renderer = new THREE.WebGLRenderer();
     // add to div
 
-    const backgroundTextureLoader = new THREE.TextureLoader();
-    const backgroundTexture = backgroundTextureLoader.load("/Junkpark.png");
-    const backgroundGeometry = new THREE.BoxGeometry(50, 100, 100);
-    const backgroundMaterial = new THREE.MeshBasicMaterial({
-      map: backgroundTexture,
-      side: THREE.BackSide,
+    const background = new THREE.Mesh(
+      new THREE.BoxGeometry(50, 100, 100),
+      new THREE.MeshPhongMaterial({
+        color: localStorage.getItem("backgroundColor") ?? "white",
+        side: THREE.BackSide,
+      })
+    );
+
+    const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 100, 100),
+      new THREE.MeshPhongMaterial({
+        color: localStorage.getItem("ballColor") ?? "white",
+      })
+    );
+
+    const paddleMaterial = new THREE.MeshPhongMaterial({
+      color: localStorage.getItem("paddleColor") ?? "white",
     });
-    const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
 
     const paddleGeometry = new THREE.BoxGeometry(
       PADDLE_WIDTH,
       PADDLE_HEIGHT,
       1
-    ); // make a cube class
-    const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 }); // make a material class
+    );
 
-    const ballGeometry = new THREE.SphereGeometry(1, 100, 100);
-    const ball = new THREE.Mesh(ballGeometry, material);
-
-    const planeGeometry = new THREE.PlaneGeometry(50, 100, 100);
-    const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xf9dadd }); // make a material class
-
-    const paddle = new THREE.Mesh(paddleGeometry, material); // make a mesh class
-    const paddle2 = new THREE.Mesh(paddleGeometry, material); // make a mesh class
-    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    const paddle = new THREE.Mesh(paddleGeometry, paddleMaterial); // make a mesh class
+    const paddle2 = new THREE.Mesh(paddleGeometry, paddleMaterial); // make a mesh class
+    const plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(50, 100, 100),
+      new THREE.MeshPhongMaterial({
+        color: localStorage.getItem("planeColor") ?? "white",
+      })
+    );
 
     scene.add(light); // 씬에 광원 추가
     scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
