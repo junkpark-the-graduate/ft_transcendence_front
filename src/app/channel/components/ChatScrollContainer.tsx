@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { Box, BoxProps } from "@chakra-ui/react";
 
-interface ChatScrollContainerProps {
+interface ChatScrollContainerProps extends BoxProps {
   children: React.ReactNode;
 }
 
 const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
   children,
+  ...props
 }) => {
   const outerDiv = useRef<HTMLDivElement>(document.createElement("div"));
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
@@ -54,22 +56,23 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
     outerDiv.current.addEventListener("scroll", handleScroll);
 
     return () => {
-      if (outerDiv.current === null) return;
-      outerDiv.current.removeEventListener("scroll", handleScroll);
+      if (outerDiv.current !== null) {
+        outerDiv.current.removeEventListener("scroll", handleScroll);
+      }
     };
   }, []);
 
   return (
-    <div
+    <Box
       ref={outerDiv}
-      style={{
-        position: "relative",
-        height: "80%",
-        overflow: "scroll",
-      }}
+      position="relative"
+      height="80%"
+      pr={5}
+      overflowY="scroll"
+      {...props}
     >
       {children}
-    </div>
+    </Box>
   );
 };
 

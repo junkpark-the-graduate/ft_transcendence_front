@@ -203,7 +203,6 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
           );
         })}
       </ChatScrollContainer>
-
       <Box>
         <form onSubmit={submitChat}>
           <Divider my={3} />
