@@ -17,7 +17,7 @@ import {
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { GoArrowLeft } from "react-icons/go";
+import { GoArrowLeft, GoTrash } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
 import BaseInput from "@/ui/Input/Input";
 import BaseButton from "@/ui/Button/Button";
@@ -113,10 +113,10 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   }
 
   async function deleteChannelHandler() {
-    // e.stopPropagation();
-
+    if (confirm("Are you sure you want to delete this channel?") === false) {
+      return;
+    }
     const res = await deleteChannel();
-
     //TODO res.json이 안됨 syntax error남 왜?ㅠ.ㅠ
     if (res.status > 299) {
       toast({
@@ -133,7 +133,6 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
         isClosable: true,
       });
     }
-
     router.push(`/channel`);
   }
 
@@ -143,7 +142,7 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
 
   return (
     <Box px={6} py={4}>
-      <Box display="flex" flexDirection="column" height="70vh">
+      <Box display="flex" flexDirection="column" height="75vh">
         <HStack>
           <BaseIconButton
             icon={<GoArrowLeft size={30} />}
@@ -159,7 +158,7 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
             <Badge fontSize="sm">{EChannelType[channel.type]}</Badge>
           </Box>
         </HStack>
-        <Box padding={"20"}>
+        <Box pt={10}>
           <FormControl>
             <FormLabel>Channel Name</FormLabel>
             <BaseInput
@@ -211,14 +210,23 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
           />
         </Box>
       </Box>
-      <Box height="10vh">
-        <BaseButton
-          fontSize={14}
-          size="sm"
-          text="delete channel"
-          onClick={() => deleteChannelHandler()}
-        />
-      </Box>
+      <HStack
+        as="button"
+        bg="#414147"
+        h={"30px"}
+        borderRadius={"8px"}
+        textColor="white"
+        fontSize={15}
+        px="25px"
+        fontWeight={800}
+        _hover={{
+          background: "#191919",
+        }}
+        onClick={() => deleteChannelHandler()}
+      >
+        <Text>delete channel</Text>
+        <GoTrash size={15} />
+      </HStack>
     </Box>
   );
 };
