@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import GameResult from "../game/components/GameResult";
 import GridType1 from "@/ui/Grid/GridType1";
+import GameMatchCard from "../game/components/GameMatchCard";
 
 export default function page() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,7 +35,7 @@ export default function page() {
   };
   return (
     <GridType1>
-      <GameResult gameResult={gameResult} />
+      <GameMatchCard />
     </GridType1>
   );
 }

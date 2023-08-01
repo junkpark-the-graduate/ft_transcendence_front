@@ -9,9 +9,11 @@ import {
   AspectRatio,
   Text,
   Skeleton,
+  Button,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
+import { socket } from "../socket";
 
 type User = {
   name: string;
@@ -19,7 +21,7 @@ type User = {
   mmr: number;
 };
 
-export default function GameUserCard({ user }: { user: User }) {
+export default function GameMatchCard({ setIsMatching }: any) {
   return (
     <>
       <Card align="center" w="100%" h="100%" backgroundColor={"#555555"}>
@@ -29,17 +31,19 @@ export default function GameUserCard({ user }: { user: User }) {
           margin={"30px"}
           borderRadius={"15px"}
         >
-          <Image w="100%" h="100%" src={user!.image} borderRadius="full" />
+          <Skeleton w="100%" h="100%" borderRadius="full" />
         </AspectRatio>
         <Text fontSize={20} color={"white"} h="15%">
-          {user!.name}
+          적절한 상대를 찾고 있습니다.
         </Text>
-        <Text fontSize={20} color={"white"} h="20%">
-          {user!.mmr}
-        </Text>
-        <Text fontSize={20} color={"white"} h="20%">
-          {"몇 승 몇 패"}
-        </Text>
+        <Button
+          onClick={() => {
+            socket.emit("cancel_matching");
+            setIsMatching(false);
+          }}
+        >
+          매칭 취소
+        </Button>
       </Card>
     </>
   );

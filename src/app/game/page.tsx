@@ -10,6 +10,7 @@ import GameUserCard from "./components/GameUserCard";
 import GameSettingCard from "./components/GameSettingCard";
 import { fetchServerResponse } from "next/dist/client/components/router-reducer/fetch-server-response";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
+import GameMatchCard from "./components/GameMatchCard";
 
 export default function Page({
   searchParams,
@@ -59,6 +60,7 @@ export default function Page({
     });
 
     return () => {
+      socket.emit("cancel_matching");
       socket.removeAllListeners();
     };
   }, []);
@@ -75,7 +77,7 @@ export default function Page({
           isMatched ? (
             <GameUserCard user={opponent} />
           ) : (
-            <Skeleton w={"100%"} h={"100%"} />
+            <GameMatchCard setIsMatching={setIsMatching} />
           )
         ) : (
           <GameSettingCard setIsMatching={setIsMatching} />

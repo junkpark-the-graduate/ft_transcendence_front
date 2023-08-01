@@ -119,6 +119,19 @@ export default function GameSettingCard({ setIsMatching }: any) {
     size: "lg",
   };
 
+  const colorOptions = () => (
+    <>
+      <option value="white">⚪ white</option>
+      <option value="black">⚫ black</option>
+      <option value="red">🔴 red</option>
+      <option value="orange">🟠 orange</option>
+      <option value="yellow">🟡 yellow</option>
+      <option value="green">🟢 green</option>
+      <option value="blue">🔵 blue</option>
+      <option value="purple">🟣 purple</option>
+    </>
+  );
+
   return (
     <Card align="center" w="100%" h="100%" backgroundColor={"#555555"}>
       <CardHeader color={"white"}>
@@ -140,14 +153,7 @@ export default function GameSettingCard({ setIsMatching }: any) {
         onChange={handleSelectBackGroundColor}
         {...selectStyle}
       >
-        <option value="white">⚪ white</option>
-        <option value="black">⚫ black</option>
-        <option value="red">🔴 red</option>
-        <option value="orange">🟠 orange</option>
-        <option value="yellow">🟡 yellow</option>
-        <option value="green">🟢 green</option>
-        <option value="blue">🔵 blue</option>
-        <option value="purple">🟣 purple</option>
+        {colorOptions()}
       </Select>
       <FormLabel color={"white"}>Ball Color</FormLabel>
       <Select
@@ -155,14 +161,7 @@ export default function GameSettingCard({ setIsMatching }: any) {
         onChange={handleSelectBallColor}
         {...selectStyle}
       >
-        <option value="white">⚪ white</option>
-        <option value="black">⚫ black</option>
-        <option value="red">🔴 red</option>
-        <option value="orange">🟠 orange</option>
-        <option value="yellow">🟡 yellow</option>
-        <option value="green">🟢 green</option>
-        <option value="blue">🔵 blue</option>
-        <option value="purple">🟣 purple</option>
+        {colorOptions()}
       </Select>
       <FormLabel color={"white"}>Paddle Color</FormLabel>
       <Select
@@ -170,14 +169,7 @@ export default function GameSettingCard({ setIsMatching }: any) {
         onChange={handleSelectPaddleColor}
         {...selectStyle}
       >
-        <option value="white">⚪ white</option>
-        <option value="black">⚫ black</option>
-        <option value="red">🔴 red</option>
-        <option value="orange">🟠 orange</option>
-        <option value="yellow">🟡 yellow</option>
-        <option value="green">🟢 green</option>
-        <option value="blue">🔵 blue</option>
-        <option value="purple">🟣 purple</option>
+        {colorOptions()}
       </Select>
       <FormLabel color={"white"}>Plane Color</FormLabel>
       <Select
@@ -185,14 +177,7 @@ export default function GameSettingCard({ setIsMatching }: any) {
         onChange={handleSelectPlaneColor}
         {...selectStyle}
       >
-        <option value="white">⚪ white</option>
-        <option value="black">⚫ black</option>
-        <option value="red">🔴 red</option>
-        <option value="orange">🟠 orange</option>
-        <option value="yellow">🟡 yellow</option>
-        <option value="green">🟢 green</option>
-        <option value="blue">🔵 blue</option>
-        <option value="purple">🟣 purple</option>
+        {colorOptions()}
       </Select>
       <Box color="white" w="75%" margin="40px">
         Ball Speed
