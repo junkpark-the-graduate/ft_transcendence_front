@@ -84,7 +84,6 @@ export default function Game() {
     plane.position.z = -2;
 
     socket.on("score", (data: any) => {
-      console.log("score: ", data);
       setScore(`${data.score.player1} : ${data.score.player2}`);
     });
 
