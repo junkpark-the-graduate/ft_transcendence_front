@@ -45,7 +45,7 @@ export default function GridType3({
           bg="none"
           borderRight={"#414147 solid 2px"}
           px={5}
-          py={3}
+          py={4}
           overflowY="auto"
         >
           <Box w="100%" h="100%">

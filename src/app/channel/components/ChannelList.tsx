@@ -17,6 +17,8 @@ import PasswordModal from "@/ui/Modal/PasswordModal";
 import Input from "@/ui/Input/Input";
 import ButtonBox from "@/ui/Box/ButtonBox";
 import CreateChannelModal from "@/ui/Modal/CreateChannelModal";
+import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
+import ChannelBadge from "./ChannelBadge";
 
 interface Props {
   channels: any[];
@@ -154,8 +156,10 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
                 <Text fontSize="lg">{channel.name}</Text>
                 <Box marginLeft="auto">
                   <HStack spacing={3}>
-                    <Badge fontSize="sm">{EChannelType[channel.type]}</Badge>
-                    <Text fontSize="sm">{channel.createdAt}</Text>
+                    <ChannelBadge type={Number(channel.type)} />
+                    <Text fontSize="sm">
+                      {formatCreatedAt(channel.createdAt)}
+                    </Text>
                   </HStack>
                 </Box>
               </Flex>

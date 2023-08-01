@@ -22,7 +22,6 @@ export default function Page({
           method: "POST",
         }
       );
-
       console.log(res.status);
       // true -> res자체가 redirect된 상태
       if (res.ok) {

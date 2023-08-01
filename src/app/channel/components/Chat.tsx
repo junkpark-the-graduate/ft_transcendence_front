@@ -3,8 +3,27 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
-import { Input, Button, Text, Box, Flex, useToast } from "@chakra-ui/react";
+import {
+  Input,
+  Button,
+  Text,
+  Box,
+  Flex,
+  useToast,
+  Divider,
+  Spacer,
+} from "@chakra-ui/react";
 import Cookies from "js-cookie";
+import BaseInput from "@/ui/Input/Input";
+import BaseButton from "@/ui/Button/Button";
+import ChatInput from "@/ui/Input/ChatInput";
+import BaseIconButton from "@/ui/Button/IconButton";
+import {
+  GoArrowLeft,
+  GoComment,
+  GoGear,
+  GoPaperAirplane,
+} from "react-icons/go";
 
 type ChatType = {
   socketId: string;
@@ -126,19 +145,28 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   };
 
   return (
-    <div>
-      <Input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Enter your username"
-      />
+    <Box w="full" h="full" borderRadius="8px" bg="#414147" px={4} py={2}>
+      <Box>
+        <Flex alignItems="center">
+          <BaseIconButton
+            size="sm"
+            icon={<GoArrowLeft />}
+            aria-label="go back"
+          />
+          <Text ml={1}>Channel Name</Text>
+          <Spacer />
+          <BaseIconButton size="sm" icon={<GoGear />} aria-label="setting" />
+        </Flex>
+      </Box>
+      <Divider mt={2} mb={3} />
       <Flex
         flexDirection="column"
+        px={2}
         width="100%"
+        height="82%"
         overflowY="auto"
-        minHeight="80vh"
-        maxHeight="85vh"
+        // minHeight="80vh"
+        maxHeight="80vh"
       >
         {chatList.map((chatItem, index) => {
           const isCurrentUser = socket?.id === chatItem.socketId;
@@ -147,10 +175,13 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
               key={index}
               alignSelf={isCurrentUser ? "flex-end" : "flex-start"}
               maxW="70%"
-              backgroundColor={isCurrentUser ? "teal.500" : "gray.300"}
+              backgroundColor={isCurrentUser ? "teal" : "gray.300"}
               borderRadius="md"
-              p={3}
-              mt={0.5}
+              px={4}
+              py={2}
+              my={1}
+              fontSize="14px"
+              fontWeight={300}
               textAlign={isCurrentUser ? "right" : "left"}
             >
               {isCurrentUser && (
@@ -168,20 +199,36 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
         })}
         <div ref={messagesEndRef} />
       </Flex>
-      <Box position="fixed" bottom="0" width="100%">
+      <Box>
         <form onSubmit={submitChat}>
+          <Divider my={3} />
           <Flex flexDirection="row">
-            <Input
+            <ChatInput
+              mr={2}
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Enter your message"
             />
-            <Button type="submit">Send</Button>
+            <Button
+              px={6}
+              type="submit"
+              textColor="white"
+              bg="#191919"
+              _hover={{
+                background: "#191919",
+              }}
+              _focus={{
+                background: "#191919",
+              }}
+              leftIcon={<GoPaperAirplane />}
+            >
+              Send
+            </Button>
           </Flex>
         </form>
       </Box>
-    </div>
+    </Box>
   );
 };
 

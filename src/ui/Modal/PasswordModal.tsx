@@ -13,10 +13,13 @@ import {
   FormLabel,
   Input,
   Button,
+  Box,
+  IconButton,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { set } from "react-hook-form";
+import { GoPlus } from "react-icons/go";
 
 // interface PasswordModalProps {
 //   isOpen: boolean;
@@ -69,32 +72,36 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader color="black">비밀번호를 입력하세요</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody pb={6}>
-          <FormControl>
-            <FormLabel color="black">힌트는 없습니다</FormLabel>
-            <Input
-              color="black"
-              placeholder="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </FormControl>
-          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        </ModalBody>
+    <Box
+    // border={"white 1px solid"}
+    >
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader color="black">비밀번호를 입력하세요</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel color="black">힌트는 없습니다</FormLabel>
+              <Input
+                color="black"
+                placeholder="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          </ModalBody>
 
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleEnter}>
-            입장
-          </Button>
-          <Button onClick={() => setIsOpen(false)}>취소</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleEnter}>
+              입장
+            </Button>
+            <Button onClick={() => setIsOpen(false)}>취소</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
   );
 };
 
