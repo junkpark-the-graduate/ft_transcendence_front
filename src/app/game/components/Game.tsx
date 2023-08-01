@@ -4,6 +4,12 @@ import * as THREE from "three";
 import { socket } from "../socket";
 import { useRouter } from "next/navigation";
 
+enum Role {
+  Player1,
+  Player2,
+  Spectator,
+}
+
 interface KeyState {
   [key: number]: boolean;
 }
@@ -19,8 +25,6 @@ const keyState: KeyState = {
 export default function Game() {
   const router = useRouter();
   const [score, setScore] = useState("0 : 0");
-
-  let isPlayer1: boolean = false;
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -98,30 +102,32 @@ export default function Game() {
       ball.position.y = data.ball.pos.y;
     });
 
-    socket.emit("game_init", (isPlayer1: any) => {
-      console.log("game_init: ", isPlayer1);
+    socket.emit("game_init", (role: Role) => {
+      console.log("isSpectator: ", role === Role.Spectator);
       camera.position.z = 10; // move the camera back
-      if (isPlayer1) {
-        // 3인칭
-        camera.position.y = -50;
-        camera.lookAt(0, 4, -1);
-        // 1인칭
-        //camera.position.y = -30;
-        //camera.lookAt(0, 1, 0);
-      } else {
-        // 3인칭
-        camera.up.set(0, -1, 0);
-        camera.position.y = 50;
-        camera.lookAt(0, -4, -1);
-        //camera.rotation.y = 1;
-        // 1인칭
-        //camera.position.y = 30;
-        //camera.lookAt(0, -1, 0);
+      paddle.position.y = -30;
+      paddle2.position.y = 30;
+      switch (role) {
+        case Role.Player1:
+          camera.position.y = -50;
+          camera.lookAt(0, 4, -1);
+          break;
+        case Role.Player2:
+          camera.position.y = 50;
+          camera.up.set(0, -1, 0);
+          camera.lookAt(0, -4, -1);
+          break;
+        case Role.Spectator:
+          camera.position.z = 45;
+          camera.position.y = 0;
+          camera.lookAt(0, 0, -1);
+          camera.rotateZ(Math.PI / 2);
+          break;
       }
     });
 
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    console.log(canvas);
+    //console.log(canvas);
     renderer.setSize(canvas!.clientWidth, canvas!.clientHeight);
     canvas.appendChild(renderer.domElement);
 
@@ -154,10 +160,10 @@ export default function Game() {
     function animate() {
       requestAnimationFrame(animate);
       if (keyState[37]) {
-        socket.emit("key_left", { isPlayer1: isPlayer1 });
+        socket.emit("key_left");
       }
       if (keyState[39]) {
-        socket.emit("key_right", { isPlayer1: isPlayer1 });
+        socket.emit("key_right");
       }
       // 1인칭
       //camera.position.x = paddle.position.x;

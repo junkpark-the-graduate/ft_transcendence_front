@@ -1,13 +1,13 @@
 "use client";
 
-import { Box, Grid, Spinner } from "@chakra-ui/react";
+import { Box, Grid, HStack, Spinner, Text } from "@chakra-ui/react";
 import Game from "../components/Game";
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
 import { useRouter } from "next/navigation";
 import GridType1 from "@/ui/Grid/GridType1";
 import GridType2 from "@/ui/Grid/GridType2";
-import GameResult from "../components/GameResult";
+import GameUserResult from "../components/GameUserResult";
 
 export default function Page({ searchParams }: { searchParams: any }) {
   const { roomId } = searchParams;
@@ -43,7 +43,19 @@ export default function Page({ searchParams }: { searchParams: any }) {
     <>
       {gameResult ? (
         <GridType1>
-          <GameResult gameResult={gameResult} />
+          <Text fontSize={20} color={"white"}>
+            게임 결과
+          </Text>
+          <Text fontSize={20} color={"white"}>
+            {gameResult.score}
+          </Text>
+          <Text fontSize={20} color={"white"}>
+            {`${gameResult.playTime}s`}
+          </Text>
+          <HStack w={"100%"} h={"80%"}>
+            <GameUserResult user={gameResult.player1} />
+            <GameUserResult user={gameResult.player2} />
+          </HStack>
         </GridType1>
       ) : (
         <GridType2>{isValidRoom ? <Game /> : <Spinner />}</GridType2>
