@@ -54,6 +54,7 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
     outerDiv.current.addEventListener("scroll", handleScroll);
 
     return () => {
+      if (outerDiv.current === null) return;
       outerDiv.current.removeEventListener("scroll", handleScroll);
     };
   }, []);
