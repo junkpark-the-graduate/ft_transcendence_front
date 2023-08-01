@@ -4,7 +4,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import {
-  Input,
   Button,
   Text,
   Box,
@@ -12,18 +11,14 @@ import {
   useToast,
   Divider,
   Spacer,
+  Stack,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
-import BaseInput from "@/ui/Input/Input";
-import BaseButton from "@/ui/Button/Button";
 import ChatInput from "@/ui/Input/ChatInput";
 import BaseIconButton from "@/ui/Button/IconButton";
-import {
-  GoArrowLeft,
-  GoComment,
-  GoGear,
-  GoPaperAirplane,
-} from "react-icons/go";
+import { GoArrowLeft, GoGear, GoPaperAirplane } from "react-icons/go";
+import ChannelBadge from "./ChannelBadge";
+import ChatScrollContainer from "./ChatScrollContainer";
 
 type ChatType = {
   socketId: string;
@@ -38,46 +33,53 @@ interface ChatProps {
 
 const Chat: React.FC<ChatProps> = ({ channelId }) => {
   const [userId, setUserId] = useState<number>(0); // [1
+  const [channel, setChannel] = useState<{ [key: string]: any }>({});
   const [username, setUsername] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
   const router = useRouter();
   const toast = useToast();
 
-  useEffect(() => {
-    if (!accessToken) {
-      router.push("/channel");
-    }
+  const getUserInfo = async () => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = await res.json();
+    setUserId(data.id);
+    setUsername(data.name);
+  };
 
-    const getUserInfo = async () => {
+  async function getChannel() {
+    try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`,
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
           },
         }
       );
-      const data = await res.json();
-      setUserId(data.id);
-      setUsername(data.name);
-    };
+      const resJson = await res.json();
+      console.log("resJson", resJson);
+      setChannel(resJson);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
 
+  useEffect(() => {
+    if (!accessToken) router.push("/channel");
     getUserInfo();
-  }, [accessToken]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(scrollToBottom, [chatList]);
-
-  const ENDPOINT = process.env.NEXT_PUBLIC_CHAT_END_POINT;
+    getChannel();
+  }, []);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -100,7 +102,7 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
     });
 
     socketIo.on("new_chat", (data: ChatType) => {
-      console.log("data!!!!!", data);
+      console.log("new_chat data!!!!!", data);
       setChatList((oldChatList) => [...oldChatList, data]);
     });
 
@@ -132,7 +134,7 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
     };
-  }, [accessToken, channelId]);
+  }, [channelId, accessToken]);
 
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
@@ -152,53 +154,56 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
             size="sm"
             icon={<GoArrowLeft />}
             aria-label="go back"
+            onClick={() => {
+              router.push(`/channel`);
+            }}
           />
-          <Text ml={1}>Channel Name</Text>
+          <Text ml={1}>{channel.name}</Text>
           <Spacer />
-          <BaseIconButton size="sm" icon={<GoGear />} aria-label="setting" />
+          <BaseIconButton
+            size="sm"
+            icon={<GoGear />}
+            aria-label="setting"
+            onClick={() => {
+              router.push(`/channel/${channelId}/admin`);
+            }}
+          />
+          <ChannelBadge type={Number(channel.type)} />
         </Flex>
       </Box>
       <Divider mt={2} mb={3} />
-      <Flex
-        flexDirection="column"
-        px={2}
-        width="100%"
-        height="82%"
-        overflowY="auto"
-        // minHeight="80vh"
-        maxHeight="80vh"
-      >
+      <ChatScrollContainer>
         {chatList.map((chatItem, index) => {
-          const isCurrentUser = socket?.id === chatItem.socketId;
+          const isCurrentUser = chatItem.userId === userId;
           return (
-            <Box
-              key={index}
-              alignSelf={isCurrentUser ? "flex-end" : "flex-start"}
-              maxW="70%"
-              backgroundColor={isCurrentUser ? "teal" : "gray.300"}
-              borderRadius="md"
-              px={4}
-              py={2}
-              my={1}
-              fontSize="14px"
-              fontWeight={300}
-              textAlign={isCurrentUser ? "right" : "left"}
-            >
-              {isCurrentUser && (
-                <Text fontSize="md" color={"white"}>
-                  {chatItem.message}
-                </Text>
-              )}
-              {!isCurrentUser && (
-                <Text fontSize="md" color={"black"}>
-                  {chatItem.username} : {chatItem.message}
-                </Text>
-              )}
-            </Box>
+            <Stack align={isCurrentUser ? "flex-end" : "flex-start"}>
+              <Box
+                key={index}
+                maxW="70%"
+                backgroundColor={isCurrentUser ? "teal" : "gray.300"}
+                borderRadius="md"
+                px={4}
+                py={2}
+                my={1}
+                fontSize="14px"
+                fontWeight={300}
+              >
+                {isCurrentUser && (
+                  <Text fontSize="md" color={"white"}>
+                    {chatItem.message}
+                  </Text>
+                )}
+                {!isCurrentUser && (
+                  <Text fontSize="md" color={"black"}>
+                    {chatItem.username} : {chatItem.message}
+                  </Text>
+                )}
+              </Box>
+            </Stack>
           );
         })}
-        <div ref={messagesEndRef} />
-      </Flex>
+      </ChatScrollContainer>
+
       <Box>
         <form onSubmit={submitChat}>
           <Divider my={3} />

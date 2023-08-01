@@ -6,21 +6,23 @@ import {
   Text,
   useToast,
   HStack,
-  Badge,
   FormControl,
   FormLabel,
   Divider,
   RadioGroup,
   Radio,
   Stack,
+  Flex,
+  Spacer,
+  Button,
 } from "@chakra-ui/react";
 import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { GoArrowLeft, GoTrash } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
-import BaseInput from "@/ui/Input/Input";
-import BaseButton from "@/ui/Button/Button";
+import ChannelBadge from "./ChannelBadge";
+import ChannelEditInput from "@/ui/Input/ChannelEditInput";
 
 interface Props {
   channelId: number;
@@ -141,85 +143,97 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   }, []);
 
   return (
-    <Box px={6} py={4}>
-      <Box display="flex" flexDirection="column" height="75vh">
-        <HStack>
-          <BaseIconButton
-            icon={<GoArrowLeft size={30} />}
-            aria-label={"채팅방으로 돌아가기"}
-            onClick={() => {
-              router.push(`/channel/${channel.id}/chat`);
+    <Box w="full" h="full" borderRadius="8px" bg="#414147" px={4} py={2}>
+      <Flex alignItems="center">
+        <BaseIconButton
+          size="sm"
+          icon={<GoArrowLeft />}
+          aria-label="go back"
+          onClick={() => {
+            router.push(`/channel/${channel.id}/chat`);
+          }}
+        />
+        <Text ml={1}>{channel.name}</Text>
+        <Spacer />
+        <ChannelBadge type={Number(channel.type)} />
+      </Flex>
+      <Divider mt={2} mb={3} />
+      <Box px={2} width="100%" height="82%" overflowY="auto" maxHeight="80vh">
+        <FormControl>
+          <FormLabel> New Channel Name</FormLabel>
+          <ChannelEditInput
+            placeholder="Enter new channel name"
+            value={newChannelName}
+            onChange={(e) => setNewChannelName(e.target.value)}
+          />
+        </FormControl>
+        <Divider my={4} borderColor="#A0A0A3" />
+        <FormControl mt={2}>
+          <FormLabel>New Channel Type</FormLabel>
+          <RadioGroup
+            onChange={(value) => {
+              setNewChannelType(value);
+              if (value !== EChannelType[EChannelType.protected])
+                setNewChannelPassword("");
             }}
+            value={newChannelType}
+          >
+            <Stack direction="row" spacing={6}>
+              {Object.keys(EChannelType)
+                .filter(
+                  (key) =>
+                    isNaN(Number(key)) &&
+                    key !== EChannelType[EChannelType.direct]
+                )
+                .map((key, i) => (
+                  <Radio key={i} value={key}>
+                    {key}
+                  </Radio>
+                ))}
+            </Stack>
+          </RadioGroup>
+        </FormControl>
+        <FormControl mt={4}>
+          <FormLabel>New Channel Password</FormLabel>
+          <ChannelEditInput
+            placeholder="Enter new channel password"
+            value={newChannelPassword}
+            onChange={(e) => setNewChannelPassword(e.target.value)}
+            disabled={newChannelType !== EChannelType[EChannelType.protected]}
           />
-          <Text fontSize="2xl" fontWeight="bold">
-            {channel.name}
-          </Text>
-          <Box marginLeft={"auto"}>
-            <Badge fontSize="sm">{EChannelType[channel.type]}</Badge>
-          </Box>
-        </HStack>
-        <Box pt={10}>
-          <FormControl>
-            <FormLabel>Channel Name</FormLabel>
-            <BaseInput
-              placeholder="Enter new channel name"
-              value={newChannelName}
-              onChange={(e) => setNewChannelName(e.target.value)}
-            />
-          </FormControl>
-          <Divider my={4} borderColor="#A0A0A3" />
-          <FormControl mt={2}>
-            <FormLabel>Channel Type</FormLabel>
-            <RadioGroup
-              onChange={(value) => setNewChannelType(value)}
-              value={newChannelType}
-            >
-              <Stack direction="row" spacing={6}>
-                {Object.keys(EChannelType)
-                  .filter(
-                    (key) =>
-                      isNaN(Number(key)) &&
-                      key !== EChannelType[EChannelType.direct]
-                  )
-                  .map((key, i) => (
-                    <Radio key={i} value={key}>
-                      {key}
-                    </Radio>
-                  ))}
-              </Stack>
-            </RadioGroup>
-            {newChannelType === EChannelType[EChannelType.protected] && (
-              <FormControl mt={4}>
-                <FormLabel>Channel Password</FormLabel>
-                <BaseInput
-                  placeholder="Enter new channel password"
-                  value={newChannelPassword}
-                  onChange={(e) => setNewChannelPassword(e.target.value)}
-                />
-              </FormControl>
-            )}
-          </FormControl>
-          <BaseButton
-            flex="1"
-            fontSize={14}
-            mr={2}
-            my={2}
-            size="sm"
-            text="edit channel"
-            onClick={() => updateChannelHandler()}
-          />
-        </Box>
+        </FormControl>
+        <Button
+          mt={4}
+          fontSize={15}
+          type="submit"
+          borderRadius={"8px"}
+          textColor="white"
+          bg="#191919"
+          _hover={{
+            background: "#191919",
+          }}
+          _focus={{
+            background: "#191919",
+          }}
+          onClick={() => updateChannelHandler()}
+        >
+          update channel
+        </Button>
       </Box>
+      <Divider my={3} />
       <HStack
         as="button"
-        bg="#414147"
-        h={"30px"}
+        h={"40px"}
         borderRadius={"8px"}
         textColor="white"
-        fontSize={15}
         px="25px"
+        fontSize={15}
         fontWeight={800}
+        bg="#191919"
         _hover={{
+          background: "#191919",
+        }}
+        _focus={{
           background: "#191919",
         }}
         onClick={() => deleteChannelHandler()}

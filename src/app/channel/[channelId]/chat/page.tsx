@@ -6,11 +6,7 @@ import JoinedChannelList from "../../components/JoinedChannelList";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
-export default async function Page({
-  params,
-}: {
-  params: { channelId: number };
-}) {
+export default function Page({ params }: { params: { channelId: number } }) {
   const accessToken = Cookies.get("accessToken");
   const [channels, setChannels] = useState<any>([]);
   const [joinedChannels, setJoinedChannels] = useState<any>([]);
