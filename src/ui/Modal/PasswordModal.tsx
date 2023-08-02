@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -6,16 +8,13 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  FormControl,
+  Input,
   Box,
-  useDisclosure,
   Flex,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import BaseInput from "../Input/Input";
 import BaseButton from "../Button/Button";
 
 interface PasswordModalProps {
@@ -25,15 +24,13 @@ interface PasswordModalProps {
 }
 
 const PasswordModal: React.FC<PasswordModalProps> = ({
+  isOpen,
   setIsOpen,
   channelId,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-
-  const toast = useToast();
 
   const joinProtectedChannel = async (password: string, channelId: number) => {
     const accessToken = Cookies.get("accessToken");
@@ -51,7 +48,14 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
     return res;
   };
 
-  const handleEnter = async () => {
+  const handleEnter = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!password) {
+      setErrorMessage("비밀번호를 입력해주세요");
+      return;
+    }
+
     const res = await joinProtectedChannel(password, channelId);
     const resJson = await res.json();
 
@@ -60,39 +64,41 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
       router.push(`/channel/${channelId}/chat`);
     } else {
       setErrorMessage(resJson.message);
-      toast({
-        description: resJson.message,
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
     }
+  };
+
+  const onClose = () => {
+    setIsOpen(false);
+    setPassword("");
+    setErrorMessage("");
   };
 
   return (
     <Box>
-      <Box as="button" onClick={onOpen} fontSize={14}>
-        password
-      </Box>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent mt={40} p={2} bg="#29292D">
           <ModalHeader mx={3} mt={2} py={2}>
-            Enter the Password
+            비밀번호를 입력하세요
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mx={3} mb={6}>
-            <Flex>
-              <FormControl>
-                <BaseInput
+            <form onSubmit={handleEnter}>
+              <Flex>
+                <Input
+                  color="white"
                   placeholder="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-              </FormControl>
-              <BaseButton text="join" ml={3} onClick={handleEnter} />
-            </Flex>
+                <BaseButton type="submit" text="join" ml={3} />
+              </Flex>
+            </form>
+            {errorMessage && (
+              <Text mt={4} color={"red"}>
+                {errorMessage}
+              </Text>
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>
