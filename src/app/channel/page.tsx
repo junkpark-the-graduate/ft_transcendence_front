@@ -24,7 +24,13 @@ export default function Page() {
 
   return (
     <GridType3
-      children={<ChannelList channels={channels} setChannels={setChannels} />}
+      children={
+        <ChannelList
+          channels={channels}
+          setChannels={setChannels}
+          setJoinedChannels={setJoinedChannels}
+        />
+      }
       children1={
         <Box px={1}>
           <Text

@@ -27,9 +27,14 @@ import { set } from "react-hook-form";
 interface Props {
   channels: any[];
   setChannels: any;
+  setJoinedChannels: any;
 }
 
-const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
+const ChannelList: React.FC<Props> = ({
+  channels,
+  setChannels,
+  setJoinedChannels,
+}) => {
   const router = useRouter();
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -127,7 +132,11 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
               value={searchKeyword}
               onChange={() => console.log("검색어 입력")}
             />
-            <CreateChannelModal channels={channels} setChannels={setChannels} />
+            <CreateChannelModal
+              channels={channels}
+              setChannels={setChannels}
+              setJoinedChannels={setJoinedChannels}
+            />
             <IconButton
               aria-label="채널 목록 새로고침"
               icon={<GoSync />}

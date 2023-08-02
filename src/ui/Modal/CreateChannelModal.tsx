@@ -30,11 +30,13 @@ import BaseInput from "../Input/Input";
 export interface CreateChannelModalProps {
   channels: any;
   setChannels: any;
+  setJoinedChannels: any;
 }
 
 export default function CreateChannelModal({
   channels,
   setChannels,
+  setJoinedChannels,
   ...props
 }: CreateChannelModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -91,6 +93,7 @@ export default function CreateChannelModal({
     }
     console.log(resJson);
     setChannels([...channels, resJson]);
+    setJoinedChannels([...channels, resJson]);
     setChannelName("");
     onClose();
   }
@@ -104,9 +107,6 @@ export default function CreateChannelModal({
         borderRadius={"8px"}
         textColor="white"
         _hover={{
-          background: "#191919",
-        }}
-        _focus={{
           background: "#191919",
         }}
         onClick={onOpen}
