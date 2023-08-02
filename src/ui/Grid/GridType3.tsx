@@ -2,6 +2,7 @@ import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 import BaseTabs from "../Tab/Tab";
 import FullBox from "../Box/FullBox";
+import JoinedChannelList from "../Lists/JoinedChannelList";
 
 export interface BaseGridProps extends GridProps {
   children: React.ReactNode;

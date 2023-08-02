@@ -17,7 +17,7 @@ import Cookies from "js-cookie";
 import ChatInput from "@/ui/Input/ChatInput";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { GoArrowLeft, GoGear, GoPaperAirplane } from "react-icons/go";
-import ChannelBadge from "./ChannelBadge";
+import ChannelBadge from "@/ui/Badges/ChannelBadge";
 import ChatScrollContainer from "./ChatScrollContainer";
 
 type ChatType = {

@@ -21,8 +21,9 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { GoArrowLeft, GoTrash } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
-import ChannelBadge from "./ChannelBadge";
+
 import ChannelEditInput from "@/ui/Input/ChannelEditInput";
+import ChannelBadge from "@/ui/Badges/ChannelBadge";
 
 interface Props {
   channelId: number;
