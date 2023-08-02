@@ -13,12 +13,13 @@ import {
   CardHeader,
   Heading,
   CardFooter,
+  FormLabel,
 } from "@chakra-ui/react";
 import { socket } from "../socket";
 
 function SliderThumbWithTooltip({
   ballSpeed,
-  setballSpeed,
+  setBallSpeed,
   showTooltip,
   setShowTooltip,
 }: any) {
@@ -29,7 +30,7 @@ function SliderThumbWithTooltip({
       min={50}
       max={150}
       colorScheme="gray"
-      onChange={(v) => setballSpeed(v)}
+      onChange={(v) => setBallSpeed(v)}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
@@ -65,13 +66,38 @@ function SliderThumbWithTooltip({
 }
 
 export default function GameSettingCard({ setIsMatching }: any) {
-  const [ballColor, setBallColor] = useState("white");
+  const [ballColor, setBallColor] = useState(localStorage.getItem("ballColor"));
+  const [backgroundColor, setBackgroundColor] = useState(
+    localStorage.getItem("backgroundColor")
+  );
+  const [paddleColor, setPaddleColor] = useState(
+    localStorage.getItem("paddleColor")
+  );
+  const [planeColor, setPlaneColor] = useState(
+    localStorage.getItem("planeColor")
+  );
+
+  //let ballColor = localStorage.getItem("ballColor");
   const [gameType, setGameType] = useState("normal");
-  const [ballSpeed, setballSpeed] = useState(100);
+  const [ballSpeed, setBallSpeed] = useState(100);
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleSelectBallColor = (event: any) => {
     setBallColor(event.target.value);
+    localStorage.setItem("ballColor", event.target.value);
+  };
+
+  const handleSelectBackGroundColor = (event: any) => {
+    setBackgroundColor(event.target.value);
+    localStorage.setItem("backgroundColor", event.target.value);
+  };
+  const handleSelectPaddleColor = (event: any) => {
+    setPaddleColor(event.target.value);
+    localStorage.setItem("paddleColor", event.target.value);
+  };
+  const handleSelectPlaneColor = (event: any) => {
+    setPlaneColor(event.target.value);
+    localStorage.setItem("planeColor", event.target.value);
   };
 
   const handleGameType = (event: any) => {
@@ -81,7 +107,7 @@ export default function GameSettingCard({ setIsMatching }: any) {
   const handleStartMatch = () => {
     console.log("start match");
     setIsMatching(true);
-    gameType === "normal" || gameType === "Game Type"
+    gameType === "normal"
       ? socket.emit("normal_matching")
       : socket.emit("ladder_matching");
   };
@@ -89,17 +115,31 @@ export default function GameSettingCard({ setIsMatching }: any) {
   const selectStyle = {
     color: "white",
     w: "75%",
-    margin: "40px",
+    marginBottom: "20px",
     size: "lg",
   };
+
+  const colorOptions = () => (
+    <>
+      <option value="white">⚪ white</option>
+      <option value="black">⚫ black</option>
+      <option value="red">🔴 red</option>
+      <option value="orange">🟠 orange</option>
+      <option value="yellow">🟡 yellow</option>
+      <option value="green">🟢 green</option>
+      <option value="blue">🔵 blue</option>
+      <option value="purple">🟣 purple</option>
+    </>
+  );
 
   return (
     <Card align="center" w="100%" h="100%" backgroundColor={"#555555"}>
       <CardHeader color={"white"}>
         <Heading size={"md"}>Game Setting</Heading>
       </CardHeader>
+      <FormLabel color={"white"}>Game Type</FormLabel>
       <Select
-        placeholder="Game Type"
+        // placeholder="Game Type"
         onChange={handleGameType}
         {...selectStyle}
       >
@@ -107,30 +147,43 @@ export default function GameSettingCard({ setIsMatching }: any) {
         <option value="ladder">Ladder</option>
       </Select>
       {/* TODO game type을 제외한 설정 값 적용  */}
-      <Select placeholder="Game Background" {...selectStyle}>
-        <option value="option1">option1</option>
-        <option value="option2">option2</option>
-      </Select>
+      <FormLabel color={"white"}>Background Color</FormLabel>
       <Select
-        placeholder="Ball Color"
-        value={ballColor}
+        value={backgroundColor ?? "white"}
+        onChange={handleSelectBackGroundColor}
+        {...selectStyle}
+      >
+        {colorOptions()}
+      </Select>
+      <FormLabel color={"white"}>Ball Color</FormLabel>
+      <Select
+        value={ballColor ? ballColor : "white"}
         onChange={handleSelectBallColor}
         {...selectStyle}
       >
-        <option value="wihte">⚪</option>
-        <option value="black">⚫</option>
-        <option value="red">🔴</option>
-        <option value="orange">🟠</option>
-        <option value="yellow">🟡</option>
-        <option value="green">🟢</option>
-        <option value="blue">🔵</option>
-        <option value="purple">🟣</option>
+        {colorOptions()}
+      </Select>
+      <FormLabel color={"white"}>Paddle Color</FormLabel>
+      <Select
+        value={paddleColor ?? "white"}
+        onChange={handleSelectPaddleColor}
+        {...selectStyle}
+      >
+        {colorOptions()}
+      </Select>
+      <FormLabel color={"white"}>Plane Color</FormLabel>
+      <Select
+        value={planeColor ?? "white"}
+        onChange={handleSelectPlaneColor}
+        {...selectStyle}
+      >
+        {colorOptions()}
       </Select>
       <Box color="white" w="75%" margin="40px">
         Ball Speed
         {SliderThumbWithTooltip({
           ballSpeed,
-          setballSpeed,
+          setBallSpeed,
           showTooltip,
           setShowTooltip,
         })}

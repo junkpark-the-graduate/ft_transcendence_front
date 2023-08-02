@@ -13,8 +13,6 @@ import {
   Flex,
   HStack,
   useDisclosure,
-} from "@chakra-ui/react";
-import {
   Modal,
   ModalOverlay,
   ModalContent,
@@ -22,33 +20,48 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
-
-const channelData = {
-  channels: [
-    { id: 2, name: "channel #1" },
-    { id: 3, name: "channel #2" },
-    { id: 4, name: "channel #3" },
-  ],
-};
+import GameResult from "../game/components/GameUserResult";
+import GridType1 from "@/ui/Grid/GridType1";
+import GameMatchCard from "../game/components/GameMatchCard";
+import GameUserResult from "../game/components/GameUserResult";
 
 export default function page() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedChannelId, setSelectedChannelId] = useState<number>(0);
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const gameResult = {
+    score: "10 : 7",
+    playTime: 100,
+    player1: {
+      mmr: 1016,
+      mmrChange: 10,
+      isWin: true,
+      image: "https://bit.ly/dan-abramov",
+      name: "김민수",
+    },
+    player2: {
+      mmr: 990,
+      mmrChange: 10,
+      isWin: false,
+      image: "https://bit.ly/dan-abramov",
+      name: "김민수222",
+    },
+  };
   return (
-    <Flex gap={3}>
-      <Box bg="#29292D">
-        <ChannelModal channelData={channelData.channels[0]} />
-      </Box>
-      <Box bg="#29292D">
-        <PasswordModal
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          channelId={selectedChannelId}
-        />
-      </Box>
-    </Flex>
+    <GridType1>
+      <Text fontSize={20} color={"white"}>
+        게임 결과
+      </Text>
+      <Text fontSize={20} color={"white"}>
+        {gameResult.score}
+      </Text>
+      <Text fontSize={20} color={"white"}>
+        {`${gameResult.playTime}s`}
+      </Text>
+      <HStack w={"100%"} h={"80%"}>
+        <GameUserResult user={gameResult.player1} />
+        <GameUserResult user={gameResult.player2} />
+      </HStack>
+    </GridType1>
   );
 }

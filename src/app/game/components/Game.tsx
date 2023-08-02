@@ -4,6 +4,12 @@ import * as THREE from "three";
 import { socket } from "../socket";
 import { useRouter } from "next/navigation";
 
+enum Role {
+  Player1,
+  Player2,
+  Spectator,
+}
+
 interface KeyState {
   [key: number]: boolean;
 }
@@ -20,76 +26,69 @@ export default function Game() {
   const router = useRouter();
   const [score, setScore] = useState("0 : 0");
 
-  let isPlayer1: boolean = false;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    90, // fov
-    window.innerWidth / window.innerHeight, // aspect
-    0.1, // near
-    1000 // far
-  );
-
-  const light = new THREE.PointLight(0xffffff, 1); // 흰색 광원
-  light.position.set(0, 0, 10); // 광원의 위치 설정
-
-  const renderer = new THREE.WebGLRenderer();
-  // add to div
-
-  const backgroundTextureLoader = new THREE.TextureLoader();
-  const backgroundTexture = backgroundTextureLoader.load("/Junkpark.png");
-  const backgroundGeometry = new THREE.BoxGeometry(50, 100, 100);
-  const backgroundMaterial = new THREE.MeshBasicMaterial({
-    map: backgroundTexture,
-    side: THREE.BackSide,
-  });
-  const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-
-  const paddleGeometry = new THREE.BoxGeometry(PADDLE_WIDTH, PADDLE_HEIGHT, 1); // make a cube class
-  const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 }); // make a material class
-
-  const ballGeometry = new THREE.SphereGeometry(1, 100, 100);
-  const ball = new THREE.Mesh(ballGeometry, material);
-
-  const planeGeometry = new THREE.PlaneGeometry(50, 100, 100);
-  const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xf9dadd }); // make a material class
-
-  const paddle = new THREE.Mesh(paddleGeometry, material); // make a mesh class
-  const paddle2 = new THREE.Mesh(paddleGeometry, material); // make a mesh class
-  const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-
-  scene.add(light); // 씬에 광원 추가
-  scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
-  scene.add(paddle); // place the mesh in the scene(0,0,0)
-  scene.add(paddle2);
-  scene.add(ball);
-  scene.add(plane);
-  scene.add(background);
-
-  // paddle.position.y = -30;
-  // paddle2.position.y = 30;
-  plane.position.z = -2;
-
   useEffect(() => {
-    socket.on("game_test", (data: any) => {
-      console.log("game_test: ", data);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      90, // fov
+      window.innerWidth / window.innerHeight, // aspect
+      0.1, // near
+      1000 // far
+    );
+
+    const light = new THREE.PointLight(0xffffff, 1); // 흰색 광원
+    light.position.set(0, 0, 10); // 광원의 위치 설정
+
+    const renderer = new THREE.WebGLRenderer();
+    // add to div
+
+    const background = new THREE.Mesh(
+      new THREE.BoxGeometry(50, 100, 100),
+      new THREE.MeshPhongMaterial({
+        color: localStorage.getItem("backgroundColor") ?? "white",
+        side: THREE.BackSide,
+      })
+    );
+
+    const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 100, 100),
+      new THREE.MeshPhongMaterial({
+        color: localStorage.getItem("ballColor") ?? "white",
+      })
+    );
+
+    const paddleMaterial = new THREE.MeshPhongMaterial({
+      color: localStorage.getItem("paddleColor") ?? "white",
     });
+
+    const paddleGeometry = new THREE.BoxGeometry(
+      PADDLE_WIDTH,
+      PADDLE_HEIGHT,
+      1
+    );
+
+    const paddle = new THREE.Mesh(paddleGeometry, paddleMaterial); // make a mesh class
+    const paddle2 = new THREE.Mesh(paddleGeometry, paddleMaterial); // make a mesh class
+    const plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(50, 100, 100),
+      new THREE.MeshPhongMaterial({
+        color: localStorage.getItem("planeColor") ?? "white",
+      })
+    );
+
+    scene.add(light); // 씬에 광원 추가
+    scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
+    scene.add(paddle); // place the mesh in the scene(0,0,0)
+    scene.add(paddle2);
+    scene.add(ball);
+    scene.add(plane);
+    scene.add(background);
+
+    // paddle.position.y = -30;
+    // paddle2.position.y = 30;
+    plane.position.z = -2;
 
     socket.on("score", (data: any) => {
-      console.log("score: ", data);
       setScore(`${data.score.player1} : ${data.score.player2}`);
-    });
-
-    socket.on("game_over", (data: any) => {
-      console.log("game_over: ", data);
-      if (data) {
-        setScore("Win!");
-      } else {
-        setScore("Lose");
-      }
-      setTimeout(() => {
-        router.push(`/game`);
-      }, 3000);
     });
 
     socket.on("game", (data: any) => {
@@ -103,30 +102,32 @@ export default function Game() {
       ball.position.y = data.ball.pos.y;
     });
 
-    socket.emit("game_init", (isPlayer1: any) => {
-      console.log("game_init: ", isPlayer1);
+    socket.emit("game_init", (role: Role) => {
+      console.log("isSpectator: ", role === Role.Spectator);
       camera.position.z = 10; // move the camera back
-      if (isPlayer1) {
-        // 3인칭
-        camera.position.y = -50;
-        camera.lookAt(0, 4, -1);
-        // 1인칭
-        //camera.position.y = -30;
-        //camera.lookAt(0, 1, 0);
-      } else {
-        // 3인칭
-        camera.up.set(0, -1, 0);
-        camera.position.y = 50;
-        camera.lookAt(0, -4, -1);
-        //camera.rotation.y = 1;
-        // 1인칭
-        //camera.position.y = 30;
-        //camera.lookAt(0, -1, 0);
+      paddle.position.y = -30;
+      paddle2.position.y = 30;
+      switch (role) {
+        case Role.Player1:
+          camera.position.y = -50;
+          camera.lookAt(0, 4, -1);
+          break;
+        case Role.Player2:
+          camera.position.y = 50;
+          camera.up.set(0, -1, 0);
+          camera.lookAt(0, -4, -1);
+          break;
+        case Role.Spectator:
+          camera.position.z = 45;
+          camera.position.y = 0;
+          camera.lookAt(0, 0, -1);
+          camera.rotateZ(Math.PI / 2);
+          break;
       }
     });
 
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    console.log(canvas);
+    //console.log(canvas);
     renderer.setSize(canvas!.clientWidth, canvas!.clientHeight);
     canvas.appendChild(renderer.domElement);
 
@@ -159,10 +160,10 @@ export default function Game() {
     function animate() {
       requestAnimationFrame(animate);
       if (keyState[37]) {
-        socket.emit("key_left", { isPlayer1: isPlayer1 });
+        socket.emit("key_left");
       }
       if (keyState[39]) {
-        socket.emit("key_right", { isPlayer1: isPlayer1 });
+        socket.emit("key_right");
       }
       // 1인칭
       //camera.position.x = paddle.position.x;
@@ -170,6 +171,10 @@ export default function Game() {
       renderer.render(scene, camera); // render the scene
     }
     animate();
+
+    return () => {
+      socket.removeAllListeners();
+    };
   }, []);
 
   return (
