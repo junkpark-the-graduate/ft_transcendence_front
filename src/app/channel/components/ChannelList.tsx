@@ -147,19 +147,10 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
           {channels.map((channel: any) => (
             <ButtonBox
               key={channel.id}
-              // onClick={() => onClickChannel(channel.id)}
               onClick={() => onClickChannel(channel.id)}
               textAlign={"left"}
               position={"relative"} // Add relative positioning so we can use absolute positioning on child
             >
-              {/* <Button
-                onClick={(e) => goToAdminPage(e, channel.id)}
-                position={"absolute"} // Set the position to absolute
-                top={2} // Adjust these values as needed
-                right={2} // Adjust these values as needed
-              >
-                관리자 페이지
-              </Button> */}
               <Flex direction="row" gap={5} alignItems="center">
                 <Avatar size="sm" name={channel.name} />
                 <Text fontSize="lg">{channel.name}</Text>

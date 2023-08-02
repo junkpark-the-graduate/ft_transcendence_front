@@ -21,7 +21,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import BaseButton from "../Button/Button";
-import { GoPlus, GoStar } from "react-icons/go";
+import { GoPlus } from "react-icons/go";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { EChannelType } from "@/app/channel/types/EChannelType";
