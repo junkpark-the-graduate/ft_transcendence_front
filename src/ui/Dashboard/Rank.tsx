@@ -20,7 +20,9 @@ export interface RankProps {
 
 export default function UserRank({ id }: RankProps) {
   const ranking = getRank();
-  const userRank: number | undefined = getRankById(id);
+  const numericId = Number(id);
+  const index: number = ranking?.findIndex((obj) => obj.id === numericId) ?? -1;
+  const userRank = index !== -1 ? index + 1 : undefined;
 
   return (
     <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mr={3}>

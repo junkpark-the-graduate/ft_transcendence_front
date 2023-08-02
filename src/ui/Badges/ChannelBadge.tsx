@@ -1,5 +1,5 @@
 import { Badge } from "@chakra-ui/react";
-import { EChannelType } from "../types/EChannelType";
+import { EChannelType } from "../../app/channel/types/EChannelType";
 
 export default function ChannelBadge({ type }: { type: number }) {
   const strType = EChannelType[type];

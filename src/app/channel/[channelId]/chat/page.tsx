@@ -2,65 +2,43 @@
 
 import GridType3 from "@/ui/Grid/GridType3";
 import Chat from "../../components/Chat";
-import JoinedChannelList from "../../components/JoinedChannelList";
-import Cookies from "js-cookie";
+import JoinedChannelList from "../../../../ui/Lists/JoinedChannelList";
 import { useEffect, useState } from "react";
+import { Box, Text } from "@chakra-ui/react";
+import { getChannels } from "@/utils/channel/getChannels";
+import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
 
 export default function Page({ params }: { params: { channelId: number } }) {
-  const accessToken = Cookies.get("accessToken");
   const [channels, setChannels] = useState<any>([]);
   const [joinedChannels, setJoinedChannels] = useState<any>([]);
 
-  const getChannels = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setChannels(await res.json());
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getJoinedChannels = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const tmp = await res.json();
-      setJoinedChannels(tmp);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
-    getChannels();
-    getJoinedChannels();
+    getChannels(setChannels);
+    getJoinedChannels(setJoinedChannels);
   }, []);
 
   return (
     <GridType3
       children={<Chat channelId={params.channelId} />}
       children1={
-        <JoinedChannelList
-          joinedChannels={joinedChannels}
-          setJoinedChannels={setJoinedChannels}
-        />
+        <Box px={1}>
+          <Text
+            align="center"
+            fontSize="14px"
+            bg="#414147"
+            borderRadius="5px"
+            py={2}
+            mb={4}
+          >
+            Joined Channel List
+          </Text>
+          <Box px={3}>
+            <JoinedChannelList
+              joinedChannels={joinedChannels}
+              setJoinedChannels={setJoinedChannels}
+            />
+          </Box>
+        </Box>
       }
     />
   );

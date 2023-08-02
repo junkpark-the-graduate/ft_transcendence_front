@@ -91,6 +91,7 @@ export default function CreateChannelModal({
     }
     console.log(resJson);
     setChannels([...channels, resJson]);
+    setChannelName("");
     onClose();
   }
 

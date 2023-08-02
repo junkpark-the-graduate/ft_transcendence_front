@@ -11,6 +11,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  StackItem,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -21,6 +22,8 @@ import { EUserStatus } from "@/app/user/types/EUserStatus";
 import BlockButton from "../Button/BlockButton";
 import FollowButton from "../Button/FollowButton";
 import { useRouter } from "next/navigation";
+import UserRank from "../Dashboard/Rank";
+import getRank from "@/utils/user/getRank";
 
 export interface ProfileModalProps {
   userData: UserData | null | undefined;
@@ -71,15 +74,17 @@ export default function ProfileModal({
           >
             <Center>
               <HStack spacing={3}>
-                <Text px={2} mx={1} bg="gray">
-                  rank
-                </Text>
-                <Text px={2} mx={1} bg="gray">
-                  score
-                </Text>
-                <Text px={2} mx={1} bg="gray">
-                  stats
-                </Text>
+                <Flex>
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
+                    rank:
+                  </StackItem>
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
+                    score:
+                  </StackItem>
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
+                    stats:
+                  </StackItem>
+                </Flex>
               </HStack>
             </Center>
           </ModalBody>
