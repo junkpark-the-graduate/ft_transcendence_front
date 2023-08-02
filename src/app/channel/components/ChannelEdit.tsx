@@ -93,12 +93,12 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
         duration: 9000,
         isClosable: true,
       });
+      setChannel((prev) => ({
+        ...prev,
+        name: newChannelName,
+        type: EChannelType[newChannelType as keyof typeof EChannelType],
+      }));
     }
-    setChannel((prev) => ({
-      ...prev,
-      name: newChannelName,
-      type: EChannelType[newChannelType as keyof typeof EChannelType],
-    }));
   }
 
   async function deleteChannel() {
