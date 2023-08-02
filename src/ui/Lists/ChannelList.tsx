@@ -1,104 +1,194 @@
 "use client";
 
+import React, { useState } from "react";
 import {
   Box,
-  Stack,
   Flex,
-  Avatar,
   Text,
-  Divider,
-  Spacer,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  useToast,
+  Avatar,
+  HStack,
+  Badge,
 } from "@chakra-ui/react";
-import React from "react";
-import BaseIconButton from "../Button/IconButton";
-import {
-  GoComment,
-  GoKebabHorizontal,
-  GoGear,
-  GoSignOut,
-  GoPeople,
-} from "react-icons/go";
-import ChannelModal from "../Modal/ChannelModal";
+import { EChannelType } from "../../app/channel/types/EChannelType";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import PasswordModal from "@/ui/Modal/PasswordModal";
+import Input from "@/ui/Input/Input";
+import ButtonBox from "@/ui/Box/ButtonBox";
+import CreateChannelModal from "@/ui/Modal/CreateChannelModal";
+import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
+import ChannelBadge from "../Badges/ChannelBadge";
 
-export interface ChannelData {
-  id: number;
-  name: string;
+interface Props {
+  channels: any[];
+  setChannels: any;
 }
 
-const channelData = {
-  channels: [
-    { id: 2, name: "channel #1" },
-    { id: 3, name: "channel #2" },
-    { id: 4, name: "channel #3" },
-  ],
-};
+const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
+  const router = useRouter();
+  const toast = useToast();
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedChannelId, setSelectedChannelId] = useState<number>(0);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
-const ChannelList = () => {
+  if (!Array.isArray(channels)) {
+    return <div>Loading...</div>;
+  }
+
+  async function joinChannel(channelId: number) {
+    const accessToken = Cookies.get("accessToken");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return res;
+  }
+
+  async function connectJoinedChannel(channelId: number) {
+    const accessToken = Cookies.get("accessToken");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined/${channelId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return res;
+  }
+
+  async function handleJoinChannel(channelId: number) {
+    const res = await joinChannel(channelId);
+    const resJson = await res.json();
+
+    if (res.status < 300) {
+      router.push(`/channel/${channelId}/chat`);
+    } else {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }
+
+  async function isAlreadyJoinedChannel(channelId: number) {
+    const res = await connectJoinedChannel(channelId);
+    if (res.status < 300) return true;
+    else return false;
+  }
+
+  function goToAdminPage(e: React.MouseEvent, channelId: number) {
+    e.stopPropagation(); // Prevent the event from propagating up to the parent element
+    //TODO : 관리자 아니면 못들어가게 막음
+    router.push(`/channel/${channelId}/admin`); // Change this path to your admin page's path
+  }
+
+  async function onClickChannel(channelId: number) {
+    // "channels" 배열에서 해당 channelId에 맞는 채널을 찾습니다.
+    const channel = channels.find((c) => c.id === channelId);
+    setSelectedChannelId(channelId);
+
+    if (channel) {
+      if (channel.type === EChannelType.protected) {
+        if (await isAlreadyJoinedChannel(channelId)) {
+          router.push(`/channel/${channelId}/chat`);
+        } else setIsOpen(true);
+      } else {
+        handleJoinChannel(channelId);
+      }
+    }
+  }
+
+  // 검색어 입력 시 호출되는 이벤트 핸들러
+  // const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchKeyword(event.target.value);
+  // };
+
+  // // 검색어를 기준으로 채널을 필터링하는 함수
+  // const filterChannelsBySearchKeyword = (channel: any) => {
+  //   if (channel.name && searchKeyword) {
+  //     return channel.name.toLowerCase().includes(searchKeyword.toLowerCase());
+  //   }
+  //   return false;
+  // };
+
+  // // 검색 결과를 보여주는 채널 리스트
+  // const filteredChannels = channels.filter(filterChannelsBySearchKeyword);
+
   return (
-    <Box>
-      <Stack spacing={2}>
-        {channelData.channels.map((channel, index) => (
-          <React.Fragment key={channel.id}>
-            <Flex align="center" my={1}>
-              <Avatar size="sm" name={channel.name} mr={4} />
-              <ChannelModal channelData={channel} />
-              <Spacer />
-              <Flex>
-                <BaseIconButton
-                  size="sm"
-                  icon={<GoComment />}
-                  aria-label="dm"
-                />
-                <BaseIconButton
-                  size="sm"
-                  icon={<GoPeople />}
-                  aria-label="info"
-                />
-                <Menu>
-                  <MenuButton
-                    as="span" // 변경된 부분: <span> 요소로 수정
-                    rounded="full"
-                    cursor="pointer"
-                  >
-                    <BaseIconButton
-                      size="sm"
-                      icon={<GoKebabHorizontal />}
-                      aria-label="else"
-                    />
-                  </MenuButton>
-                  <MenuList p="5px 10px" bg="#414147" border="none">
-                    <MenuItem
-                      icon={<GoGear />}
-                      bg="#414147"
-                      fontSize="11pt"
-                      onClick={() => {}}
-                    >
-                      channel setting
-                    </MenuItem>
-                    <MenuItem
-                      icon={<GoSignOut />}
-                      textColor="red"
-                      bg="#414147"
-                      fontSize="11pt"
-                      onClick={() => {}}
-                    >
-                      leave the channel
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
+    <>
+      <Box px={6} py={4}>
+        <Box mt={2}>
+          <Flex direction="row" gap={3} alignItems="center" mb={8}>
+            <Input
+              type="text"
+              placeholder="채널 이름 검색"
+              value={searchKeyword}
+              onChange={() => console.log("검색어 입력")}
+            />
+            <CreateChannelModal channels={channels} setChannels={setChannels} />
+          </Flex>
+        </Box>
+        <Flex direction="column" gap={3}>
+          {/* {filteredChannels.map((channel: any) => ( */}
+          {channels.map((channel: any) => (
+            <ButtonBox
+              key={channel.id}
+              // onClick={() => onClickChannel(channel.id)}
+              onClick={() => onClickChannel(channel.id)}
+              textAlign={"left"}
+              position={"relative"} // Add relative positioning so we can use absolute positioning on child
+            >
+              {/* <Button
+                onClick={(e) => goToAdminPage(e, channel.id)}
+                position={"absolute"} // Set the position to absolute
+                top={2} // Adjust these values as needed
+                right={2} // Adjust these values as needed
+              >
+                관리자 페이지
+              </Button> */}
+              <Flex direction="row" gap={5} alignItems="center">
+                <Avatar size="sm" name={channel.name} />
+                <Text fontSize="lg">{channel.name}</Text>
+                <Box marginLeft="auto">
+                  <HStack spacing={3}>
+                    <ChannelBadge type={Number(channel.type)} />
+                    <Text fontSize="sm">
+                      {formatCreatedAt(channel.createdAt)}
+                    </Text>
+                  </HStack>
+                </Box>
               </Flex>
-            </Flex>
-            {index !== channelData.channels.length && ( // 변경된 부분: 마지막 요소 제외
-              <Divider borderColor="#414147" />
-            )}
-          </React.Fragment>
-        ))}
-      </Stack>
-    </Box>
+            </ButtonBox>
+          ))}
+        </Flex>
+        <Box fontSize={14} mt={10} bg="#414147">
+          <Flex>
+            test password modal -{">"}
+            <Box ml={3}>
+              <PasswordModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                channelId={selectedChannelId}
+              />
+            </Box>
+          </Flex>
+        </Box>
+      </Box>
+    </>
   );
 };
 

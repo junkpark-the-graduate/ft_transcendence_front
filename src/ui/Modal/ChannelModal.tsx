@@ -17,7 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import BaseButton from "../Button/Button";
-import { ChannelData } from "../Lists/ChannelList";
+import { ChannelData } from "../Lists/DummyChannelList";
 import { GoStar } from "react-icons/go";
 
 export interface ChannelModalProps {

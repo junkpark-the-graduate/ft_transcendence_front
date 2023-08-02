@@ -5,18 +5,14 @@ import {
   Box,
   Flex,
   Text,
-  Button,
   useToast,
   Divider,
   Avatar,
   Stack,
-  Spacer,
-  Badge,
 } from "@chakra-ui/react";
-import { EChannelType } from "../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import ChannelBadge from "./ChannelBadge";
+import ChannelBadge from "../Badges/ChannelBadge";
 
 interface Props {
   joinedChannels: any[];
@@ -97,17 +93,8 @@ const JoinedChannelList: React.FC<Props> = ({
   }
 
   return (
-    <Box px={1}>
-      <Text
-        align="center"
-        fontSize="14px"
-        bg="#414147"
-        borderRadius="5px"
-        py={2}
-      >
-        Joined Channel List
-      </Text>
-      <Stack spacing={2} mt={4} px={2}>
+    <Box>
+      <Stack spacing={2}>
         {joinedChannels.map((channel, index) => (
           <React.Fragment key={channel.id}>
             <Box
@@ -117,7 +104,7 @@ const JoinedChannelList: React.FC<Props> = ({
               position={"relative"} // Add relative positioning so we can use absolute positioning on child
               onClick={() => connectJoinedChannelHandler(channel.id)}
             >
-              <Flex align="center" alignItems="center" my={1} px={2}>
+              <Flex align="center" alignItems="center" my={1}>
                 <Avatar size="sm" name={channel.name} mr={4} />
                 <Text fontSize="md">{channel.name}</Text>
                 <Box marginLeft="auto">

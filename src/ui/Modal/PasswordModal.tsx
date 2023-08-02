@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -8,25 +6,17 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  ModalFooter,
   FormControl,
-  FormLabel,
-  Input,
-  Button,
   Box,
-  IconButton,
+  useDisclosure,
+  Flex,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { set } from "react-hook-form";
-import { GoPlus } from "react-icons/go";
-
-// interface PasswordModalProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   onEnter: (password: string) => void;
-//   errorMessage: string;
-// }
+import BaseInput from "../Input/Input";
+import BaseButton from "../Button/Button";
 
 interface PasswordModalProps {
   isOpen: boolean;
@@ -35,13 +25,15 @@ interface PasswordModalProps {
 }
 
 const PasswordModal: React.FC<PasswordModalProps> = ({
-  isOpen,
   setIsOpen,
   channelId,
 }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const toast = useToast();
 
   const joinProtectedChannel = async (password: string, channelId: number) => {
     const accessToken = Cookies.get("accessToken");
@@ -68,37 +60,40 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
       router.push(`/channel/${channelId}/chat`);
     } else {
       setErrorMessage(resJson.message);
+      toast({
+        description: resJson.message,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 
   return (
-    <Box
-    // border={"white 1px solid"}
-    >
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader color="black">비밀번호를 입력하세요</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl>
-              <FormLabel color="black">힌트는 없습니다</FormLabel>
-              <Input
-                color="black"
-                placeholder="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </FormControl>
-            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-          </ModalBody>
+    <Box>
+      <Box as="button" onClick={onOpen} fontSize={14}>
+        password
+      </Box>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleEnter}>
-              입장
-            </Button>
-            <Button onClick={() => setIsOpen(false)}>취소</Button>
-          </ModalFooter>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent mt={40} p={2} bg="#29292D">
+          <ModalHeader mx={3} mt={2} py={2}>
+            Enter the Password
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody mx={3} mb={6}>
+            <Flex>
+              <FormControl>
+                <BaseInput
+                  placeholder="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </FormControl>
+              <BaseButton text="join" ml={3} onClick={handleEnter} />
+            </Flex>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </Box>

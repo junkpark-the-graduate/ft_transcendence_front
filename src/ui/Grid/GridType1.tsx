@@ -1,15 +1,24 @@
 import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 import BaseTabs from "../Tab/Tab";
-import ChannelList from "../Lists/ChannelList";
+import ChannelList from "../Lists/DummyChannelList";
 import FollowingList from "../Lists/FollowingList";
 import FullBox from "../Box/FullBox";
+import { useEffect, useState } from "react";
+import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
+import JoinedChannelList from "@/ui/Lists/JoinedChannelList";
 
 export interface BaseGridProps extends GridProps {
   children: React.ReactNode;
 }
 
 export default function GridType1({ children, ...props }: BaseGridProps) {
+  const [joinedChannels, setJoinedChannels] = useState<any>([]);
+
+  useEffect(() => {
+    getJoinedChannels(setJoinedChannels);
+  }, []);
+
   return (
     <FullBox>
       <Grid
@@ -55,7 +64,15 @@ export default function GridType1({ children, ...props }: BaseGridProps) {
           px={3}
           py={4}
         >
-          <BaseTabs children1={<FollowingList />} children2={<ChannelList />}>
+          <BaseTabs
+            children1={<FollowingList />}
+            children2={
+              <JoinedChannelList
+                joinedChannels={joinedChannels}
+                setJoinedChannels={setJoinedChannels}
+              />
+            }
+          >
             <div>Content 1</div>
             <div>Content 2</div>
           </BaseTabs>
