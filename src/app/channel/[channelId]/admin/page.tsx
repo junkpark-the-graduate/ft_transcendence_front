@@ -1,21 +1,17 @@
 "use client";
 
-import React, { useEffect } from "react";
-import ChannelAdmin from "../../components/ChannelAdmin";
+import React, { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import ChannelAdmin from "../../components/ChannelAdmin";
 
-export default async function Page({
-  params,
-}: {
-  params: { channelId: number };
-}) {
+export default function Page({ params }: { params: { channelId: number } }) {
   const toast = useToast();
   const router = useRouter();
+  const accessToken = Cookies.get("accessToken");
 
   async function checkChannelAdmin() {
-    const accessToken = Cookies.get("accessToken");
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${params.channelId}/admin`,
       {
@@ -26,10 +22,11 @@ export default async function Page({
         },
       }
     );
+    const resJson = await res.json();
     if (res.status > 299) {
       router.push("/channel");
       toast({
-        title: `You are not admin of this channel ${params.channelId}`,
+        title: resJson.message,
         status: "error",
         duration: 9000,
         isClosable: true,

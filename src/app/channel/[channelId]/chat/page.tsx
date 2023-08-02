@@ -8,11 +8,7 @@ import { Box, Text } from "@chakra-ui/react";
 import { getChannels } from "@/utils/channel/getChannels";
 import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
 
-export default async function Page({
-  params,
-}: {
-  params: { channelId: number };
-}) {
+export default function Page({ params }: { params: { channelId: number } }) {
   const [channels, setChannels] = useState<any>([]);
   const [joinedChannels, setJoinedChannels] = useState<any>([]);
 
