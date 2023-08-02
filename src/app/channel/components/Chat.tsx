@@ -161,6 +161,7 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
           <Text ml={1}>{channel.name}</Text>
           <Spacer />
           <BaseIconButton
+            mr={2}
             size="sm"
             icon={<GoGear />}
             aria-label="setting"
