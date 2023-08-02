@@ -9,6 +9,7 @@ import {
   Avatar,
   HStack,
   Badge,
+  IconButton,
 } from "@chakra-ui/react";
 import { EChannelType } from "../../app/channel/types/EChannelType";
 import Cookies from "js-cookie";
@@ -19,6 +20,9 @@ import ButtonBox from "@/ui/Box/ButtonBox";
 import CreateChannelModal from "@/ui/Modal/CreateChannelModal";
 import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
 import ChannelBadge from "../Badges/ChannelBadge";
+import { GoSync } from "react-icons/go";
+import { getChannels } from "@/utils/channel/getChannels";
+import { set } from "react-hook-form";
 
 interface Props {
   channels: any[];
@@ -108,6 +112,10 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
     }
   }
 
+  async function syncChannelsHandler() {
+    await getChannels(setChannels);
+  }
+
   return (
     <>
       <Box px={6} py={4}>
@@ -120,16 +128,26 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
               onChange={() => console.log("검색어 입력")}
             />
             <CreateChannelModal channels={channels} setChannels={setChannels} />
+            <IconButton
+              aria-label="채널 목록 새로고침"
+              icon={<GoSync />}
+              bg="#414147"
+              borderRadius={"8px"}
+              textColor="white"
+              _hover={{
+                background: "#191919",
+              }}
+              onClick={syncChannelsHandler}
+            />
           </Flex>
         </Box>
         <Flex direction="column" gap={3}>
           {channels.map((channel: any) => (
             <ButtonBox
               key={channel.id}
-              // onClick={() => onClickChannel(channel.id)}
               onClick={() => onClickChannel(channel.id)}
               textAlign={"left"}
-              position={"relative"} // Add relative positioning so we can use absolute positioning on child
+              position={"relative"}
             >
               <Flex direction="row" gap={5} alignItems="center">
                 <Avatar size="sm" name={channel.name} />
