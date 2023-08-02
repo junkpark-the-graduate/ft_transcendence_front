@@ -151,18 +151,6 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
           setIsOpen={setIsOpen}
           channelId={selectedChannelId}
         />
-        {/* <Box fontSize={14} mt={10} bg="#414147">
-          <Flex>
-            test password modal -{">"}
-            <Box ml={3}>
-              <PasswordModal
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                channelId={selectedChannelId}
-              />
-            </Box>
-          </Flex>
-        </Box> */}
       </Box>
     </>
   );

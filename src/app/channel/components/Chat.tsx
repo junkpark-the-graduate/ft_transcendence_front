@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import {
@@ -41,6 +41,33 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
   const router = useRouter();
   const toast = useToast();
+
+  async function checkChannelAdmin() {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/admin`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  }
+
+  async function goToAdminPageHandler() {
+    const res = await checkChannelAdmin();
+    const resJson = await res.json();
+    if (res.status > 299) {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else router.push(`/channel/${channelId}/admin`);
+  }
 
   const getUserInfo = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`, {
@@ -165,9 +192,7 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
             size="sm"
             icon={<GoGear />}
             aria-label="setting"
-            onClick={() => {
-              router.push(`/channel/${channelId}/admin`);
-            }}
+            onClick={goToAdminPageHandler}
           />
           <ChannelBadge type={Number(channel.type)} />
         </Flex>

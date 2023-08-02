@@ -1,42 +1,42 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useToast } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import ChannelAdmin from "../../components/ChannelAdmin";
+import React, { useState } from "react";
+import GridType4 from "@/ui/Grid/GridType4";
+import ChannelEdit from "../../components/ChannelEdit";
+import ChannelMemberlList from "../../components/ChannelMemberList";
+import ChannelBannedMemberList from "../../components/ChannelBannedMemberList";
 
 export default function Page({ params }: { params: { channelId: number } }) {
-  const toast = useToast();
-  const router = useRouter();
-  const accessToken = Cookies.get("accessToken");
+  const [channel, setChannel] = useState<any>({});
+  const [members, setMembers] = useState<any[]>([]);
+  const [bannedMembers, setBannedMembers] = useState<any[]>([]);
 
-  async function checkChannelAdmin() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${params.channelId}/admin`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+  return (
+    <GridType4
+      children={
+        <ChannelEdit
+          channelId={params.channelId}
+          channel={channel}
+          setChannel={setChannel}
+        />
       }
-    );
-    const resJson = await res.json();
-    if (res.status > 299) {
-      router.push("/channel");
-      toast({
-        title: resJson.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  }
-
-  useEffect(() => {
-    checkChannelAdmin();
-  }, []);
-
-  return <ChannelAdmin channelId={params.channelId} />;
+      children1={
+        <ChannelMemberlList
+          channelId={params.channelId}
+          channel={channel}
+          members={members}
+          setMembers={setMembers}
+          bannedMembers={bannedMembers}
+          setBannedMembers={setBannedMembers}
+        />
+      }
+      children2={
+        <ChannelBannedMemberList
+          channelId={params.channelId}
+          bannedMembers={bannedMembers}
+          setBannedMembers={setBannedMembers}
+        />
+      }
+    />
+  );
 }
