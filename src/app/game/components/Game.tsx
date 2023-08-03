@@ -39,7 +39,6 @@ export default function Game() {
     light.position.set(0, 0, 10); // 광원의 위치 설정
 
     const renderer = new THREE.WebGLRenderer();
-    // add to div
 
     const background = new THREE.Mesh(
       new THREE.BoxGeometry(50, 100, 100),
@@ -77,14 +76,12 @@ export default function Game() {
 
     scene.add(light); // 씬에 광원 추가
     scene.add(new THREE.AmbientLight(0x404040)); // 씬에 주변광 추가
-    scene.add(paddle); // place the mesh in the scene(0,0,0)
+    scene.add(paddle);
     scene.add(paddle2);
     scene.add(ball);
     scene.add(plane);
     scene.add(background);
 
-    // paddle.position.y = -30;
-    // paddle2.position.y = 30;
     plane.position.z = -2;
 
     socket.on("score", (data: any) => {
@@ -103,8 +100,7 @@ export default function Game() {
     });
 
     socket.emit("game_init", (role: Role) => {
-      console.log("isSpectator: ", role === Role.Spectator);
-      camera.position.z = 10; // move the camera back
+      camera.position.z = 10;
       paddle.position.y = -30;
       paddle2.position.y = 30;
       switch (role) {
@@ -127,7 +123,6 @@ export default function Game() {
     });
 
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    //console.log(canvas);
     renderer.setSize(canvas!.clientWidth, canvas!.clientHeight);
     canvas.appendChild(renderer.domElement);
 
@@ -141,21 +136,19 @@ export default function Game() {
     );
     resizeObserver.observe(canvas);
 
-    window.addEventListener(
-      "keydown",
-      function (e: KeyboardEvent) {
-        keyState[e.keyCode || e.which] = true;
-      },
-      true
-    );
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+      }
+      keyState[event.keyCode || event.which] = true;
+    };
 
-    window.addEventListener(
-      "keyup",
-      function (e: KeyboardEvent) {
-        keyState[e.keyCode || e.which] = false;
-      },
-      true
-    );
+    const handleKeyUp = (event: KeyboardEvent) => {
+      keyState[event.keyCode || event.which] = false;
+    };
+
+    window.addEventListener("keydown", handleKeyDown, true);
+    window.addEventListener("keyup", handleKeyUp, true);
 
     function animate() {
       requestAnimationFrame(animate);
@@ -165,15 +158,14 @@ export default function Game() {
       if (keyState[39]) {
         socket.emit("key_right");
       }
-      // 1인칭
-      //camera.position.x = paddle.position.x;
-
       renderer.render(scene, camera); // render the scene
     }
     animate();
 
     return () => {
       socket.removeAllListeners();
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
