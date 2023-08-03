@@ -35,7 +35,7 @@ export const Intro = ({ children }: IntroProps) => {
           as="button"
           position="absolute"
           bottom="5vh"
-          right="8vh"
+          right="5vh"
           onClick={() => {
             router.push(
               `https://github.com/orgs/junkpark-the-graduate/repositories`
