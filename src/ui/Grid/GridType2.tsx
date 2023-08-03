@@ -7,18 +7,19 @@ export interface BaseGridProps extends GridProps {}
 export default function GridType2({ children, ...props }: BaseGridProps) {
   return (
     <FullBox>
+      <NavBar />
       <Grid
-        gridTemplateRows={"repeat(16, 1fr)"}
         gridTemplateColumns={"repeat(3, 1fr)"}
+        w="full"
+        h="96%"
         bg="#29292D"
-        borderRadius={"8px"}
+        borderBottomRadius={"8px"}
         color="white"
         fontWeight="bold"
-        w="100%"
-        h="100%"
+        borderTop={"#414147 solid 2px"}
+        {...props}
       >
         <GridItem
-          rowSpan={1}
           colSpan={3}
           pl={2}
           pt={0}

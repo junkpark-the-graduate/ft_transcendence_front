@@ -1,12 +1,12 @@
 "use client";
 
 import {
+  AbsoluteCenter,
   Box,
   Center,
   Divider,
   Flex,
   HStack,
-  Skeleton,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -14,12 +14,9 @@ import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { useRouter } from "next/navigation";
 import GridType1 from "@/ui/Grid/GridType1";
-import GameSettingCard from "./components/GameSettingModal";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import { GoFlame, GoXCircle, GoZap } from "react-icons/go";
 import { Title } from "@/ui/Intro/Title";
-import Ranking from "./components/RankingModal";
-import GameDesciption from "./components/HowToPlayModal";
 import GameUserCard from "./components/GameUserCard";
 import GameButton from "@/ui/Button/GameButton";
 import RankingModal from "./components/RankingModal";
@@ -93,13 +90,13 @@ export default function Page({
 
   return (
     <GridType1>
-      <Box px={8} py={4} alignItems="center" alignContent="center">
-        <Center mt={10}>
+      <Box w="full" px={8} py={4} alignItems="center" alignContent="center">
+        <Center my={16}>
           <Flex direction="column">
             <Title />
           </Flex>
         </Center>
-        <Flex direction="column" align="center" gap={3} mt={16}>
+        <Flex direction="column" align="center" gap={3}>
           {isMatching ? (
             isMatched ? (
               <></>
@@ -117,6 +114,12 @@ export default function Page({
             )
           ) : (
             <Stack spacing={3}>
+              <Box position="relative" my={4} alignItems="center">
+                <Divider borderColor="#A0A0A3" />
+                <AbsoluteCenter bg="#29292D" px={4}>
+                  <Text fontSize={20}>play</Text>
+                </AbsoluteCenter>
+              </Box>
               <GameButton
                 text="Normal Game"
                 leftIcon={<GoZap />}
@@ -135,7 +138,12 @@ export default function Page({
                   handleStartMatch();
                 }}
               />
-              <Divider borderColor="#A0A0A3" my={3} />
+              <Box position="relative" mt={8} mb={4} alignItems="center">
+                <Divider borderColor="#A0A0A3" />
+                <AbsoluteCenter bg="#29292D" px={4}>
+                  <Text fontSize={20}>utils</Text>
+                </AbsoluteCenter>
+              </Box>
               <GameSettingModal />
               <RankingModal />
               <HowToPlayModal />

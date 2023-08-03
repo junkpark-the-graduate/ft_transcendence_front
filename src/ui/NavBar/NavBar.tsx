@@ -69,7 +69,7 @@ export default function NavBar() {
   };
 
   return (
-    <Box bg="none" borderRadius="15px" px={4}>
+    <Box bg="#29292D" borderTopRadius="8px" px={4}>
       <Flex h={12} alignItems={"center"} justifyContent={"space-between"}>
         <HStack spacing={8} alignItems={"center"}>
           <HStack as={"nav"} spacing={4} display={{ base: "flex", md: "flex" }}>
