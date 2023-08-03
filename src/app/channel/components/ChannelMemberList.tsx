@@ -14,7 +14,6 @@ import {
 import Cookies from "js-cookie";
 import { GoCircleSlash } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
-import { set } from "react-hook-form";
 
 interface Props {
   channelId: number;

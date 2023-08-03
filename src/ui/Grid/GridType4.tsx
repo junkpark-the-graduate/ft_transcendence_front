@@ -1,18 +1,20 @@
 import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
-import BaseTabs from "../Tab/Tab";
+import ChannelAdminTab from "../Tab/ChannelAdminTab";
 import FullBox from "../Box/FullBox";
 
 export interface BaseGridProps extends GridProps {
   children: React.ReactNode;
   children1: React.ReactNode;
   children2: React.ReactNode;
+  children3: React.ReactNode;
 }
 
 export default function GridType3({
   children,
   children1,
   children2,
+  children3,
   ...props
 }: BaseGridProps) {
   return (
@@ -61,10 +63,14 @@ export default function GridType3({
           py={4}
           overflowY="auto"
         >
-          <BaseTabs children1={children1} children2={children2}>
+          <ChannelAdminTab
+            children1={children1}
+            children2={children2}
+            children3={children3}
+          >
             <div>Content 1</div>
             <div>Content 2</div>
-          </BaseTabs>
+          </ChannelAdminTab>
         </GridItem>
       </Grid>
     </FullBox>
