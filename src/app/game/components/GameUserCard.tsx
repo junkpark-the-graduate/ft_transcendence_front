@@ -1,17 +1,14 @@
 "use client";
 
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Image,
-  AspectRatio,
   Text,
+  Divider,
+  Flex,
+  Box,
+  Avatar,
+  Center,
   Skeleton,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 type User = {
   name: string;
@@ -19,28 +16,38 @@ type User = {
   mmr: number;
 };
 
-export default function GameUserCard({ user }: { user: User }) {
+export default function GameUserCard({ user }: { user: User | null }) {
+  const userRank = 1;
+
   return (
-    <>
-      <Card align="center" w="100%" h="100%" backgroundColor={"#555555"}>
-        <AspectRatio
-          w="70%"
-          ratio={1 / 1}
-          margin={"30px"}
-          borderRadius={"15px"}
-        >
-          <Image w="100%" h="100%" src={user!.image} borderRadius="full" />
-        </AspectRatio>
-        <Text fontSize={20} color={"white"} h="15%">
-          {user!.name}
-        </Text>
-        <Text fontSize={20} color={"white"} h="20%">
-          {user!.mmr}
-        </Text>
-        <Text fontSize={20} color={"white"} h="20%">
-          {"몇 승 몇 패"}
-        </Text>
-      </Card>
-    </>
+    <Box bg="#414147" borderRadius="8px" px={8} py={6}>
+      <Center>
+        <Flex direction="row" alignItems="center">
+          {user ? (
+            <Avatar size="2xl" src={user?.image} border={"white 5px solid"} />
+          ) : (
+            <Skeleton borderRadius="full">
+              <Avatar size="2xl" src={"???"} border={"white 5px solid"} />
+            </Skeleton>
+          )}
+
+          <Flex ml={10} direction="column">
+            <Text fontSize={24} color={"white"}>
+              {user ? user.name : "???"}
+            </Text>
+            <Divider borderColor="#A0A0A3" my={2} />
+            <Text fontSize={15} color={"white"}>
+              rank: {user ? userRank : "???"}
+            </Text>
+            <Text fontSize={15} color={"white"}>
+              mmr score: {user ? user.mmr : "???"}
+            </Text>
+            <Text fontSize={15} color={"white"}>
+              ? win ? loss
+            </Text>
+          </Flex>
+        </Flex>
+      </Center>
+    </Box>
   );
 }

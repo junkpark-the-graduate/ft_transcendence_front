@@ -15,6 +15,7 @@ export const SignInButton = () => {
       fontSize="20px"
       _hover={{ background: "#414147" }}
       _focus={{ background: "#414147" }}
+      boxShadow={"5px 5px black"}
       onClick={() => {
         router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}`);
       }}
