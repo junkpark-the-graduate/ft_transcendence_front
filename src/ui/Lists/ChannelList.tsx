@@ -64,7 +64,6 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
         },
       }
     );
-
     return res;
   }
 
@@ -90,12 +89,6 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
     else return false;
   }
 
-  function goToAdminPage(e: React.MouseEvent, channelId: number) {
-    e.stopPropagation(); // Prevent the event from propagating up to the parent element
-    //TODO : 관리자 아니면 못들어가게 막음
-    router.push(`/channel/${channelId}/admin`); // Change this path to your admin page's path
-  }
-
   async function onClickChannel(channelId: number) {
     // "channels" 배열에서 해당 channelId에 맞는 채널을 찾습니다.
     const channel = channels.find((c) => c.id === channelId);
@@ -105,28 +98,15 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
       if (channel.type === EChannelType.protected) {
         if (await isAlreadyJoinedChannel(channelId)) {
           router.push(`/channel/${channelId}/chat`);
-        } else setIsOpen(true);
+        } else {
+          console.log("setIsOpen");
+          setIsOpen(true);
+        }
       } else {
         handleJoinChannel(channelId);
       }
     }
   }
-
-  // 검색어 입력 시 호출되는 이벤트 핸들러
-  // const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchKeyword(event.target.value);
-  // };
-
-  // // 검색어를 기준으로 채널을 필터링하는 함수
-  // const filterChannelsBySearchKeyword = (channel: any) => {
-  //   if (channel.name && searchKeyword) {
-  //     return channel.name.toLowerCase().includes(searchKeyword.toLowerCase());
-  //   }
-  //   return false;
-  // };
-
-  // // 검색 결과를 보여주는 채널 리스트
-  // const filteredChannels = channels.filter(filterChannelsBySearchKeyword);
 
   return (
     <>
@@ -143,7 +123,6 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
           </Flex>
         </Box>
         <Flex direction="column" gap={3}>
-          {/* {filteredChannels.map((channel: any) => ( */}
           {channels.map((channel: any) => (
             <ButtonBox
               key={channel.id}
@@ -152,14 +131,6 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
               textAlign={"left"}
               position={"relative"} // Add relative positioning so we can use absolute positioning on child
             >
-              {/* <Button
-                onClick={(e) => goToAdminPage(e, channel.id)}
-                position={"absolute"} // Set the position to absolute
-                top={2} // Adjust these values as needed
-                right={2} // Adjust these values as needed
-              >
-                관리자 페이지
-              </Button> */}
               <Flex direction="row" gap={5} alignItems="center">
                 <Avatar size="sm" name={channel.name} />
                 <Text fontSize="lg">{channel.name}</Text>
@@ -175,7 +146,12 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
             </ButtonBox>
           ))}
         </Flex>
-        <Box fontSize={14} mt={10} bg="#414147">
+        <PasswordModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          channelId={selectedChannelId}
+        />
+        {/* <Box fontSize={14} mt={10} bg="#414147">
           <Flex>
             test password modal -{">"}
             <Box ml={3}>
@@ -186,7 +162,7 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
               />
             </Box>
           </Flex>
-        </Box>
+        </Box> */}
       </Box>
     </>
   );
