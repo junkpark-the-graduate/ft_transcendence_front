@@ -22,6 +22,7 @@ import GameButton from "@/ui/Button/GameButton";
 import RankingModal from "./components/RankingModal";
 import HowToPlayModal from "./components/HowToPlayModal";
 import GameSettingModal from "./components/GameSettingModal";
+import TabType1 from "@/ui/Tab/TabType1";
 
 export default function Page({
   searchParams,
@@ -83,7 +84,7 @@ export default function Page({
   }, []);
 
   return (
-    <GridType1>
+    <GridType1 side={<TabType1 />}>
       <Box w="full" px={8} py={4} alignItems="center" alignContent="center">
         <Center my={16}>
           <Flex direction="column">
@@ -95,7 +96,7 @@ export default function Page({
             isMatched ? (
               <></>
             ) : (
-              <Stack spacing={3}>
+              <Stack spacing={3} mt={4}>
                 <GameButton
                   text="Cancel Matching"
                   leftIcon={<GoXCircle />}
@@ -146,19 +147,25 @@ export default function Page({
         </Flex>
 
         {isMatching ? (
-          <Flex direction="column">
-            <Divider borderColor="#A0A0A3" mt={16} />
-            <Text align="center" fontSize={24} my={6}>
-              {gameType} game
-            </Text>
-            <Center>
-              <HStack spacing={10} mb={10}>
-                <GameUserCard user={user} />
-                <Text fontSize={30}>vs</Text>
-                <GameUserCard user={isMatched ? opponent : null} />
-              </HStack>
-            </Center>
-          </Flex>
+          <Box mt={12} border={"white 2px solid"} boxShadow={"7px 7px black"}>
+            <Flex direction="column">
+              <Box position="relative" p={8}>
+                <Divider borderColor="#A0A0A3" />
+                <AbsoluteCenter bg="#29292D" px={4}>
+                  <Text align="center" fontSize={20}>
+                    {gameType} game
+                  </Text>
+                </AbsoluteCenter>
+              </Box>
+              <Center>
+                <HStack spacing={10} mb={10}>
+                  <GameUserCard user={user} />
+                  <Text fontSize={30}>vs</Text>
+                  <GameUserCard user={isMatched ? opponent : null} />
+                </HStack>
+              </Center>
+            </Flex>
+          </Box>
         ) : (
           <></>
         )}

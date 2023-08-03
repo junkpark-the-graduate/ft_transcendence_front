@@ -19,15 +19,6 @@ export default function GridType2({ children, ...props }: BaseGridProps) {
         borderTop={"#414147 solid 2px"}
         {...props}
       >
-        <GridItem
-          colSpan={3}
-          pl={2}
-          pt={0}
-          borderBottom={"#414147 solid 2px"}
-          bg="none"
-        >
-          <NavBar />
-        </GridItem>
         <GridItem rowSpan={15} colSpan={3} bg="none" px={10} py={5}>
           {children}
         </GridItem>

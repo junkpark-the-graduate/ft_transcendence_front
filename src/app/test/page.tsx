@@ -12,6 +12,7 @@ import {
 import GridType1 from "@/ui/Grid/GridType1";
 import GameUserResult from "../game/components/GameUserResult";
 import { Title } from "@/ui/Intro/Title";
+import TabType1 from "@/ui/Tab/TabType1";
 
 export default function page() {
   const gameResult = {
@@ -33,7 +34,7 @@ export default function page() {
     },
   };
   return (
-    <GridType1>
+    <GridType1 side={<TabType1 />}>
       <Box px={4} py={4} alignItems="center" alignContent="center">
         <Center mt={10}>
           <Flex direction="column">

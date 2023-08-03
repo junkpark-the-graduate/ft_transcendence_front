@@ -8,6 +8,7 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -60,7 +61,7 @@ export default function UserMatchHistory({ id }: MatchHistoryProps) {
       >
         <BaseHeading text="Match History" />
       </Box>
-      <TableContainer>
+      <TableContainer px={2}>
         <Table size="sm" variant="striped" colorScheme="blackAlpha">
           <Thead>
             <Tr>
@@ -72,27 +73,35 @@ export default function UserMatchHistory({ id }: MatchHistoryProps) {
             </Tr>
           </Thead>
           <Tbody>
-            {matchHistory.map((match) => {
-              const isPlayer1 = id === match.player1Id ?? match.player2Id;
-              const isWinner =
-                (isPlayer1 && match.gameResult === "player1") ||
-                (!isPlayer1 && match.gameResult === "player2")
-                  ? true
-                  : false;
-              return (
-                <Tr key={match.id}>
-                  <Td>{match.id}</Td>
-                  <Td>{formatCreatedAt(match.createdAt.toString())}</Td>
-                  <Td>{isPlayer1 ? match.player2Id : match.player1Id}</Td>
-                  <Td>{match.gameType}</Td>
-                  <Td>
-                    <Badge colorScheme={isWinner ? "green" : "red"}>
-                      {isWinner ? "win" : "lose"}
-                    </Badge>
-                  </Td>
-                </Tr>
-              );
-            })}
+            {matchHistory.length === 0 ? (
+              <Tr>
+                <Td colSpan={5}>
+                  <Text textAlign="center">no data</Text>
+                </Td>
+              </Tr>
+            ) : (
+              matchHistory.map((match) => {
+                const isPlayer1 = id === match.player1Id ?? match.player2Id;
+                const isWinner =
+                  (isPlayer1 && match.gameResult === "player1") ||
+                  (!isPlayer1 && match.gameResult === "player2")
+                    ? true
+                    : false;
+                return (
+                  <Tr key={match.id}>
+                    <Td>{match.id}</Td>
+                    <Td>{formatCreatedAt(match.createdAt.toString())}</Td>
+                    <Td>{isPlayer1 ? match.player2Id : match.player1Id}</Td>
+                    <Td>{match.gameType}</Td>
+                    <Td>
+                      <Badge colorScheme={isWinner ? "green" : "red"}>
+                        {isWinner ? "win" : "lose"}
+                      </Badge>
+                    </Td>
+                  </Tr>
+                );
+              })
+            )}
           </Tbody>
         </Table>
       </TableContainer>

@@ -26,11 +26,11 @@ export default function HowToPlayModal() {
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
-        <ModalContent mt={40} p={4} bg="#29292D">
-          <ModalHeader pt={2} pb={4} textAlign="center">
+        <ModalContent mt={40} p={3} bg="#29292D">
+          <ModalHeader pt={1} pb={3} textAlign="center">
             How to Play
           </ModalHeader>
-          <ModalCloseButton m={2} />
+          <ModalCloseButton size="sm" m={1} />
           <ModalBody mx={4} py={6} borderTop={"#A0A0A3 1px solid"} mb={2}>
             <Box fontSize={16} fontWeight={200} textAlign="justify">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer

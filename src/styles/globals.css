@@ -20,8 +20,9 @@ html {
 
 body {
   margin: 0;
-  /* padding: 40px 60px; */
+  /* padding: 10px 20px; */
   background-color: rgb(23, 23, 23);
+  /* background-color: rgb(41, 41, 45); */
   color: white;
   font-family: "DungGeunMo", sans-serif;
   display: flex;
