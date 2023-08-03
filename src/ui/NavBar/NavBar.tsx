@@ -15,7 +15,6 @@ import Search from "../Search/Search";
 import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
 
 const Links = [
-  { label: "Home", path: "/home" },
   { label: "Game", path: "/game" },
   { label: "Channel", path: "/channel" },
   { label: "DM", path: "/dm" },

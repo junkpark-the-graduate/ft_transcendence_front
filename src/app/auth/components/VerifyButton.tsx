@@ -59,7 +59,7 @@ export const VerifyButton = () => {
         } else {
           Cookies.set("accessToken", json.accessToken);
           router.refresh();
-          router.push("/home");
+          router.push("/game");
         }
       }}
     >
