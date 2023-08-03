@@ -42,11 +42,11 @@ export default function RankingModal() {
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
-        <ModalContent mt={40} p={4} bg="#29292D">
-          <ModalHeader pt={2} pb={4} textAlign="center">
-            weekly Ranking
+        <ModalContent mt={40} p={3} bg="#29292D">
+          <ModalHeader pt={1} pb={3} textAlign="center">
+            Weekly Ranking
           </ModalHeader>
-          <ModalCloseButton m={2} />
+          <ModalCloseButton size="sm" m={1} />
           <ModalBody mx={4} py={6} borderTop={"#A0A0A3 1px solid"} mb={2}>
             {top10Rankings.length > 0 ? (
               <Table size="sm" variant="striped" colorScheme="whiteAlpha">

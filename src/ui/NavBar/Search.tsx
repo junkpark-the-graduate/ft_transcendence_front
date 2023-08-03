@@ -48,6 +48,7 @@ export default function Search() {
       <Flex alignItems={"center"}>
         {searchOpen ? (
           <BaseInput
+            w="150px"
             h={8}
             mr={2}
             value={searchId}
@@ -57,7 +58,7 @@ export default function Search() {
         ) : (
           <BaseIconButton
             h={8}
-            mr={3}
+            mr={2}
             icon={<SearchIcon />}
             aria-label="search"
             onClick={handleSearchToggle}

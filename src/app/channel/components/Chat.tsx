@@ -147,7 +147,7 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   };
 
   return (
-    <Box w="full" h="full" borderRadius="8px" bg="#414147" px={4} py={2}>
+    <Box w="full" h="full" borderRadius="8px" px={2} py={1}>
       <Box>
         <Flex alignItems="center">
           <BaseIconButton

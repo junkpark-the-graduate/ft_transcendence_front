@@ -10,62 +10,55 @@ import JoinedChannelList from "@/ui/Lists/JoinedChannelList";
 
 export interface BaseGridProps extends GridProps {
   children: React.ReactNode;
+  side: React.ReactNode;
 }
 
-export default function GridType1({ children, ...props }: BaseGridProps) {
-  const [joinedChannels, setJoinedChannels] = useState<any>([]);
-
-  useEffect(() => {
-    getJoinedChannels(setJoinedChannels);
-  }, []);
+export default function GridType1({ children, side, ...props }: BaseGridProps) {
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(
+    () => localStorage.getItem("isChatOpen") === "true" // Parse the value from localStorage as boolean
+  );
 
   return (
     <FullBox>
-      <NavBar />
+      <NavBar setIsChatOpen={setIsChatOpen} />
       <Grid
         gridTemplateColumns={"repeat(7, 1fr)"}
         w="full"
-        h="96%"
-        bg="#29292D"
-        borderBottomRadius={"8px"}
+        h="93%"
         color="white"
         fontWeight="bold"
-        borderTop={"#414147 solid 2px"}
+        gap={3}
         {...props}
       >
         <GridItem
           display={{ base: "flex", md: "flex" }}
-          colSpan={5}
-          bg="none"
-          borderRight={"#414147 solid 2px"}
+          colSpan={isChatOpen ? 5 : 7}
+          bg="#29292D"
           px={5}
+          my={2}
           py={3}
+          borderRadius="8px"
           overflowY="auto"
         >
           <Box w="100%" h="100%">
             {children}
           </Box>
         </GridItem>
-        <GridItem
-          display={{ base: "flex", md: "flex" }}
-          colSpan={2}
-          bg="none"
-          px={3}
-          py={4}
-        >
-          <BaseTabs
-            children1={<FollowingList />}
-            children2={
-              <JoinedChannelList
-                joinedChannels={joinedChannels}
-                setJoinedChannels={setJoinedChannels}
-              />
-            }
+        {isChatOpen ? (
+          <GridItem
+            display={{ base: "flex", md: "flex" }}
+            colSpan={2}
+            bg="#29292D"
+            borderRadius="8px"
+            my={2}
+            px={3}
+            py={4}
           >
-            <div>Content 1</div>
-            <div>Content 2</div>
-          </BaseTabs>
-        </GridItem>
+            {side}
+          </GridItem>
+        ) : (
+          <></>
+        )}
       </Grid>
     </FullBox>
   );

@@ -78,12 +78,19 @@ export default function GameSettingModal({ setIsMatching }: any) {
 
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
-        <ModalContent mt={40} p={4} bg="#29292D">
-          <ModalHeader pt={2} pb={4} textAlign="center">
+        <ModalContent
+          mt={40}
+          p={3}
+          bg="#29292D"
+          // borderRadius={0}
+          // border={"white 2px solid"}
+          // boxShadow={"7px 7px black"}
+        >
+          <ModalHeader pt={1} pb={3} textAlign="center">
             Game Setting
           </ModalHeader>
-          <ModalCloseButton m={2} />
-          <ModalBody mx={4} py={6} borderTop={"#A0A0A3 1px solid"} mb={2}>
+          <ModalCloseButton size="sm" m={1} />
+          <ModalBody mx={4} py={6} borderTop={"#A0A0A3 1px solid"}>
             {/* TODO game type을 제외한 설정 값 적용  */}
             <VStack gap={1}>
               <FormLabel color={"white"}>Background Color</FormLabel>

@@ -9,19 +9,11 @@ import {
   MenuList,
   MenuItem,
   Text,
-  Center,
-  Spacer,
 } from "@chakra-ui/react";
 import { usePathname, useRouter } from "next/navigation";
 import BaseAvatar from "../Avatar/Avatar";
 import Search from "./Search";
-import {
-  GoPaperAirplane,
-  GoPencil,
-  GoPersonFill,
-  GoSignOut,
-} from "react-icons/go";
-import BaseIconButton from "../Button/IconButton";
+import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
 
 const Links = [
   { label: "Game", path: "/game" },
@@ -50,11 +42,7 @@ const NavLink = ({ children, path }: { children: ReactNode; path: string }) => {
       rounded={"md"}
       _hover={{
         textDecoration: "none",
-        bg: "none",
-      }}
-      _focus={{
-        textDecoration: "none",
-        bg: "none",
+        bg: "#414147",
       }}
       onClick={() => handleLinkClick(path)}
     >
@@ -74,58 +62,28 @@ const Divider = () => (
   />
 );
 
-export default function NavBar({
-  setIsChatOpen,
-}: {
-  setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function TestNavBar() {
   const router = useRouter();
 
   const handleLinkClick = (path: string) => {
     router.push(path);
   };
 
-  const handleChatToggle = () => {
-    setIsChatOpen((prevState) => {
-      const newValue = !prevState;
-      localStorage.setItem("isChatOpen", String(newValue)); // Save the state to localStorage
-      return newValue;
-    });
-  };
-
   return (
-    <Box bg="none" px={2} py={1}>
-      <Flex h={12} alignItems={"center"}>
-        <Text position="absolute" ml={2}>
-          42 Ping Pong
-        </Text>
-        <Center flex="1">
-          <Box bg="#29292D" borderRadius="8px" px={6} py={1}>
-            <HStack spacing={8} alignItems={"center"}>
-              <HStack
-                as={"nav"}
-                spacing={4}
-                display={{ base: "flex", md: "flex" }}
-              >
-                {Links.map((link, index) => (
-                  <React.Fragment key={link.path}>
-                    <NavLink path={link.path}>{link.label}</NavLink>
-                    {index < Links.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </HStack>
-            </HStack>
-          </Box>
-        </Center>
-        <Flex alignItems={"center"} position="absolute" right="30px">
+    <Box bg="#29292D" borderTopRadius="8px" px={4}>
+      <Flex h={12} alignItems={"center"} justifyContent={"space-between"}>
+        <HStack spacing={8} alignItems={"center"}>
+          <HStack as={"nav"} spacing={4} display={{ base: "flex", md: "flex" }}>
+            {Links.map((link, index) => (
+              <React.Fragment key={link.path}>
+                <NavLink path={link.path}>{link.label}</NavLink>
+                {index < Links.length - 1 && <Divider />}
+              </React.Fragment>
+            ))}
+          </HStack>
+        </HStack>
+        <Flex alignItems={"center"}>
           <Search />
-          <BaseIconButton
-            icon={<GoPaperAirplane />}
-            aria-label="chat"
-            h={8}
-            mr={4}
-            onClick={handleChatToggle}
-          />
           <Menu>
             <MenuButton
               as={Button}

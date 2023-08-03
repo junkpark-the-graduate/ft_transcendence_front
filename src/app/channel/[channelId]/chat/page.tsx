@@ -1,12 +1,12 @@
 "use client";
 
-import GridType3 from "@/ui/Grid/GridType3";
 import Chat from "../../components/Chat";
 import JoinedChannelList from "../../../../ui/Lists/JoinedChannelList";
 import { useEffect, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { getChannels } from "@/utils/channel/getChannels";
 import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
+import GridType1 from "@/ui/Grid/GridType1";
 
 export default function Page({ params }: { params: { channelId: number } }) {
   const [channels, setChannels] = useState<any>([]);
@@ -18,10 +18,10 @@ export default function Page({ params }: { params: { channelId: number } }) {
   }, []);
 
   return (
-    <GridType3
+    <GridType1
       children={<Chat channelId={params.channelId} />}
-      children1={
-        <Box px={1}>
+      side={
+        <Box w="full" px={1}>
           <Text
             align="center"
             fontSize="14px"
