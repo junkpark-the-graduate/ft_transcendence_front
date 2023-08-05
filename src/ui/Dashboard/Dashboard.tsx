@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Divider, Box, Spinner } from "@chakra-ui/react";
+import { Flex, Divider, Box, Spinner, Center } from "@chakra-ui/react";
 import UserRank from "./Rank";
 import UserScore from "./Score";
 import UserStats from "./Stats";
@@ -39,7 +39,9 @@ export default function Dashboard({ userData }: DashBoardProps) {
           </Box>
         </Flex>
       ) : (
-        <Spinner size="xl" />
+        <Center w="full" h="full" alignItems="center">
+          <Spinner size="xl" />
+        </Center>
       )}
     </>
   );

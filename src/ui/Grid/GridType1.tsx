@@ -1,26 +1,26 @@
 import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
-import BaseTabs from "../Tab/Tab";
-import ChannelList from "../Lists/DummyChannelList";
-import FollowingList from "../Lists/FollowingList";
 import FullBox from "../Box/FullBox";
-import { useEffect, useState } from "react";
-import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
-import JoinedChannelList from "@/ui/Lists/JoinedChannelList";
+import { useState } from "react";
 
-export interface BaseGridProps extends GridProps {
+export interface GridType1Props extends GridProps {
   children: React.ReactNode;
   side: React.ReactNode;
 }
 
-export default function GridType1({ children, side, ...props }: BaseGridProps) {
-  const [isChatOpen, setIsChatOpen] = useState<boolean>(
-    () => localStorage.getItem("isChatOpen") === "true" // Parse the value from localStorage as boolean
+export default function GridType1({
+  children,
+  side,
+  ...props
+}: GridType1Props) {
+  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(
+    // () => localStorage.getItem("isSideBarOpen") === "true" // Parse the value from localStorage as boolean
+    true
   );
 
   return (
     <FullBox>
-      <NavBar setIsChatOpen={setIsChatOpen} />
+      <NavBar setIsSideBarOpen={setIsSideBarOpen} />
       <Grid
         gridTemplateColumns={"repeat(7, 1fr)"}
         w="full"
@@ -32,7 +32,7 @@ export default function GridType1({ children, side, ...props }: BaseGridProps) {
       >
         <GridItem
           display={{ base: "flex", md: "flex" }}
-          colSpan={isChatOpen ? 5 : 7}
+          colSpan={isSideBarOpen ? 5 : 7}
           bg="#29292D"
           px={5}
           my={2}
@@ -44,7 +44,7 @@ export default function GridType1({ children, side, ...props }: BaseGridProps) {
             {children}
           </Box>
         </GridItem>
-        {isChatOpen ? (
+        {isSideBarOpen ? (
           <GridItem
             display={{ base: "flex", md: "flex" }}
             colSpan={2}
