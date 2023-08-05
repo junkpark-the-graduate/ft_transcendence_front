@@ -73,23 +73,11 @@ const Divider = () => (
   />
 );
 
-export default function NavBar({
-  setIsSideBarOpen,
-}: {
-  setIsSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function NavBar({}: {}) {
   const router = useRouter();
 
   const handleLinkClick = (path: string) => {
     router.push(path);
-  };
-
-  const handleChatToggle = () => {
-    setIsSideBarOpen((prevState) => {
-      const newValue = !prevState;
-      localStorage.setItem("isSideBarOpen", String(newValue)); // Save the state to localStorage
-      return newValue;
-    });
   };
 
   return (
@@ -118,13 +106,6 @@ export default function NavBar({
         </Center>
         <Flex alignItems={"center"} position="absolute" right="30px">
           <Search />
-          <BaseIconButton
-            icon={<GoPaperAirplane />}
-            aria-label="chat"
-            h={8}
-            mr={4}
-            onClick={handleChatToggle}
-          />
           <Menu>
             <MenuButton
               as={Button}

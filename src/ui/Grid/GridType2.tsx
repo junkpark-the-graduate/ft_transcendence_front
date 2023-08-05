@@ -14,7 +14,7 @@ export default function GridType2({ children, ...props }: GridType2Props) {
 
   return (
     <FullBox>
-      <NavBar setIsSideBarOpen={setIsSideBarOpen} />
+      <NavBar />
       <Grid
         gridTemplateColumns={"repeat(3, 1fr)"}
         w="full"

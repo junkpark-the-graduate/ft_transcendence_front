@@ -13,14 +13,9 @@ export default function GridType1({
   side,
   ...props
 }: GridType1Props) {
-  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(
-    // () => localStorage.getItem("isSideBarOpen") === "true" // Parse the value from localStorage as boolean
-    true
-  );
-
   return (
     <FullBox>
-      <NavBar setIsSideBarOpen={setIsSideBarOpen} />
+      <NavBar />
       <Grid
         gridTemplateColumns={"repeat(7, 1fr)"}
         w="full"
@@ -32,7 +27,7 @@ export default function GridType1({
       >
         <GridItem
           display={{ base: "flex", md: "flex" }}
-          colSpan={isSideBarOpen ? 5 : 7}
+          colSpan={5}
           bg="#29292D"
           px={5}
           my={2}
@@ -44,21 +39,17 @@ export default function GridType1({
             {children}
           </Box>
         </GridItem>
-        {isSideBarOpen ? (
-          <GridItem
-            display={{ base: "flex", md: "flex" }}
-            colSpan={2}
-            bg="#29292D"
-            borderRadius="8px"
-            my={2}
-            px={3}
-            py={4}
-          >
-            {side}
-          </GridItem>
-        ) : (
-          <></>
-        )}
+        <GridItem
+          display={{ base: "flex", md: "flex" }}
+          colSpan={2}
+          bg="#29292D"
+          borderRadius="8px"
+          my={2}
+          px={3}
+          py={4}
+        >
+          {side}
+        </GridItem>
       </Grid>
     </FullBox>
   );
