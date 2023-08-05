@@ -10,7 +10,6 @@ import {
   MenuItem,
   Text,
   Center,
-  Spacer,
 } from "@chakra-ui/react";
 import { usePathname, useRouter } from "next/navigation";
 import BaseAvatar from "../Avatar/Avatar";
@@ -75,9 +74,9 @@ const Divider = () => (
 );
 
 export default function NavBar({
-  setIsChatOpen,
+  setIsSideBarOpen,
 }: {
-  setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
 
@@ -86,9 +85,9 @@ export default function NavBar({
   };
 
   const handleChatToggle = () => {
-    setIsChatOpen((prevState) => {
+    setIsSideBarOpen((prevState) => {
       const newValue = !prevState;
-      localStorage.setItem("isChatOpen", String(newValue)); // Save the state to localStorage
+      localStorage.setItem("isSideBarOpen", String(newValue)); // Save the state to localStorage
       return newValue;
     });
   };
