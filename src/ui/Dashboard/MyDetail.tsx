@@ -6,6 +6,7 @@ import {
   Text,
   GridItem,
   Grid,
+  Center,
 } from "@chakra-ui/react";
 import LinkButton from "@/ui/Button/LinkButton";
 import { GoCircleSlash, GoGear, GoTrash } from "react-icons/go";
@@ -24,7 +25,13 @@ export default function MyDetail() {
           gridTemplateColumns={"repeat(4, 1fr)"}
         >
           <GridItem colSpan={1}>
-            <Avatar mt={4} size="2xl" name={myData?.name} src={myData?.image} />
+            <Avatar
+              ml={4}
+              mt={4}
+              size="2xl"
+              name={myData?.name}
+              src={myData?.image}
+            />
           </GridItem>
           <GridItem colSpan={2}>
             <Text fontSize={28} mb={2}>

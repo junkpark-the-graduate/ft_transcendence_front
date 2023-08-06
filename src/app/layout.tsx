@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import styles from "../styles/layout.module.css";
 import { Providers } from "./providers";
 
 export const metadata = {
@@ -13,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={styles.container}>
         <Providers>{children}</Providers>
       </body>
     </html>

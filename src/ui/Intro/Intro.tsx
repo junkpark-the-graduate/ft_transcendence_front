@@ -14,7 +14,7 @@ export const Intro = ({ children }: IntroProps) => {
   const router = useRouter();
 
   return (
-    <FullBox>
+    <FullBox px="40px" py="30px">
       <Flex>
         <Box>42 SEOUL</Box>
         <Spacer />
@@ -27,15 +27,15 @@ export const Intro = ({ children }: IntroProps) => {
         </Box>
       </Center>
       <Flex>
-        <Box position="absolute" bottom="5vh">
+        <Box position="absolute" bottom="40px">
           ⓒ copyright blablabla
         </Box>
         <Spacer />
         <Box
           as="button"
           position="absolute"
-          bottom="5vh"
-          right="8vh"
+          bottom="40px"
+          right="40px"
           onClick={() => {
             router.push(
               `https://github.com/orgs/junkpark-the-graduate/repositories`

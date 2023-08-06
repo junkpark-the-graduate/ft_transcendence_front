@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import ChannelList from "../../../ui/Lists/ChannelList";
 import JoinedChannelList from "../../../ui/Lists/JoinedChannelList";
-import GridType3 from "@/ui/Grid/GridType3";
 import { getChannels } from "@/utils/channel/getChannels";
 import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
 import { Box, Text } from "@chakra-ui/react";
+import GridType1 from "@/ui/Grid/GridType1";
 
 const Channel: React.FC = () => {
   const [channels, setChannels] = useState<any>([]);
@@ -23,9 +23,9 @@ const Channel: React.FC = () => {
 
   return (
     <>
-      <GridType3
+      <GridType1
         children={<ChannelList channels={channels} setChannels={setChannels} />}
-        children1={
+        side={
           <Box px={1}>
             <Text
               align="center"

@@ -1,55 +1,38 @@
 import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
-import BaseTabs from "../Tab/Tab";
-import ChannelList from "../Lists/DummyChannelList";
-import FollowingList from "../Lists/FollowingList";
 import FullBox from "../Box/FullBox";
-import { useEffect, useState } from "react";
-import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
-import JoinedChannelList from "@/ui/Lists/JoinedChannelList";
+import { useState } from "react";
 
-export interface BaseGridProps extends GridProps {
+export interface GridType1Props extends GridProps {
   children: React.ReactNode;
+  side: React.ReactNode;
 }
 
-export default function GridType1({ children, ...props }: BaseGridProps) {
-  const [joinedChannels, setJoinedChannels] = useState<any>([]);
-
-  useEffect(() => {
-    getJoinedChannels(setJoinedChannels);
-  }, []);
-
+export default function GridType1({
+  children,
+  side,
+  ...props
+}: GridType1Props) {
   return (
     <FullBox>
+      <NavBar />
       <Grid
-        gridTemplateRows={"repeat(16, 1fr)"}
         gridTemplateColumns={"repeat(7, 1fr)"}
-        w="100%"
-        h="100%"
-        bg="#29292D"
-        borderRadius={"6px"}
+        w="full"
+        h="93%"
         color="white"
         fontWeight="bold"
+        gap={3}
         {...props}
       >
         <GridItem
-          rowSpan={1}
-          colSpan={7}
-          pl={2}
-          pt={0}
-          borderBottom={"#414147 solid 2px"}
-          bg="none"
-        >
-          <NavBar />
-        </GridItem>
-        <GridItem
           display={{ base: "flex", md: "flex" }}
-          rowSpan={15}
           colSpan={5}
-          bg="none"
-          borderRight={"#414147 solid 2px"}
+          bg="#29292D"
           px={5}
+          my={2}
           py={3}
+          borderRadius="8px"
           overflowY="auto"
         >
           <Box w="100%" h="100%">
@@ -58,24 +41,14 @@ export default function GridType1({ children, ...props }: BaseGridProps) {
         </GridItem>
         <GridItem
           display={{ base: "flex", md: "flex" }}
-          rowSpan={15}
           colSpan={2}
-          bg="none"
+          bg="#29292D"
+          borderRadius="8px"
+          my={2}
           px={3}
           py={4}
         >
-          <BaseTabs
-            children1={<FollowingList />}
-            children2={
-              <JoinedChannelList
-                joinedChannels={joinedChannels}
-                setJoinedChannels={setJoinedChannels}
-              />
-            }
-          >
-            <div>Content 1</div>
-            <div>Content 2</div>
-          </BaseTabs>
+          {side}
         </GridItem>
       </Grid>
     </FullBox>

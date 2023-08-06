@@ -31,7 +31,7 @@ export default function GameUserCard({ user }: { user: User | null }) {
             </Skeleton>
           )}
 
-          <Flex ml={10} direction="column">
+          <Flex ml={6} direction="column">
             <Text fontSize={24} color={"white"}>
               {user ? user.name : "???"}
             </Text>
@@ -40,10 +40,10 @@ export default function GameUserCard({ user }: { user: User | null }) {
               rank: {user ? userRank : "???"}
             </Text>
             <Text fontSize={15} color={"white"}>
-              mmr score: {user ? user.mmr : "???"}
+              score: {user ? user.mmr : "???"}
             </Text>
             <Text fontSize={15} color={"white"}>
-              ? win ? loss
+              ? W / ? L
             </Text>
           </Flex>
         </Flex>

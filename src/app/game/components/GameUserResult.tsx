@@ -1,3 +1,4 @@
+import BaseHeading from "@/ui/Typo/Heading";
 import {
   Stat,
   StatLabel,
@@ -5,15 +6,10 @@ import {
   StatHelpText,
   StatArrow,
   StatGroup,
-  Heading,
   Box,
-  AspectRatio,
-  Text,
-  Image,
-  Spacer,
   Flex,
-  Card,
-  CardFooter,
+  Avatar,
+  Center,
 } from "@chakra-ui/react";
 
 interface GameResult {
@@ -30,50 +26,40 @@ export default function GameUserResult({
   user: any;
 }) {
   return (
-    <Card backgroundColor={"#181818"} w={"100%"} h={"100%"} border={"10px"}>
-      <div>
-        <Heading
-          as="h2"
-          size="2xl"
-          fontFamily={"inherit"}
-          marginBottom={"30%"}
-          alignSelf={"center"}
-          color={isWin ? "blue.500" : "red.500"}
-        >
-          {isWin ? "승리!" : "패배"}
-        </Heading>
-        <AspectRatio
-          w="70%"
-          ratio={1 / 1}
-          margin={"30px"}
-          borderRadius={"15px"}
-        >
-          <Image w="100%" h="100%" src={image} borderRadius="full" />
-        </AspectRatio>
-        <Text fontSize={20} color={"white"} h="15%">
-          {name}
-        </Text>
-        <StatGroup
-          border={isWin ? "1px solid blue" : "1px solid red"}
-          borderColor={isWin ? "blue.500" : "red.500"}
-        >
+    <Box>
+      <Box py={1} bg="#171717" borderRadius={5}>
+        <Center>
+          <Flex alignItems="center" gap={4}>
+            <BaseHeading
+              text={isWin ? "winner" : "loser"}
+              size="md"
+              color={isWin ? "blue.500" : "red.500"}
+            />
+            <BaseHeading ml={3} text={name} />
+          </Flex>
+        </Center>
+      </Box>
+      <Flex px={2}>
+        <Avatar my={4} size="lg" src={image} border={"white 3px solid"} />
+        <StatGroup alignContent="center">
           {mmrChange === 0 ? (
             ""
           ) : (
-            <CardFooter w="100%" position={"absolute"} bottom={"0"}>
-              {" "}
-              <Stat color="white">
-                <StatLabel>MMR</StatLabel>
-                <StatNumber>{mmr}</StatNumber>
+            <Box w="100%" ml={6}>
+              <Stat textAlign="center">
+                <Flex alignItems="baseline" gap={2}>
+                  <StatNumber>{mmr}</StatNumber>
+                  <StatLabel>pt</StatLabel>
+                </Flex>
                 <StatHelpText>
                   <StatArrow type={isWin ? "increase" : "decrease"} />
                   {mmrChange}
                 </StatHelpText>
               </Stat>
-            </CardFooter>
+            </Box>
           )}
         </StatGroup>
-      </div>
-    </Card>
+      </Flex>
+    </Box>
   );
 }

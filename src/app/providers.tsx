@@ -42,7 +42,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CacheProvider>
       <ChakraProvider>
-        {/* Include the AppContextProvider here */}
         <AppContextProvider>{children}</AppContextProvider>
       </ChakraProvider>
     </CacheProvider>
