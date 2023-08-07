@@ -13,10 +13,9 @@ import { GoCircleSlash, GoGear, GoTrash } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import { getMyData } from "@/utils/user/getMyData";
 import { EUserStatus } from "../../app/user/types/EUserStatus";
+import { UserData } from "./Dashboard";
 
-export default function MyDetail() {
-  const myData = getMyData();
-
+export default function MyDetail({ userData }: { userData: UserData }) {
   return (
     <Box position="relative" px={5} pt={4} borderRadius={8} mb={2}>
       <Box>
@@ -29,22 +28,22 @@ export default function MyDetail() {
               ml={4}
               mt={4}
               size="2xl"
-              name={myData?.name}
-              src={myData?.image}
+              name={userData?.name}
+              src={userData?.image}
             />
           </GridItem>
           <GridItem colSpan={2}>
             <Text fontSize={28} mb={2}>
-              {myData?.name}
+              {userData?.name}
             </Text>
-            <Text fontSize={16}>42 ID: {myData?.id}</Text>
-            <Text fontSize={16}>email: {myData?.email}</Text>
+            <Text fontSize={16}>42 ID: {userData?.id}</Text>
+            <Text fontSize={16}>email: {userData?.email}</Text>
             <Text fontSize={16}>
-              TFA enable: {myData?.twoFactorEnabled ? "true" : "false"}
+              TFA enable: {userData?.twoFactorEnabled ? "true" : "false"}
             </Text>
             <Text fontSize={16}>
               status:{" "}
-              {myData?.status === EUserStatus.online ? "online" : "offline"}
+              {userData?.status === EUserStatus.online ? "online" : "offline"}
             </Text>
           </GridItem>
           <GridItem colSpan={1} pt={6}>

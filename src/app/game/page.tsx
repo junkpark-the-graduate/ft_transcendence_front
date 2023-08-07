@@ -51,8 +51,6 @@ export default function Page({
 
   socket.on("match_found", (data: any) => {
     const { roomId, opponent } = data;
-
-    console.log(opponent);
     setOpponent(opponent);
     setIsMatched(true);
     setTimeout(() => {
@@ -71,14 +69,10 @@ export default function Page({
       if (roomId) router.push(`/game/join?roomId=${roomId}`);
     });
     if (searchParams.roomId) {
-      console.log("searchParams.roomId", searchParams.roomId);
-      socket.emit("join_room", searchParams.roomId, (data: any) => {
-        console.log(data);
-      });
+      socket.emit("join_room", searchParams.roomId);
     }
     fetchAsyncToBackEnd("/user").then((res) => {
       res.json().then((data) => {
-        console.log("my data: ", data);
         setUser(data);
       });
     });
