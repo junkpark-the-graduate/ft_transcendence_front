@@ -9,9 +9,6 @@ export default function UserProfile({ params }: { params: any }) {
   const userId: number = params.id;
 
   return (
-    <GridType1
-      children={<Dashboard userData={<UserDetail userId={userId} />} />}
-      side={<TabType1 />}
-    />
+    <GridType1 children={<Dashboard userId={userId} />} side={<TabType1 />} />
   );
 }

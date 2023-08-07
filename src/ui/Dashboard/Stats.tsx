@@ -5,6 +5,7 @@ import {
   CircularProgress,
   CircularProgressLabel,
   Flex,
+  HStack,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -63,11 +64,13 @@ export default function UserStats({ id }: StatsProps) {
 
   useEffect(() => {
     setTotalWinRate(
-      Math.round(
-        ((normalGameStat.winGame + ladderGameStat.winGame) /
-          (normalGameStat.totalGame + ladderGameStat.totalGame)) *
-          100
-      )
+      normalGameStat.totalGame + ladderGameStat.totalGame === 0
+        ? 0
+        : Math.round(
+            ((normalGameStat.winGame + ladderGameStat.winGame) /
+              (normalGameStat.totalGame + ladderGameStat.totalGame)) *
+              100
+          )
     );
   }, [normalGameStat, ladderGameStat]);
 
@@ -81,7 +84,14 @@ export default function UserStats({ id }: StatsProps) {
         mb={4}
         borderTopRadius={8}
       >
-        <BaseHeading text="Stats" />
+        <HStack>
+          <BaseHeading text="Stats" />
+          <BaseHeading
+            size={"xs"}
+            color={"#A0A0A3"}
+            text="Last 10 records for each"
+          />
+        </HStack>
       </Box>
       <Stack spacing={2}>
         <Flex direction={"row"}>
