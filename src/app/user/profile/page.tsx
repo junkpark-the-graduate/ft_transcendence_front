@@ -7,9 +7,6 @@ import TabType1 from "@/ui/Tab/TabType1";
 
 export default async function MyProfile() {
   return (
-    <GridType1
-      children={<Dashboard userData={<MyDetail />} />}
-      side={<TabType1 />}
-    />
+    <GridType1 children={<Dashboard userId={null} />} side={<TabType1 />} />
   );
 }
