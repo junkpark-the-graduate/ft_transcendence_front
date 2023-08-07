@@ -30,7 +30,8 @@ export default function FollowButton({
 
   const handleFollow = async () => {
     await follow(myId, userId, () => setIsFollowing(true));
-    await unblock(myId, userId, () => setIsBlocking(false));
+    if (isBlocking === true)
+      await unblock(myId, userId, () => setIsBlocking(false));
   };
 
   const handleUnfollow = async () => {

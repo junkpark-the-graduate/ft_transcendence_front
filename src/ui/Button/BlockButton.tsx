@@ -28,7 +28,8 @@ export default function BlockButton({
 
   const handleBlock = async () => {
     await block(myId, userId, () => setIsBlocking(true));
-    await unfollow(myId, userId, () => setIsFollowing(false));
+    if (isFollowing === true)
+      await unfollow(myId, userId, () => setIsFollowing(false));
   };
 
   const handleUnblock = async () => {

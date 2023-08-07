@@ -6,17 +6,15 @@ export const block = async (
   setIsBlocking: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const res: Response = await fetch("http://127.0.0.1:3001/block", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${getTokenClient()}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: userId,
-        blocking: Number(blocking),
-      }),
-    });
+    const res: Response = await fetch(
+      `http://127.0.0.1:3001/block?blockingId=${Number(blocking)}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getTokenClient()}`,
+        },
+      }
+    );
     setIsBlocking(true);
     localStorage.setItem("isFollowing", JSON.stringify(true));
   } catch (error) {
@@ -31,16 +29,12 @@ export const unblock = async (
 ) => {
   try {
     const res: Response = await fetch(
-      `http://127.0.0.1:3001/block/${userId}/${blocking}`,
+      `http://127.0.0.1:3001/block?blockingId=${Number(blocking)}`,
       {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getTokenClient()}`,
         },
-        body: JSON.stringify({
-          userId: userId,
-          blocking: Number(blocking),
-        }),
       }
     );
     setIsBlocking(false);

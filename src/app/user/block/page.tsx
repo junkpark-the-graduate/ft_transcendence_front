@@ -22,7 +22,7 @@ export default function BlockedUsers() {
             text="돌아가기"
             mr={2}
             onClick={() => {
-              router.back();
+              router.push(`/user/profile`);
             }}
           />
         </Flex>
