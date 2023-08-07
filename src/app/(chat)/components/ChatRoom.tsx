@@ -103,7 +103,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
   }
 
   useEffect(() => {
-    if (!accessToken) router.push("/channel");
+    if (!accessToken) router.push("/");
     getUserInfo();
     getChannel();
   }, []);
@@ -145,7 +145,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
         duration: 9000,
         isClosable: true,
       });
-      router.push("/channel");
+      router.back();
     });
 
     socketIo.on("muted", () => {
@@ -182,7 +182,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
             icon={<GoArrowLeft />}
             aria-label="go back"
             onClick={() => {
-              router.push(`/channel`);
+              router.back();
             }}
           />
           <Text ml={1}>{channel.name}</Text>

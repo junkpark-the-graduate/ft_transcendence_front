@@ -11,6 +11,7 @@ import {
   Spacer,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
@@ -31,6 +32,7 @@ import { follow, unfollow } from "@/utils/user/follow";
 import { getUserStatus } from "@/utils/user/getUserStatus";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import ProfileModal from "../Modal/ProfileModal";
+import Cookies from "js-cookie";
 
 function FollowingListItem({
   myId,
@@ -39,9 +41,11 @@ function FollowingListItem({
   myId: number | undefined;
   userId: number | undefined;
 }) {
+  const accessToken = Cookies.get("accessToken");
   const userData = getUserData(userId);
   const userStatus = getUserStatus(userId);
   const router = useRouter();
+  const toast = useToast();
   const [isBlocking, setIsBlocking] = useState(false);
   const [isFollowing, setIsFollowing] = useState(true);
 
@@ -63,6 +67,37 @@ function FollowingListItem({
     await unblock(myId, userId, () => setIsBlocking(false));
   };
 
+  const createDm = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/direct?memberId=${userId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res;
+  };
+
+  const handleConnectDm = async () => {
+    const resCreateDm = await createDm();
+    const resCreateDmJson = await resCreateDm.json();
+
+    if (resCreateDm.status < 300) {
+      router.push(`/channel/${resCreateDmJson.id}/chat-room`);
+    } else {
+      toast({
+        title: resCreateDmJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Flex align="center" my={1}>
       <Avatar size="sm" src={userData?.image} name={userData?.name} mr={6}>
@@ -80,7 +115,7 @@ function FollowingListItem({
           size="sm"
           icon={<GoComment />}
           aria-label="dm"
-          onClick={() => {}}
+          onClick={handleConnectDm}
         />
         <BaseIconButton
           size="sm"
@@ -140,4 +175,12 @@ export default function FollowingList() {
       </Stack>
     </Box>
   );
+}
+function toast(arg0: {
+  title: any;
+  status: string;
+  duration: number;
+  isClosable: boolean;
+}) {
+  throw new Error("Function not implemented.");
 }
