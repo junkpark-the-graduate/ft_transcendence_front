@@ -15,6 +15,8 @@ import { GoPlus } from "react-icons/go";
 import { useInView } from "react-intersection-observer";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { useRouter } from "next/navigation";
+import ChannelInput from "@/ui/Input/ChannelInput";
+import { set } from "react-hook-form";
 
 interface User {
   id: number;
@@ -47,13 +49,15 @@ const ChannelInvite: React.FC<Props> = ({
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(20);
   const [ref, inView] = useInView({
-    threshold: 0,
+    threshold: 0.5,
   });
   const [users, setUsers] = useState<User[]>([]);
+  const [searchName, setSearchName] = useState<string>("");
+  const [tmpSearchName, setTmpSearchName] = useState<string>("");
 
   const getPaginatedUsers = useCallback(async () => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user/page?page=${page}&limit=${limit}`,
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user/page?page=${page}&limit=${limit}&name=${searchName}`,
       {
         method: "GET",
         headers: {
@@ -64,7 +68,7 @@ const ChannelInvite: React.FC<Props> = ({
     );
     const data: User[] = await res.json();
     setUsers((prev) => [...prev, ...data]);
-  }, [page, limit, setUsers]);
+  }, [page, limit, searchName]);
 
   useEffect(() => {
     if (inView) {
@@ -74,7 +78,14 @@ const ChannelInvite: React.FC<Props> = ({
 
   useEffect(() => {
     getPaginatedUsers();
-  }, [getPaginatedUsers]);
+  }, [getPaginatedUsers, searchName]);
+
+  async function searchUserHandler(e: React.FormEvent) {
+    e.preventDefault();
+    setUsers([]);
+    setPage(1);
+    setSearchName(tmpSearchName);
+  }
 
   async function getChannelMembers() {
     const res = await fetch(
@@ -126,8 +137,15 @@ const ChannelInvite: React.FC<Props> = ({
       setMembers(resJson2);
     }
   }
+
   return (
     <Box>
+      <form onSubmit={searchUserHandler}>
+        <ChannelInput
+          placeholder="search user"
+          onChange={(e) => setTmpSearchName(e.target.value)}
+        />
+      </form>
       <Stack spacing={2} mt={4} px={2}>
         {users.map((user, index) => {
           if (
@@ -135,7 +153,7 @@ const ChannelInvite: React.FC<Props> = ({
             !bannedMembers.find((m) => m.user.id === user.id)
           ) {
             return (
-              <React.Fragment key={user.id}>
+              <React.Fragment key={index}>
                 <HStack>
                   {user.image && (
                     <Avatar
