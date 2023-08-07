@@ -1,4 +1,3 @@
-import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { getMyData } from "@/utils/user/getMyData";
 import { Avatar, AvatarBadge, AvatarProps, Flex } from "@chakra-ui/react";
 

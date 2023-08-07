@@ -14,13 +14,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import BaseAvatar from "../Avatar/Avatar";
 import Search from "./Search";
-import {
-  GoPaperAirplane,
-  GoPencil,
-  GoPersonFill,
-  GoSignOut,
-} from "react-icons/go";
-import BaseIconButton from "../Button/IconButton";
+import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
 
 const Links = [
   { label: "Game", path: "/game" },
