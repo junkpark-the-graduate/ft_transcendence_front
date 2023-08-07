@@ -4,15 +4,14 @@ import { Avatar, Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import FollowButton from "@/ui/Button/FollowButton";
 import { getMyData } from "@/utils/user/getMyData";
-import { getUserData } from "@/utils/user/getUserData";
 import BlockButton from "@/ui/Button/BlockButton";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { GoComment } from "react-icons/go";
+import { UserData } from "./Dashboard";
 
-export default function UserDetail({ userId }: { userId: number }) {
+export default function UserDetail({ userData }: { userData: UserData }) {
   const myId: number | undefined = getMyData()?.id;
-  const userData = getUserData(userId);
-  const isMyProfile: boolean = myId == userId;
+  const isMyProfile: boolean = myId == userData.id;
 
   return (
     <Box position="relative" px={5} pt={4} borderRadius={8} mb={2}>
@@ -39,7 +38,7 @@ export default function UserDetail({ userId }: { userId: number }) {
             <Flex flexDirection={"column"} pt={3}>
               <FollowButton
                 myId={myId}
-                userId={userId}
+                userId={userData.id}
                 icon={true}
                 isDisabled={isMyProfile ? true : false}
               />
@@ -53,7 +52,7 @@ export default function UserDetail({ userId }: { userId: number }) {
               />
               <BlockButton
                 myId={myId}
-                userId={userId}
+                userId={userData.id}
                 icon={true}
                 isDisabled={isMyProfile ? true : false}
               />

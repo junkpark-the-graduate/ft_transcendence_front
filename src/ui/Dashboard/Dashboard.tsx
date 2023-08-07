@@ -9,6 +9,9 @@ import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import { useEffect, useState } from "react";
 import MyDetail from "./MyDetail";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
+import { getUserData } from "@/utils/user/getUserData";
+import { getMyData } from "@/utils/user/getMyData";
+import UserDetail from "./UserDetail";
 
 export interface DashBoardProps {
   userData: React.ReactNode;
@@ -75,7 +78,11 @@ export default function Dashboard({ userId }: { userId: number | null }) {
     <>
       {user ? (
         <Flex p={4} direction="column">
-          <MyDetail userData={user} />
+          {userId ? (
+            <UserDetail userData={user} />
+          ) : (
+            <MyDetail userData={user} />
+          )}
           <Divider borderColor="#A0A0A3" my={6} />
           <Box flex={7}>
             <Flex>
