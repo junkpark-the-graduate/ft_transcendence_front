@@ -83,7 +83,14 @@ export default function NavBar({}: {}) {
   return (
     <Box bg="none" px={2} py={1}>
       <Flex h={12} alignItems={"center"}>
-        <Text position="absolute" ml={2}>
+        <Text
+          position="absolute"
+          ml={2}
+          as="button"
+          onClick={() => {
+            router.push(`/game`);
+          }}
+        >
           42 Ping Pong
         </Text>
         <Center flex="1">

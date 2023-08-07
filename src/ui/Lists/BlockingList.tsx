@@ -78,7 +78,7 @@ export default function BlockingList() {
         </Stack>
       ) : (
         <Center>
-          <Text fontSize="16px" fontWeight="bold" color="gray" mb={2}>
+          <Text fontSize="16px" fontWeight="bold" color="gray">
             empty
           </Text>
         </Center>
