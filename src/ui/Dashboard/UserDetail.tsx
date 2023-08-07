@@ -12,6 +12,7 @@ import { GoComment } from "react-icons/go";
 export default function UserDetail({ userId }: { userId: number }) {
   const myId: number | undefined = getMyData()?.id;
   const userData = getUserData(userId);
+  const isMyProfile: boolean = myId == userId;
 
   return (
     <Box position="relative" px={5} pt={4} borderRadius={8} mb={2}>
@@ -36,15 +37,26 @@ export default function UserDetail({ userId }: { userId: number }) {
           </GridItem>
           <GridItem colSpan={1}>
             <Flex flexDirection={"column"} pt={3}>
-              <FollowButton myId={myId} userId={userId} icon={true} />
+              <FollowButton
+                myId={myId}
+                userId={userId}
+                icon={true}
+                isDisabled={isMyProfile ? true : false}
+              />
               <BaseButton
                 my={2}
                 size="sm"
                 leftIcon={<GoComment />}
                 text="message"
                 onClick={() => {}}
+                isDisabled={isMyProfile ? true : false}
               />
-              <BlockButton myId={myId} userId={userId} icon={true} />
+              <BlockButton
+                myId={myId}
+                userId={userId}
+                icon={true}
+                isDisabled={isMyProfile ? true : false}
+              />
             </Flex>
           </GridItem>
         </Grid>

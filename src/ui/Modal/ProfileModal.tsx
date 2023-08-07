@@ -22,8 +22,7 @@ import { EUserStatus } from "@/app/user/types/EUserStatus";
 import BlockButton from "../Button/BlockButton";
 import FollowButton from "../Button/FollowButton";
 import { useRouter } from "next/navigation";
-import UserRank from "../Dashboard/Rank";
-import getRank from "@/utils/user/getRank";
+import getRankById from "@/utils/user/getRankById";
 
 export interface ProfileModalProps {
   userData: UserData | null | undefined;
@@ -36,6 +35,7 @@ export default function ProfileModal({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const myData = getMyData();
   const router = useRouter();
+  const rank = getRankById(userData?.id);
 
   return (
     <Box>
@@ -75,14 +75,14 @@ export default function ProfileModal({
             <Center>
               <HStack spacing={3}>
                 <Flex>
-                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
-                    rank:
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#191919">
+                    rank: {rank}
                   </StackItem>
-                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
-                    score:
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#191919">
+                    score: {userData?.mmr}
                   </StackItem>
-                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
-                    stats:
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#191919">
+                    stats: ? W ? L
                   </StackItem>
                 </Flex>
               </HStack>

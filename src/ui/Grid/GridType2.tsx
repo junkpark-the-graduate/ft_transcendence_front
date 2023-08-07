@@ -20,13 +20,11 @@ export default function GridType2({ children, ...props }: GridType2Props) {
         w="full"
         h="96%"
         bg="#29292D"
-        borderBottomRadius={"8px"}
         color="white"
         fontWeight="bold"
-        borderTop={"#414147 solid 2px"}
         {...props}
       >
-        <GridItem rowSpan={15} colSpan={3} bg="none" px={10} py={5}>
+        <GridItem colSpan={3} px={10} py={5} borderRadius="8px">
           {children}
         </GridItem>
       </Grid>

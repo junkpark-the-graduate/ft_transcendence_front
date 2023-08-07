@@ -14,8 +14,7 @@ import { useEffect, useState } from "react";
 export interface StatsProps {
   id: number | undefined;
 }
-
-interface GameRecord {
+export interface GameRecord {
   id: number;
   player1Id: number;
   player2Id: number;
@@ -23,8 +22,7 @@ interface GameRecord {
   gameResult: string;
   createdAt: Date;
 }
-
-interface GameStat {
+export interface GameStat {
   totalGame: number;
   winGame: number;
   winRate: number;
@@ -62,6 +60,7 @@ export default function UserStats({ id }: StatsProps) {
     getGameStat("normal", setNormalGameStat);
     getGameStat("ladder", setLadderGameStat);
   }, []);
+
   useEffect(() => {
     setTotalWinRate(
       Math.round(

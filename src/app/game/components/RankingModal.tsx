@@ -17,10 +17,12 @@ import {
   ModalCloseButton,
   ModalBody,
 } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { GoTrophy } from "react-icons/go";
 
 export default function RankingModal() {
   const ranking = getRank();
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const getTop10Rankings = (
@@ -63,7 +65,16 @@ export default function RankingModal() {
                     <Tr key={item.id}>
                       <Td>{index + 1}</Td>
                       <Td>{item.id}</Td>
-                      <Td>{item.name}</Td>
+                      <Td>
+                        <Box
+                          as="button"
+                          onClick={() => {
+                            router.push(`/user/profile/${item.id}`);
+                          }}
+                        >
+                          {item.name}
+                        </Box>
+                      </Td>
                       <Td>{item.mmr}</Td>
                     </Tr>
                   ))}

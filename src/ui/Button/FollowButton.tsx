@@ -1,22 +1,25 @@
 import { useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { GoNoEntry, GoPlusCircle } from "react-icons/go";
-import { Flex } from "@chakra-ui/react";
+import { ButtonProps, Flex } from "@chakra-ui/react";
 import { follow, unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { unblock } from "@/utils/user/block";
 import { useAppContext } from "@/app/providers";
 
+export interface FollowButtonProps extends ButtonProps {
+  myId: number | undefined;
+  userId: number | undefined;
+  icon: boolean;
+}
+
 export default function FollowButton({
   myId,
   userId,
   icon,
-}: {
-  myId: number | undefined;
-  userId: number | undefined;
-  icon: boolean;
-}) {
+  ...props
+}: FollowButtonProps) {
   const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
     useAppContext();
   const followingList = getFollowingList(myId);
@@ -48,6 +51,7 @@ export default function FollowButton({
         onClick={isFollowing ? handleUnfollow : handleFollow}
         bg={isFollowing ? "#191919" : "#414147"}
         style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+        {...props}
       />
     </Flex>
   ) : (
@@ -62,6 +66,7 @@ export default function FollowButton({
         onClick={isFollowing ? handleUnfollow : handleFollow}
         bg={isFollowing ? "#191919" : "#414147"}
         style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+        {...props}
       />
     </Flex>
   );

@@ -1,22 +1,25 @@
 import { useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { GoCircleSlash } from "react-icons/go";
-import { Flex } from "@chakra-ui/react";
+import { ButtonProps, Flex } from "@chakra-ui/react";
 import { block, unblock } from "@/utils/user/block";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { useAppContext } from "@/app/providers";
 
+export interface BlockButtonProps extends ButtonProps {
+  myId: number | undefined;
+  userId: number | undefined;
+  icon: boolean;
+}
+
 export default function BlockButton({
   myId,
   userId,
   icon,
-}: {
-  myId: number | undefined;
-  userId: number | undefined;
-  icon: boolean;
-}) {
+  ...props
+}: BlockButtonProps) {
   const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
     useAppContext();
   const followingList = getFollowingList(myId);
@@ -47,6 +50,7 @@ export default function BlockButton({
         onClick={isBlocking ? handleUnblock : handleBlock}
         bg={isBlocking ? "#191919" : "#414147"}
         style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+        {...props}
       />
     </Flex>
   ) : (
@@ -61,6 +65,7 @@ export default function BlockButton({
         onClick={isBlocking ? handleUnblock : handleBlock}
         bg={isBlocking ? "#191919" : "#414147"}
         style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+        {...props}
       />
     </Flex>
   );
