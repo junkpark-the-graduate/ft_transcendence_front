@@ -11,7 +11,7 @@ import {
   Badge,
   IconButton,
 } from "@chakra-ui/react";
-import { EChannelType } from "../../app/channel/types/EChannelType";
+import { EChannelType } from "../../app/(chat)/channel/types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import PasswordModal from "@/ui/Modal/PasswordModal";
@@ -81,7 +81,7 @@ const ChannelList: React.FC<Props> = ({
     const resJson = await res.json();
 
     if (res.status < 300) {
-      router.push(`/channel/${channelId}/chat`);
+      router.push(`/channel/${channelId}/chat-room`);
     } else {
       toast({
         title: resJson.message,
@@ -106,7 +106,7 @@ const ChannelList: React.FC<Props> = ({
     if (channel) {
       if (channel.type === EChannelType.protected) {
         if (await isAlreadyJoinedChannel(channelId)) {
-          router.push(`/channel/${channelId}/chat`);
+          router.push(`/channel/${channelId}/chat-room`);
         } else {
           console.log("setIsOpen");
           setIsOpen(true);

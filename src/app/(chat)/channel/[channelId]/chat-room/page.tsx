@@ -1,7 +1,7 @@
 "use client";
 
-import Chat from "../../components/Chat";
-import JoinedChannelList from "../../../../ui/Lists/JoinedChannelList";
+import ChatRoom from "../../../components/ChatRoom";
+import JoinedChannelList from "../../../../../ui/Lists/JoinedChannelList";
 import { useEffect, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { getChannels } from "@/utils/channel/getChannels";
@@ -19,7 +19,7 @@ export default function Page({ params }: { params: { channelId: number } }) {
 
   return (
     <GridType1
-      children={<Chat channelId={params.channelId} />}
+      children={<ChatRoom channelId={params.channelId} />}
       side={
         <Box w="full" px={1}>
           <Text

@@ -31,7 +31,7 @@ interface ChatProps {
   channelId: number; // 여기서는 channelId라는 이름의 문자열 속성을 예시로 들었습니다.
 }
 
-const Chat: React.FC<ChatProps> = ({ channelId }) => {
+const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
   const [userId, setUserId] = useState<number>(0); // [1
   const [channel, setChannel] = useState<{ [key: string]: any }>({});
   const [username, setUsername] = useState<string>("");
@@ -262,4 +262,4 @@ const Chat: React.FC<ChatProps> = ({ channelId }) => {
   );
 };
 
-export default Chat;
+export default ChatRoom;

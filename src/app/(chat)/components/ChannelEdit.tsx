@@ -16,7 +16,7 @@ import {
   Spacer,
   Button,
 } from "@chakra-ui/react";
-import { EChannelType } from "../types/EChannelType";
+import { EChannelType } from "../channel/types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { GoArrowLeft, GoTrash } from "react-icons/go";
@@ -151,7 +151,7 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
           icon={<GoArrowLeft />}
           aria-label="go back"
           onClick={() => {
-            router.push(`/channel/${channel.id}/chat`);
+            router.push(`/channel/${channel.id}/chat-room`);
           }}
         />
         <Text ml={1}>{channel.name}</Text>
