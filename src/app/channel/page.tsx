@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import GridType3 from "@/ui/Grid/GridType3";
 import ChannelList from "@/ui/Lists/ChannelList";
 import JoinedChannelList from "@/ui/Lists/JoinedChannelList";
 import { getChannels } from "@/utils/channel/getChannels";
 import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
 import { Box, Text } from "@chakra-ui/react";
+import GridType1 from "@/ui/Grid/GridType1";
 
 export default function Page() {
   const [channels, setChannels] = useState<any>([]);
@@ -23,7 +22,7 @@ export default function Page() {
   // };
 
   return (
-    <GridType3
+    <GridType1
       children={
         <ChannelList
           channels={channels}
@@ -31,8 +30,8 @@ export default function Page() {
           setJoinedChannels={setJoinedChannels}
         />
       }
-      children1={
-        <Box px={1}>
+      side={
+        <Box w="full" px={1}>
           <Text
             align="center"
             fontSize="14px"

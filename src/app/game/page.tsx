@@ -1,16 +1,28 @@
 "use client";
 
-import { HStack, Skeleton } from "@chakra-ui/react";
+import {
+  AbsoluteCenter,
+  Box,
+  Center,
+  Divider,
+  Flex,
+  HStack,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { useRouter } from "next/navigation";
 import GridType1 from "@/ui/Grid/GridType1";
-import GridType2 from "@/ui/Grid/GridType2";
-import GameUserCard from "./components/GameUserCard";
-import GameSettingCard from "./components/GameSettingCard";
-import { fetchServerResponse } from "next/dist/client/components/router-reducer/fetch-server-response";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
-import GameMatchCard from "./components/GameMatchCard";
+import { GoFlame, GoXCircle, GoZap } from "react-icons/go";
+import { Title } from "@/ui/Intro/Title";
+import GameUserCard from "./components/GameUserCard";
+import GameButton from "@/ui/Button/GameButton";
+import RankingModal from "./components/RankingModal";
+import HowToPlayModal from "./components/HowToPlayModal";
+import GameSettingModal from "./components/GameSettingModal";
+import TabType1 from "@/ui/Tab/TabType1";
 
 export default function Page({
   searchParams,
@@ -19,19 +31,28 @@ export default function Page({
     roomId?: string;
   };
 }) {
+  const [gameType, setGameType] = useState("normal");
   const [isMatching, setIsMatching] = useState(false);
   const [isMatched, setIsMatched] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [opponent, setOpponent] = useState<any>(null);
-  //const [matchingTime, setmatchingTime] = useState("00:00");
 
   const router = useRouter();
+
+  const handleStartMatch = () => {
+    const gameType = localStorage.getItem("gameType");
+
+    console.log("start match");
+    setIsMatching(true);
+    gameType === "normal"
+      ? socket.emit("normal_matching")
+      : socket.emit("ladder_matching");
+  };
 
   socket.on("match_found", (data: any) => {
     const { roomId, opponent } = data;
 
     console.log(opponent);
-
     setOpponent(opponent);
     setIsMatched(true);
     setTimeout(() => {
@@ -67,25 +88,94 @@ export default function Page({
       socket.removeAllListeners();
     };
   }, []);
+
   return (
-    <GridType1>
-      <HStack spacing={"20"} w="100%" h="100%">
-        {user ? (
-          <GameUserCard user={user} />
-        ) : (
-          <Skeleton w={"100%"} h={"100%"} />
-        )}
+    <GridType1 side={<TabType1 />}>
+      <Box w="full" px={8} py={4} alignItems="center" alignContent="center">
+        <Center my={16}>
+          <Flex direction="column">
+            <Title />
+          </Flex>
+        </Center>
+        <Flex direction="column" align="center" gap={3}>
+          {isMatching ? (
+            isMatched ? (
+              <></>
+            ) : (
+              <Stack spacing={3} mt={4}>
+                <GameButton
+                  text="Cancel Matching"
+                  leftIcon={<GoXCircle />}
+                  onClick={() => {
+                    socket.emit("cancel_matching");
+                    setIsMatching(false);
+                  }}
+                />
+              </Stack>
+            )
+          ) : (
+            <Stack spacing={3}>
+              <Box position="relative" my={4} alignItems="center">
+                <Divider borderColor="#A0A0A3" />
+                <AbsoluteCenter bg="#29292D" px={4}>
+                  <Text fontSize={20}>play</Text>
+                </AbsoluteCenter>
+              </Box>
+              <GameButton
+                text="Normal Game"
+                leftIcon={<GoZap />}
+                onClick={() => {
+                  setGameType("normal");
+                  localStorage.setItem("gameType", gameType);
+                  handleStartMatch();
+                }}
+              />
+              <GameButton
+                text="Ladder Game"
+                leftIcon={<GoFlame />}
+                onClick={() => {
+                  setGameType("ladder");
+                  localStorage.setItem("gameType", gameType);
+                  handleStartMatch();
+                }}
+              />
+              <Box position="relative" mt={8} mb={4} alignItems="center">
+                <Divider borderColor="#A0A0A3" />
+                <AbsoluteCenter bg="#29292D" px={4}>
+                  <Text fontSize={20}>utils</Text>
+                </AbsoluteCenter>
+              </Box>
+              <GameSettingModal />
+              <RankingModal />
+              <HowToPlayModal />
+            </Stack>
+          )}
+        </Flex>
 
         {isMatching ? (
-          isMatched ? (
-            <GameUserCard user={opponent} />
-          ) : (
-            <GameMatchCard setIsMatching={setIsMatching} />
-          )
+          <Box mt={12} border={"white 2px solid"} boxShadow={"7px 7px black"}>
+            <Flex direction="column">
+              <Box position="relative" p={8}>
+                <Divider borderColor="#A0A0A3" />
+                <AbsoluteCenter bg="#29292D" px={4}>
+                  <Text align="center" fontSize={20}>
+                    {gameType} game
+                  </Text>
+                </AbsoluteCenter>
+              </Box>
+              <Center>
+                <HStack spacing={10} mb={10}>
+                  <GameUserCard user={user} />
+                  <Text fontSize={30}>vs</Text>
+                  <GameUserCard user={isMatched ? opponent : null} />
+                </HStack>
+              </Center>
+            </Flex>
+          </Box>
         ) : (
-          <GameSettingCard setIsMatching={setIsMatching} />
+          <></>
         )}
-      </HStack>
+      </Box>
     </GridType1>
   );
 }

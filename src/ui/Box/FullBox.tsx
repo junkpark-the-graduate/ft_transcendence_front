@@ -6,7 +6,7 @@ export interface FullBoxProps extends BoxProps {
 
 export default function FullBox({ children, ...props }: FullBoxProps) {
   return (
-    <Box bg="none" w="100%" h="100%" px="50px" py="40px">
+    <Box textColor="white" w="100%" h="100%" px="20px" py="10px" {...props}>
       {children}
     </Box>
   );

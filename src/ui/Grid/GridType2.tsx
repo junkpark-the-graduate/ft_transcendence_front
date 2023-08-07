@@ -1,32 +1,31 @@
 import { Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 import FullBox from "../Box/FullBox";
+import { useState } from "react";
 
-export interface BaseGridProps extends GridProps {}
+export interface GridType2Props extends GridProps {
+  children: React.ReactNode;
+}
 
-export default function GridType2({ children, ...props }: BaseGridProps) {
+export default function GridType2({ children, ...props }: GridType2Props) {
+  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(
+    () => localStorage.getItem("isSideBarOpen") === "true" // Parse the value from localStorage as boolean
+  );
+
   return (
     <FullBox>
+      <NavBar />
       <Grid
-        gridTemplateRows={"repeat(16, 1fr)"}
         gridTemplateColumns={"repeat(3, 1fr)"}
+        w="full"
+        h="96%"
         bg="#29292D"
-        borderRadius={"8px"}
+        borderBottomRadius={"8px"}
         color="white"
         fontWeight="bold"
-        w="100%"
-        h="100%"
+        borderTop={"#414147 solid 2px"}
+        {...props}
       >
-        <GridItem
-          rowSpan={1}
-          colSpan={3}
-          pl={2}
-          pt={0}
-          borderBottom={"#414147 solid 2px"}
-          bg="none"
-        >
-          <NavBar />
-        </GridItem>
         <GridItem rowSpan={15} colSpan={3} bg="none" px={10} py={5}>
           {children}
         </GridItem>

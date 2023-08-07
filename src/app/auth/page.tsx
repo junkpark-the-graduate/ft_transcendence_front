@@ -32,7 +32,7 @@ export default function Page({
             router.push(`/auth/tfa-loading`);
           } else {
             Cookies.set("accessToken", json.accessToken);
-            router.push("/home");
+            router.push("/game");
           }
         } catch (error) {
           console.error("Failed to parse JSON response:", error);

@@ -3,12 +3,13 @@
 import Dashboard from "../../../ui/Dashboard/Dashboard";
 import GridType1 from "@/ui/Grid/GridType1";
 import MyDetail from "../../../ui/Dashboard/MyDetail";
-import { getMyData } from "@/utils/user/getMyData";
+import TabType1 from "@/ui/Tab/TabType1";
 
-export default function MyProfile() {
-  const myId: number | undefined = getMyData()?.id;
-
+export default async function MyProfile() {
   return (
-    <GridType1 children={<Dashboard userData={<MyDetail />} id={myId} />} />
+    <GridType1
+      children={<Dashboard userData={<MyDetail />} />}
+      side={<TabType1 />}
+    />
   );
 }

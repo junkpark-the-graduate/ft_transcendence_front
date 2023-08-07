@@ -114,18 +114,18 @@ export default function CreateChannelModal({
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent mt={40} p={2} bg="#29292D" {...props}>
-          <ModalHeader mx={4} py={3}>
+        <ModalContent mt={40} p={3} bg="#29292D" {...props}>
+          <ModalHeader mx={1} py={3}>
             Create New Channel
           </ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton size="sm" m={1} />
           <ModalBody
             mx={4}
-            py={3}
+            py={6}
             borderTop={"#A0A0A3 1px solid"}
             borderBottom={"#A0A0A3 1px solid"}
           >
-            <Box marginBottom={5}>
+            <Box marginBottom={3}>
               <FormControl>
                 <FormLabel>Channel Name</FormLabel>
                 <BaseInput
@@ -157,6 +157,7 @@ export default function CreateChannelModal({
                 </RadioGroup>
                 {channelType === EChannelType[EChannelType.protected] && (
                   <FormControl mt={4}>
+                    <Divider my={4} borderColor="#A0A0A3" />
                     <FormLabel>Channel Password</FormLabel>
                     <BaseInput
                       placeholder="Enter channel password"
