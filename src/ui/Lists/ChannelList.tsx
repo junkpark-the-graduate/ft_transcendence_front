@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  useToast,
-  Avatar,
-  HStack,
-  Badge,
-} from "@chakra-ui/react";
+import { Box, Flex, Text, useToast, Avatar, HStack } from "@chakra-ui/react";
 import { EChannelType } from "../../app/channel/types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";

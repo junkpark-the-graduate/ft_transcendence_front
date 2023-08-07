@@ -62,23 +62,23 @@ function BlockingListItem({ myId, userId }: { myId: number; userId: number }) {
 
 export default function BlockingList() {
   const myData = getMyData();
-  const myId = myData?.id ?? 0; // Default to 0 if `id` is undefined or null
+  const myId = myData?.id ?? 0;
   const blockings = getBlockingList(myId);
 
   return (
     <Box>
       {blockings && blockings.length > 0 ? (
         <Stack spacing={2}>
-          {blockings.map((blockings) => (
+          {blockings.map((blockings, index, array) => (
             <React.Fragment key={blockings}>
               <BlockingListItem myId={myId} userId={Number(blockings)} />
-              <Divider borderColor="#414147" />
+              {index !== array.length - 1 && <Divider borderColor="#414147" />}
             </React.Fragment>
           ))}
         </Stack>
       ) : (
         <Center>
-          <Text fontSize="16px" fontWeight="bold" color="gray" mb={2}>
+          <Text fontSize="16px" fontWeight="bold" color="gray">
             empty
           </Text>
         </Center>

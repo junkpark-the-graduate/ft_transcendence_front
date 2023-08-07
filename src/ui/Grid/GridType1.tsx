@@ -1,7 +1,6 @@
 import { Box, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import NavBar from "@/ui/NavBar/NavBar";
 import FullBox from "../Box/FullBox";
-import { useState } from "react";
 
 export interface GridType1Props extends GridProps {
   children: React.ReactNode;

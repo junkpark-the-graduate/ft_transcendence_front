@@ -10,7 +10,6 @@ import {
   MenuList,
   Spacer,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";

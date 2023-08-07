@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Flex, Input, useToast } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { SearchIcon } from "@chakra-ui/icons";

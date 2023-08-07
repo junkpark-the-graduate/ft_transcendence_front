@@ -3,8 +3,6 @@ import {
   Box,
   Flex,
   HStack,
-  Icon,
-  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,12 +11,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  UnorderedList,
   useDisclosure,
 } from "@chakra-ui/react";
 import BaseButton from "../Button/Button";
 import { ChannelData } from "../Lists/DummyChannelList";
-import { GoStar } from "react-icons/go";
 
 export interface ChannelModalProps {
   channelData: ChannelData;

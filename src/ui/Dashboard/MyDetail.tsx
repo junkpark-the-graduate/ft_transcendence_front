@@ -1,18 +1,10 @@
-import {
-  Box,
-  Flex,
-  Avatar,
-  Heading,
-  Text,
-  GridItem,
-  Grid,
-  Center,
-} from "@chakra-ui/react";
+import { Box, Flex, Avatar, Text, GridItem, Grid } from "@chakra-ui/react";
 import LinkButton from "@/ui/Button/LinkButton";
-import { GoCircleSlash, GoGear, GoTrash } from "react-icons/go";
+import { GoGear, GoTrash } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import { getMyData } from "@/utils/user/getMyData";
 import { EUserStatus } from "../../app/user/types/EUserStatus";
+import BlockedUsersModal from "@/app/user/components/BlockedUsersModal";
 import { UserData } from "./Dashboard";
 
 export default function MyDetail({ userData }: { userData: UserData }) {
@@ -53,11 +45,7 @@ export default function MyDetail({ userData }: { userData: UserData }) {
                 text="edit profile"
                 goTo="/user/edit"
               />
-              <LinkButton
-                icon={<GoCircleSlash />}
-                text="blocked users"
-                goTo="/user/block"
-              />
+              <BlockedUsersModal />
               <BaseButton
                 my={1}
                 size="sm"
