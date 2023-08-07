@@ -91,7 +91,7 @@ export default function Page({
 
   return (
     <GridType1 side={<TabType1 />}>
-      <Box w="full" px={8} py={4} alignItems="center" alignContent="center">
+      <Box px={4} py={4} alignItems="center" alignContent="center">
         <Center my={16}>
           <Flex direction="column">
             <Title />

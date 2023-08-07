@@ -27,7 +27,7 @@ export default function GameUserResult({
 }) {
   return (
     <Box>
-      <Box py={1} bg="#171717" borderRadius={5}>
+      <Box px={3} py={1} bg="#171717" borderRadius={5}>
         <Center>
           <Flex alignItems="center" gap={4}>
             <BaseHeading
@@ -39,27 +39,39 @@ export default function GameUserResult({
           </Flex>
         </Center>
       </Box>
-      <Flex px={2}>
-        <Avatar my={4} size="lg" src={image} border={"white 3px solid"} />
-        <StatGroup alignContent="center">
+      <Center>
+        <Flex px={2}>
           {mmrChange === 0 ? (
-            ""
+            <Flex>
+              <Avatar
+                alignSelf="center"
+                my={4}
+                size="lg"
+                src={image}
+                border={"white 3px solid"}
+              />
+            </Flex>
           ) : (
-            <Box w="100%" ml={6}>
-              <Stat textAlign="center">
-                <Flex alignItems="baseline" gap={2}>
-                  <StatNumber>{mmr}</StatNumber>
-                  <StatLabel>pt</StatLabel>
-                </Flex>
-                <StatHelpText>
-                  <StatArrow type={isWin ? "increase" : "decrease"} />
-                  {mmrChange}
-                </StatHelpText>
-              </Stat>
-            </Box>
+            <Flex>
+              <Avatar my={4} size="lg" src={image} border={"white 3px solid"} />
+              <StatGroup alignContent="center">
+                <Box w="100%" ml={6}>
+                  <Stat textAlign="center">
+                    <Flex alignItems="baseline" gap={2}>
+                      <StatNumber>{mmr}</StatNumber>
+                      <StatLabel>pt</StatLabel>
+                    </Flex>
+                    <StatHelpText>
+                      <StatArrow type={isWin ? "increase" : "decrease"} />
+                      {mmrChange}
+                    </StatHelpText>
+                  </Stat>
+                </Box>
+              </StatGroup>
+            </Flex>
           )}
-        </StatGroup>
-      </Flex>
+        </Flex>
+      </Center>
     </Box>
   );
 }

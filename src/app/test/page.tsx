@@ -9,12 +9,16 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
-import GridType1 from "@/ui/Grid/GridType1";
 import GameUserResult from "../game/components/GameUserResult";
 import { Title } from "@/ui/Intro/Title";
-import TabType1 from "@/ui/Tab/TabType1";
+import GridType2 from "@/ui/Grid/GridType2";
+import GameButton from "@/ui/Button/GameButton";
+import { useRouter } from "next/navigation";
+import { GoHome } from "react-icons/go";
+import GridType1 from "@/ui/Grid/GridType1";
 
 export default function page() {
+  const router = useRouter();
   const gameResult = {
     score: "10 : 7",
     playTime: 100,
@@ -34,14 +38,24 @@ export default function page() {
     },
   };
   return (
-    <GridType1 side={<TabType1 />}>
+    <GridType1 side={<></>}>
       <Box px={4} py={4} alignItems="center" alignContent="center">
         <Center mt={10}>
           <Flex direction="column">
             <Title />
+            <GameButton
+              alignSelf="center"
+              leftIcon={<GoHome />}
+              w="40%"
+              text="back to main"
+              onClick={() => {
+                router.push(`/game`);
+              }}
+              mt={8}
+            />
             <Box
               alignSelf="center"
-              mt={16}
+              mt={8}
               w="100%"
               pb={6}
               border={"white 2px solid"}
