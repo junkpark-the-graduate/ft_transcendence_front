@@ -33,6 +33,7 @@ import { getUserStatus } from "@/utils/user/getUserStatus";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import ProfileModal from "../Modal/ProfileModal";
 import Cookies from "js-cookie";
+import DmIconButton from "../Button/DmIconButton";
 
 function FollowingListItem({
   myId,
@@ -67,37 +68,6 @@ function FollowingListItem({
     await unblock(myId, userId, () => setIsBlocking(false));
   };
 
-  const createDm = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/direct?memberId=${userId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    return res;
-  };
-
-  const handleConnectDm = async () => {
-    const resCreateDm = await createDm();
-    const resCreateDmJson = await resCreateDm.json();
-
-    if (resCreateDm.status < 300) {
-      router.push(`/channel/${resCreateDmJson.id}/chat-room`);
-    } else {
-      toast({
-        title: resCreateDmJson.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  };
-
   return (
     <Flex align="center" my={1}>
       <Avatar size="sm" src={userData?.image} name={userData?.name} mr={6}>
@@ -111,12 +81,7 @@ function FollowingListItem({
       <ProfileModal userData={userData} />
       <Spacer />
       <Flex>
-        <BaseIconButton
-          size="sm"
-          icon={<GoComment />}
-          aria-label="dm"
-          onClick={handleConnectDm}
-        />
+        <DmIconButton userId={userId} icon={<GoComment />} aria-label="dm" />
         <BaseIconButton
           size="sm"
           icon={<GoPerson />}

@@ -18,6 +18,7 @@ import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { GoComment } from "react-icons/go";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import DmBaseButton from "../Button/DmBaseButton";
 
 export default function UserDetail({ userId }: { userId: number }) {
   const accessToken = Cookies.get("accessToken");
@@ -26,36 +27,36 @@ export default function UserDetail({ userId }: { userId: number }) {
   const router = useRouter();
   const toast = useToast();
 
-  const createDm = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/direct?memberId=${userId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  // const createDm = async () => {
+  //   const res = await fetch(
+  //     `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/direct?memberId=${userId}`,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
 
-    return res;
-  };
+  //   return res;
+  // };
 
-  const handleConnectDm = async () => {
-    const resCreateDm = await createDm();
-    const resCreateDmJson = await resCreateDm.json();
+  // const handleConnectDm = async () => {
+  //   const resCreateDm = await createDm();
+  //   const resCreateDmJson = await resCreateDm.json();
 
-    if (resCreateDm.status < 300) {
-      router.push(`/channel/${resCreateDmJson.id}/chat-room`);
-    } else {
-      toast({
-        title: resCreateDmJson.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  };
+  //   if (resCreateDm.status < 300) {
+  //     router.push(`/channel/${resCreateDmJson.id}/chat-room`);
+  //   } else {
+  //     toast({
+  //       title: resCreateDmJson.message,
+  //       status: "error",
+  //       duration: 9000,
+  //       isClosable: true,
+  //     });
+  //   }
+  // };
 
   return (
     <Box position="relative" px={5} pt={4} borderRadius={8} mb={2}>
@@ -79,15 +80,9 @@ export default function UserDetail({ userId }: { userId: number }) {
             </Text>
           </GridItem>
           <GridItem colSpan={1}>
-            <Flex flexDirection={"column"} pt={3}>
+            <Flex flexDirection={"column"} pt={3} gap={2}>
               <FollowButton myId={myId} userId={userId} icon={true} />
-              <BaseButton
-                my={2}
-                size="sm"
-                leftIcon={<GoComment />}
-                text="message"
-                onClick={handleConnectDm}
-              />
+              <DmBaseButton userId={userId} icon={true} />
               <BlockButton myId={myId} userId={userId} icon={true} />
             </Flex>
           </GridItem>

@@ -24,6 +24,7 @@ import FollowButton from "../Button/FollowButton";
 import { useRouter } from "next/navigation";
 import UserRank from "../Dashboard/Rank";
 import getRank from "@/utils/user/getRank";
+import DmBaseButton from "../Button/DmBaseButton";
 
 export interface ProfileModalProps {
   userData: UserData | null | undefined;
@@ -95,15 +96,7 @@ export default function ProfileModal({
               icon={false}
             />
             <BlockButton myId={myData?.id} userId={userData?.id} icon={false} />
-            <BaseButton
-              flex="1"
-              mr={2}
-              my={2}
-              size="sm"
-              fontSize={14}
-              text="message"
-              onClick={() => {}}
-            />
+            <DmBaseButton userId={userData?.id} icon={false} />
             <BaseButton
               flex="1"
               fontSize={14}
