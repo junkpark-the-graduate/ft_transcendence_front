@@ -96,27 +96,20 @@ export default function UserStats({ id }: { id: number }) {
         mb={4}
         borderTopRadius={8}
       >
-        <HStack>
-          <BaseHeading text="Stats" />
-          <BaseHeading
-            size={"xs"}
-            color={"#A0A0A3"}
-            text="Last 10 records for each"
-          />
-        </HStack>
+        <BaseHeading text="Stats" />
       </Box>
       <Stack spacing={2}>
         <Flex direction={"row"}>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="orange" mb={3} fontSize="12px">
+              <Badge colorScheme="orange" mb={4} fontSize="12px">
                 total game
               </Badge>
               <CircularProgress
                 size="60px"
                 value={totalGameStat.winRate}
                 color="orange"
-                thickness="12px"
+                thickness="10px"
                 mb={3}
               >
                 <CircularProgressLabel>
@@ -131,14 +124,14 @@ export default function UserStats({ id }: { id: number }) {
           </Box>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="teal" mb={3} fontSize="12px">
+              <Badge colorScheme="teal" mb={4} fontSize="12px">
                 normal game
               </Badge>
               <CircularProgress
                 size="60px"
                 value={normalGameStat.winRate}
                 color="teal"
-                thickness="12px"
+                thickness="10px"
                 mb={3}
               >
                 <CircularProgressLabel>
@@ -153,14 +146,14 @@ export default function UserStats({ id }: { id: number }) {
           </Box>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="teal" mb={3} fontSize="12px">
+              <Badge colorScheme="teal" mb={4} fontSize="12px">
                 ladder game
               </Badge>
               <CircularProgress
                 size="60px"
                 value={ladderGameStat.winRate}
                 color="teal"
-                thickness="12px"
+                thickness="10px"
                 mb={3}
               >
                 <CircularProgressLabel>

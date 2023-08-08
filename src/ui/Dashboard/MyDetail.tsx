@@ -22,6 +22,7 @@ export default function MyDetail({ userData }: { userData: UserData }) {
               size="2xl"
               name={userData?.name}
               src={userData?.image}
+              border="white 5px solid"
             />
           </GridItem>
           <GridItem colSpan={2}>

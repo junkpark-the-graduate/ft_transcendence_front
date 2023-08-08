@@ -21,7 +21,12 @@ export default function UserDetail({ userData }: { userData: UserData }) {
           gridTemplateColumns={"repeat(4, 1fr)"}
         >
           <GridItem colSpan={1}>
-            <Avatar size="2xl" name={userData?.name} src={userData?.image} />
+            <Avatar
+              size="2xl"
+              border="white 5px solid"
+              name={userData?.name}
+              src={userData?.image}
+            />
           </GridItem>
           <GridItem colSpan={2}>
             <Text fontSize={28} mb={2}>

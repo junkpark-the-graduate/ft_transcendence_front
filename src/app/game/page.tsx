@@ -19,7 +19,7 @@ import { GoFlame, GoXCircle, GoZap } from "react-icons/go";
 import { Title } from "@/ui/Intro/Title";
 import GameUserCard from "./components/GameUserCard";
 import GameButton from "@/ui/Button/GameButton";
-import RankingModal from "./components/RankingModal";
+import RankingModal from "../../ui/Modal/RankingModal";
 import HowToPlayModal from "./components/HowToPlayModal";
 import GameSettingModal from "./components/GameSettingModal";
 import TabType1 from "@/ui/Tab/TabType1";
@@ -130,7 +130,7 @@ export default function Page({
                 </AbsoluteCenter>
               </Box>
               <GameSettingModal />
-              <RankingModal />
+              <RankingModal mode={true} />
               <HowToPlayModal />
             </Stack>
           )}

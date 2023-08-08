@@ -20,7 +20,7 @@ import {
 import { useRouter } from "next/navigation";
 import { GoTrophy } from "react-icons/go";
 
-export default function RankingModal() {
+export default function RankingModal({ mode }: { mode: boolean }) {
   const ranking = getRank();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -36,12 +36,17 @@ export default function RankingModal() {
 
   return (
     <Box>
-      <GameButton
-        leftIcon={<GoTrophy />}
-        onClick={onOpen}
-        text="Weekly Ranking"
-      />
-
+      {mode ? (
+        <GameButton
+          leftIcon={<GoTrophy />}
+          onClick={onOpen}
+          text="Weekly Ranking"
+        />
+      ) : (
+        <Box as="button" alignItems="center" onClick={onOpen}>
+          ↗
+        </Box>
+      )}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent mt={40} p={3} bg="#29292D">
