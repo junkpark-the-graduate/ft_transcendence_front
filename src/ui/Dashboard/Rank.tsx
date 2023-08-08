@@ -1,6 +1,7 @@
 import BaseHeading from "@/ui/Typo/Heading";
 import getRank from "@/utils/user/getRank";
 import { Box, Flex, Text } from "@chakra-ui/react";
+import RankingModal from "../Modal/RankingModal";
 
 export interface RankProps {
   id: number | undefined;
@@ -31,11 +32,14 @@ export default function UserRank({ id }: RankProps) {
               <Text fontSize="24px" px={2} bg="gray" borderRadius="8px">
                 {userRank}
               </Text>
-              <Text ml={2}>th</Text>
+              <Text mx={2}>th</Text>
             </Flex>
-            <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
-              in {ranking?.length} players
-            </Text>
+            <Flex align="baseline">
+              <Text textColor="#A0A0A3" fontSize="14px" mt={2} mr={2}>
+                in {ranking?.length} players
+              </Text>
+              <RankingModal mode={false} />
+            </Flex>
           </Flex>
         </Box>
       </Flex>

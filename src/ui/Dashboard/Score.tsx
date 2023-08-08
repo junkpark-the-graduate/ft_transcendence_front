@@ -1,4 +1,5 @@
 import BaseHeading from "@/ui/Typo/Heading";
+import getRank from "@/utils/user/getRank";
 import { UserData } from "@/utils/user/getUserData";
 import { Box, Flex, Text } from "@chakra-ui/react";
 
@@ -7,6 +8,8 @@ export interface ScoreProps {
 }
 
 export default function UserScore({ userData }: { userData: UserData }) {
+  const topScore: number | undefined = getRank()?.at(0)?.mmr;
+
   return (
     <Box flex={1} px={2} pb={4} bg="#414147" borderRadius={8} mr={3}>
       <Box
@@ -29,7 +32,7 @@ export default function UserScore({ userData }: { userData: UserData }) {
               <Text ml={2}>pt</Text>
             </Flex>
             <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
-              top ??.?? %
+              1st place: {topScore} pt
             </Text>
           </Flex>
         </Box>
