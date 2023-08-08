@@ -31,23 +31,13 @@ export default function Page({
     roomId?: string;
   };
 }) {
-  const [gameType, setGameType] = useState("normal");
+  const [gameType, setGameType] = useState<"normal" | "ladder">("normal");
   const [isMatching, setIsMatching] = useState(false);
   const [isMatched, setIsMatched] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [opponent, setOpponent] = useState<any>(null);
 
   const router = useRouter();
-
-  const handleStartMatch = () => {
-    const gameType = localStorage.getItem("gameType");
-
-    console.log("start match");
-    setIsMatching(true);
-    gameType === "normal"
-      ? socket.emit("normal_matching")
-      : socket.emit("ladder_matching");
-  };
 
   socket.on("match_found", (data: any) => {
     const { roomId, opponent } = data;
@@ -119,18 +109,18 @@ export default function Page({
                 text="Normal Game"
                 leftIcon={<GoZap />}
                 onClick={() => {
+                  setIsMatching(true);
                   setGameType("normal");
-                  localStorage.setItem("gameType", gameType);
-                  handleStartMatch();
+                  socket.emit("normal_matching");
                 }}
               />
               <GameButton
                 text="Ladder Game"
                 leftIcon={<GoFlame />}
                 onClick={() => {
+                  setIsMatching(true);
                   setGameType("ladder");
-                  localStorage.setItem("gameType", gameType);
-                  handleStartMatch();
+                  socket.emit("ladder_matching");
                 }}
               />
               <Box position="relative" mt={8} mb={4} alignItems="center">

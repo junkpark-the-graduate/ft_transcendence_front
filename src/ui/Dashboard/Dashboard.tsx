@@ -9,8 +9,6 @@ import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import { useEffect, useState } from "react";
 import MyDetail from "./MyDetail";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
-import { getUserData } from "@/utils/user/getUserData";
-import { getMyData } from "@/utils/user/getMyData";
 import UserDetail from "./UserDetail";
 
 export interface DashBoardProps {
@@ -37,7 +35,7 @@ export interface UserData {
 }
 
 export default function Dashboard({ userId }: { userId: number | null }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [matchHistory, setMatchHistory] = useState<Array<MatchHistory>>([]);
 
   useEffect(() => {
@@ -87,11 +85,11 @@ export default function Dashboard({ userId }: { userId: number | null }) {
           <Divider borderColor="#A0A0A3" my={6} />
           <Box flex={5}>
             <Flex>
-              <UserRank id={user["id"]} />
+              <UserRank id={user.id} />
               <UserScore userData={user} />
-              <UserStats id={user["id"]} />
+              <UserStats id={user.id} />
             </Flex>
-            <UserMatchHistory id={user["id"]} matchHistory={matchHistory} />
+            <UserMatchHistory id={user.id} matchHistory={matchHistory} />
           </Box>
         </Flex>
       ) : (
