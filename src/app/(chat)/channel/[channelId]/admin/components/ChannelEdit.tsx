@@ -16,7 +16,7 @@ import {
   Spacer,
   Button,
 } from "@chakra-ui/react";
-import { EChannelType } from "../channel/types/EChannelType";
+import { EChannelType } from "../../../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { GoArrowLeft, GoTrash } from "react-icons/go";

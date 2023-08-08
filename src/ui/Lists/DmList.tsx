@@ -22,8 +22,10 @@ import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
 import ChannelBadge from "../Badges/ChannelBadge";
 import { GoSync } from "react-icons/go";
 import { set } from "react-hook-form";
+import { getMyData } from "@/utils/user/getMyData";
 
 const DmList: React.FC = () => {
+  const myData = getMyData();
   const router = useRouter();
   const toast = useToast();
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -113,27 +115,32 @@ const DmList: React.FC = () => {
           </Flex>
         </Box>
         <Flex direction="column" gap={3}>
-          {channels.map((channel: any) => (
-            <ButtonBox
-              key={channel.id}
-              onClick={() => onClickChannel(channel.id)}
-              textAlign={"left"}
-              position={"relative"}
-            >
-              <Flex direction="row" gap={5} alignItems="center">
-                <Avatar size="sm" name={channel.name} />
-                <Text fontSize="lg">{channel.name}</Text>
-                <Box marginLeft="auto">
-                  <HStack spacing={3}>
-                    <ChannelBadge type={Number(channel.type)} />
-                    <Text fontSize="sm">
-                      {formatCreatedAt(channel.createdAt)}
-                    </Text>
-                  </HStack>
-                </Box>
-              </Flex>
-            </ButtonBox>
-          ))}
+          {channels.map((channel: any) => {
+            const directChannelName = channel.channelMembers.find(
+              (member: any) => member.user.id !== Number(myData?.id)
+            ).user.name;
+            return (
+              <ButtonBox
+                key={channel.id}
+                onClick={() => onClickChannel(channel.id)}
+                textAlign={"left"}
+                position={"relative"}
+              >
+                <Flex direction="row" gap={5} alignItems="center">
+                  <Avatar size="sm" name={directChannelName} />
+                  <Text fontSize="lg">{directChannelName}</Text>
+                  <Box marginLeft="auto">
+                    <HStack spacing={3}>
+                      <ChannelBadge type={Number(channel.type)} />
+                      <Text fontSize="sm">
+                        {formatCreatedAt(channel.createdAt)}
+                      </Text>
+                    </HStack>
+                  </Box>
+                </Flex>
+              </ButtonBox>
+            );
+          })}
         </Flex>
       </Box>
     </>

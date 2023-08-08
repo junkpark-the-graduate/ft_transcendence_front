@@ -6,20 +6,29 @@ import { useEffect, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { getChannels } from "@/utils/channel/getChannels";
 import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
+import { getChannelMembers } from "@/utils/channel/getChannelMembers";
 import GridType1 from "@/ui/Grid/GridType1";
+import ChannelMemberList from "@/app/(chat)/components/ChannelMemberList";
 
 export default function Page({ params }: { params: { channelId: number } }) {
   const [channels, setChannels] = useState<any>([]);
-  const [joinedChannels, setJoinedChannels] = useState<any>([]);
+  const [channelMembers, setChannelMembers] = useState<any>([]);
 
   useEffect(() => {
     getChannels(setChannels);
-    getJoinedChannels(setJoinedChannels);
+    getChannelMembers(params.channelId).then((res) => {
+      setChannelMembers(res);
+    });
   }, []);
 
   return (
     <GridType1
-      children={<ChatRoom channelId={params.channelId} />}
+      children={
+        <ChatRoom
+          channelId={params.channelId}
+          channelMembers={channelMembers}
+        />
+      }
       side={
         <Box w="full" px={1}>
           <Text
@@ -30,13 +39,10 @@ export default function Page({ params }: { params: { channelId: number } }) {
             py={2}
             mb={4}
           >
-            Joined Channel List
+            Channel Member List
           </Text>
           <Box px={3}>
-            <JoinedChannelList
-              joinedChannels={joinedChannels}
-              setJoinedChannels={setJoinedChannels}
-            />
+            <ChannelMemberList channelMembers={channelMembers} />
           </Box>
         </Box>
       }

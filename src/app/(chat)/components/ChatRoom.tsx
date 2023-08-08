@@ -19,6 +19,7 @@ import BaseIconButton from "@/ui/Button/IconButton";
 import { GoArrowLeft, GoGear, GoPaperAirplane } from "react-icons/go";
 import ChannelBadge from "@/ui/Badges/ChannelBadge";
 import ChatScrollContainer from "./ChatScrollContainer";
+import { EChannelType } from "../channel/types/EChannelType";
 
 type ChatType = {
   socketId: string;
@@ -29,9 +30,10 @@ type ChatType = {
 
 interface ChatProps {
   channelId: number; // 여기서는 channelId라는 이름의 문자열 속성을 예시로 들었습니다.
+  channelMembers: any[];
 }
 
-const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
+const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
   const [userId, setUserId] = useState<number>(0); // [1
   const [channel, setChannel] = useState<{ [key: string]: any }>({});
   const [username, setUsername] = useState<string>("");
@@ -41,6 +43,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
   const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
   const router = useRouter();
   const toast = useToast();
+  const [directChannelName, setDirectChannelName] = useState<string>("");
 
   async function checkChannelAdmin() {
     const res = await fetch(
@@ -83,23 +86,18 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
   };
 
   async function getChannel() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const resJson = await res.json();
-      console.log("resJson", resJson);
-      setChannel(resJson);
-    } catch (error) {
-      console.log("error", error);
-    }
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const resJson = await res.json();
+    setChannel(resJson);
   }
 
   useEffect(() => {
@@ -107,6 +105,13 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
     getUserInfo();
     getChannel();
   }, []);
+
+  useEffect(() => {
+    setDirectChannelName(() => {
+      const member = channelMembers.find((member) => member.user.id !== userId);
+      return member?.user.name;
+    });
+  }, [channelMembers, userId]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -185,15 +190,22 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
               router.back();
             }}
           />
-          <Text ml={1}>{channel.name}</Text>
+          {EChannelType[Number(channel.type)] !== "direct" && (
+            <Text ml={1}>{channel.name}</Text>
+          )}
+          {EChannelType[Number(channel.type)] === "direct" && (
+            <Text ml={1}>{directChannelName} 님과의 채팅방</Text>
+          )}
           <Spacer />
-          <BaseIconButton
-            mr={2}
-            size="sm"
-            icon={<GoGear />}
-            aria-label="setting"
-            onClick={goToAdminPageHandler}
-          />
+          {EChannelType[Number(channel.type)] !== "direct" && (
+            <BaseIconButton
+              mr={2}
+              size="sm"
+              icon={<GoGear />}
+              aria-label="setting"
+              onClick={goToAdminPageHandler}
+            />
+          )}
           <ChannelBadge type={Number(channel.type)} />
         </Flex>
       </Box>
@@ -202,7 +214,10 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId }) => {
         {chatList.map((chatItem, index) => {
           const isCurrentUser = chatItem.userId === userId;
           return (
-            <Stack align={isCurrentUser ? "flex-end" : "flex-start"}>
+            <Stack
+              key={index}
+              align={isCurrentUser ? "flex-end" : "flex-start"}
+            >
               <Box
                 key={index}
                 maxW="70%"

@@ -20,8 +20,6 @@ export default function BlockButton({
   const router = useRouter();
   const toast = useToast();
 
-  console.log("~~~~~~~~~~`", icon);
-
   useEffect(() => {}, []);
 
   const handleConnectDm = async () => {
