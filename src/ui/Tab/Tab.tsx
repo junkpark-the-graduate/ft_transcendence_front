@@ -32,7 +32,7 @@ export default function BaseTabs({
           }}
           fontSize={14}
         >
-          friends
+          followings
         </Tab>
         <Tab
           borderRadius={"6px"}

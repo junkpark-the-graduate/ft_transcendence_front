@@ -1,5 +1,6 @@
 "use client";
 
+import getRank from "@/utils/user/getRank";
 import {
   Text,
   Divider,
@@ -11,13 +12,17 @@ import {
 } from "@chakra-ui/react";
 
 type User = {
+  id: number;
   name: string;
   image: string;
   mmr: number;
 };
 
 export default function GameUserCard({ user }: { user: User | null }) {
-  const userRank = 1;
+  const ranking = getRank();
+  const numericId = Number(user?.id);
+  const index: number = ranking?.findIndex((obj) => obj.id === numericId) ?? -1;
+  const userRank = index !== -1 ? index + 1 : undefined;
 
   return (
     <Box bg="#414147" borderRadius="8px" px={8} py={6}>
