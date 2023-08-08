@@ -84,7 +84,7 @@ export default function Dashboard({ userId }: { userId: number | null }) {
             <MyDetail userData={user} />
           )}
           <Divider borderColor="#A0A0A3" my={6} />
-          <Box flex={7}>
+          <Box flex={5}>
             <Flex>
               <UserRank id={user["id"]} />
               <UserScore userData={user} />

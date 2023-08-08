@@ -1,16 +1,6 @@
 import BaseHeading from "@/ui/Typo/Heading";
-import { useEffect, useState } from "react";
-import { UserData, getUserData } from "@/utils/user/getUserData";
-import {
-  Box,
-  Flex,
-  Stack,
-  Stat,
-  StatArrow,
-  StatHelpText,
-  StatNumber,
-  Text,
-} from "@chakra-ui/react";
+import { UserData } from "@/utils/user/getUserData";
+import { Box, Flex, Text } from "@chakra-ui/react";
 
 export interface ScoreProps {
   id: number | undefined;
@@ -29,30 +19,21 @@ export default function UserScore({ userData }: { userData: UserData }) {
       >
         <BaseHeading text="Score" />
       </Box>
-      <Stack spacing={2}>
-        <Flex direction={"row"}>
-          <Box flex={1} pt={2}>
-            <Flex direction="column" alignItems="center">
-              <Stat>
-                <StatHelpText>
-                  <StatArrow type="increase" />-
-                </StatHelpText>
-                <StatNumber fontSize={"22px"}>
-                  <Flex>
-                    <Text px={2} bg="gray" borderRadius="8px">
-                      {userData?.mmr}
-                    </Text>
-                    <Text ml={2}>pt</Text>
-                  </Flex>
-                </StatNumber>
-              </Stat>
-              <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
-                top ??.?? %
+      <Flex direction={"row"} mt={12}>
+        <Box flex={1}>
+          <Flex direction="column" alignItems="center">
+            <Flex align="baseline">
+              <Text fontSize="24px" px={2} bg="gray" borderRadius="8px">
+                {userData?.mmr}
               </Text>
+              <Text ml={2}>pt</Text>
             </Flex>
-          </Box>
-        </Flex>
-      </Stack>
+            <Text textColor="#A0A0A3" fontSize="14px" mt={2}>
+              top ??.?? %
+            </Text>
+          </Flex>
+        </Box>
+      </Flex>
     </Box>
   );
 }
