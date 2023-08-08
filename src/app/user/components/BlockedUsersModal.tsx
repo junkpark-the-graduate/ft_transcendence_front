@@ -34,7 +34,14 @@ export default function BlockedUsersModal() {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent mt={40} p={4} bg="#29292D">
+        <ModalContent
+          mt={40}
+          p={4}
+          border="#A0A0A3 3px solid"
+          boxShadow={"7px 7px black"}
+          borderRadius="0"
+          bg="#29292D"
+        >
           <ModalHeader>
             <BaseHeading text="blocked users" />
           </ModalHeader>
@@ -42,23 +49,12 @@ export default function BlockedUsersModal() {
           <ModalBody
             mx={4}
             py={4}
+            mb={6}
             borderTop={"#A0A0A3 1px solid"}
             borderBottom={"#A0A0A3 1px solid"}
           >
             <BlockingList />
           </ModalBody>
-          <ModalFooter>
-            <Flex>
-              <Spacer />
-              <BaseButton
-                text="돌아가기"
-                mr={2}
-                onClick={() => {
-                  router.push(`/user/profile`);
-                }}
-              />
-            </Flex>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>

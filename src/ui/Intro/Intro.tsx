@@ -28,7 +28,7 @@ export const Intro = ({ children }: IntroProps) => {
       </Center>
       <Flex>
         <Box position="absolute" bottom="40px">
-          ⓒ copyright blablabla
+          ⓒ 2023 junkpark-the-graduate
         </Box>
         <Spacer />
         <Box
