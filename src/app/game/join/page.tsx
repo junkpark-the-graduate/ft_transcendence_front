@@ -84,16 +84,16 @@ export default function Page({ searchParams }: { searchParams: any }) {
               </Box>
               <Flex mt={1} direction="column" align="center" gap={2}>
                 <Text fontSize={16} bg="#171717" px={4} borderRadius={5}>
-                  Game Type:
+                  {`Game Type: ${gameResult.gameType}`}
                 </Text>
                 <Text fontSize={16} bg="#171717" px={4} borderRadius={5}>
-                  Winner:
+                  {`Winner:${gameResult.gameWinner}`}
                 </Text>
                 <Text fontSize={16} bg="#171717" px={4} borderRadius={5}>
                   Score: {gameResult.score}
                 </Text>
                 <Text fontSize={16} bg="#171717" px={4} borderRadius={5}>
-                  Play Time: {`${gameResult.playTime}s`}
+                  Play Time: {`${gameResult.playTime / 1000}s`}
                 </Text>
               </Flex>
               <Box position="relative" px={8} py={6}>
