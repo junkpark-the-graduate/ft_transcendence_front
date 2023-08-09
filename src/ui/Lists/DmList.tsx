@@ -23,6 +23,7 @@ import ChannelBadge from "../Badges/ChannelBadge";
 import { GoSync } from "react-icons/go";
 import { set } from "react-hook-form";
 import { getMyData } from "@/utils/user/getMyData";
+import { getUserData } from "@/utils/user/getUserData";
 
 const DmList: React.FC = () => {
   const myData = getMyData();
@@ -48,8 +49,38 @@ const DmList: React.FC = () => {
     return resJson;
   }
 
+  async function getUserDataById(userId: number) {
+    const accessToken = Cookies.get("accessToken");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const resJson = await res.json();
+    return resJson;
+  }
+
   useEffect(() => {
-    getDirectChannels();
+    getDirectChannels().then(async (res) => {
+      const updatedChannels = await Promise.all(
+        res.map(async (channel: any) => {
+          const userids = channel.name.split("-");
+          const directChannelUserId = userids.find(
+            (id: any) => id !== myData?.id
+          );
+          const directChannelUser = await getUserDataById(directChannelUserId);
+          channel.name = directChannelUser?.name;
+          return channel;
+        })
+      );
+
+      setChannels(updatedChannels);
+    });
   }, []);
 
   async function connectJoinedChannel(channelId: number) {
@@ -116,9 +147,6 @@ const DmList: React.FC = () => {
         </Box>
         <Flex direction="column" gap={3}>
           {channels.map((channel: any) => {
-            const directChannelName = channel.channelMembers.find(
-              (member: any) => member.user.id !== Number(myData?.id)
-            ).user.name;
             return (
               <ButtonBox
                 key={channel.id}
@@ -127,8 +155,8 @@ const DmList: React.FC = () => {
                 position={"relative"}
               >
                 <Flex direction="row" gap={5} alignItems="center">
-                  <Avatar size="sm" name={directChannelName} />
-                  <Text fontSize="lg">{directChannelName}</Text>
+                  <Avatar size="sm" name={channel.name} />
+                  <Text fontSize="lg">{channel.name}</Text>
                   <Box marginLeft="auto">
                     <HStack spacing={3}>
                       <ChannelBadge type={Number(channel.type)} />

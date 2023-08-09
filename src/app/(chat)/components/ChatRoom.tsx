@@ -16,7 +16,12 @@ import {
 import Cookies from "js-cookie";
 import ChatInput from "@/ui/Input/ChatInput";
 import BaseIconButton from "@/ui/Button/IconButton";
-import { GoArrowLeft, GoGear, GoPaperAirplane } from "react-icons/go";
+import {
+  GoArrowLeft,
+  GoGear,
+  GoPaperAirplane,
+  GoSignOut,
+} from "react-icons/go";
 import ChannelBadge from "@/ui/Badges/ChannelBadge";
 import ChatScrollContainer from "./ChatScrollContainer";
 import { EChannelType } from "../channel/types/EChannelType";
@@ -97,20 +102,44 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
       }
     );
     const resJson = await res.json();
-    setChannel(resJson);
+    return resJson;
+  }
+
+  async function getUserDataById(userId: number) {
+    const accessToken = Cookies.get("accessToken");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const resJson = await res.json();
+    return resJson;
   }
 
   useEffect(() => {
     if (!accessToken) router.push("/");
     getUserInfo();
-    getChannel();
+    getChannel().then(async (res) => {
+      setChannel(res);
+      const userids = res.name.split("-");
+      const directChannelUserId = userids.find((id: any) => id !== userId);
+      const directChannelUser = await getUserDataById(directChannelUserId);
+      console.log(directChannelUser);
+      setDirectChannelName(directChannelUser?.name);
+    });
   }, []);
 
   useEffect(() => {
-    setDirectChannelName(() => {
-      const member = channelMembers.find((member) => member.user.id !== userId);
-      return member?.user.name;
-    });
+    if (
+      EChannelType[Number(channel.type)] !== "direct" ||
+      channelMembers.length === 0
+    )
+      return;
   }, [channelMembers, userId]);
 
   useEffect(() => {
@@ -178,6 +207,38 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
     }
   };
 
+  const exitChannel = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  };
+
+  const exitChannelHandler = async () => {
+    const confirm = window.confirm("정말로 채널에서 나가시겠습니까?");
+    if (!confirm) return;
+
+    const res = await exitChannel();
+    const resJson = await res.json();
+    console.log(resJson);
+
+    if (res.status > 299) {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else router.back();
+  };
+
   return (
     <Box w="full" h="full" borderRadius="8px" px={2} py={1}>
       <Box>
@@ -196,6 +257,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
           {EChannelType[Number(channel.type)] === "direct" && (
             <Text ml={1}>{directChannelName} 님과의 채팅방</Text>
           )}
+          <ChannelBadge type={Number(channel.type)} ml={2} />
           <Spacer />
           {EChannelType[Number(channel.type)] !== "direct" && (
             <BaseIconButton
@@ -206,7 +268,13 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
               onClick={goToAdminPageHandler}
             />
           )}
-          <ChannelBadge type={Number(channel.type)} />
+          <BaseIconButton
+            mr={2}
+            size="sm"
+            icon={<GoSignOut />}
+            aria-label="exitChannel"
+            onClick={exitChannelHandler}
+          />
         </Flex>
       </Box>
       <Divider mt={2} mb={3} />
