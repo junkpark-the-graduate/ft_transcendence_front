@@ -51,39 +51,39 @@ export default function UserStats({ id }: { id: number }) {
     useState<GameStat>(defaultGameStat);
 
   useEffect(() => {
-    fetchAsyncToBackEnd(
-      `/game/by-ftid/${id}?limit=1000&offset=0&gameType=all`
-    ).then((res) => {
-      res.json().then((totalRecords: GameRecord[]) => {
-        const getWinGame = (records: GameRecord[]) => {
-          return records.filter((record) => {
-            const player: string =
-              id === record.player1Id ? "player1" : "player2";
-            return record.gameResult === player ? true : false;
-          }).length;
-        };
+    fetchAsyncToBackEnd(`/game/by-ftid/${id}?limit=1000&offset=0`).then(
+      (res) => {
+        res.json().then((totalRecords: GameRecord[]) => {
+          const getWinGame = (records: GameRecord[]) => {
+            return records.filter((record) => {
+              const player: string =
+                id === record.player1Id ? "player1" : "player2";
+              return record.gameResult === player ? true : false;
+            }).length;
+          };
 
-        const getGameStat = (records: GameRecord[]) => {
-          const totalGame = records.length;
-          if (!totalGame) return defaultGameStat;
-          const winGame = getWinGame(records);
-          const winRate = Math.round((winGame / totalGame) * 100);
-          return { totalGame, winGame, winRate };
-        };
+          const getGameStat = (records: GameRecord[]) => {
+            const totalGame = records.length;
+            if (!totalGame) return defaultGameStat;
+            const winGame = getWinGame(records);
+            const winRate = Math.round((winGame / totalGame) * 100);
+            return { totalGame, winGame, winRate };
+          };
 
-        setTotalGameStat(getGameStat(totalRecords));
-        setNormalGameStat(
-          getGameStat(
-            totalRecords.filter((record) => record.gameType === "normal")
-          )
-        );
-        setLadderGameStat(
-          getGameStat(
-            totalRecords.filter((record) => record.gameType === "ladder")
-          )
-        );
-      });
-    });
+          setTotalGameStat(getGameStat(totalRecords));
+          setNormalGameStat(
+            getGameStat(
+              totalRecords.filter((record) => record.gameType === "normal")
+            )
+          );
+          setLadderGameStat(
+            getGameStat(
+              totalRecords.filter((record) => record.gameType === "ladder")
+            )
+          );
+        });
+      }
+    );
   }, []);
 
   return (
