@@ -42,10 +42,6 @@ export default function Page({ searchParams }: { searchParams: any }) {
     socket.once("game_over", (data: any) => {
       const { gameResult } = data;
       setGameResult(gameResult);
-
-      setTimeout(() => {
-        router.push(`/game`);
-      }, 10000);
     });
     return () => {
       socket.removeAllListeners();
