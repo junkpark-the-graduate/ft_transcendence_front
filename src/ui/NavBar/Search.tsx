@@ -26,20 +26,7 @@ export default function Search() {
 
   const handleSearchIconClick = async () => {
     if (searchId.trim() !== "") {
-      try {
-        const res = await fetch(`http://127.0.0.1:3001/user/${searchId}`, {
-          method: "Get",
-        });
-        const userData = await res.json();
-        router.push(`/user/profile/${searchId}`);
-      } catch (err) {
-        toast({
-          title: `fail to find user id: ${searchId}`,
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
-      }
+      router.push(`/user/profile/${searchId}`);
     }
   };
 

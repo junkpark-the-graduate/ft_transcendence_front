@@ -3,28 +3,33 @@ import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 import { GameRecord, GameStat } from "@/ui/Dashboard/Stats";
 import { set } from "react-hook-form";
 
-export default function getGameStats(userId: number) {
-  const [gameStats, setGameStats] = useState<{
-    total: GameStat;
-    normal: GameStat;
-    ladder: GameStat;
-  }>();
-  const [isLoading, setIsLoading] = useState(true);
-
+export default function getGameStats(userId: number | undefined) {
   const defaultGameStat: GameStat = {
     totalGame: 0,
     winGame: 0,
     winRate: 0,
   };
 
-  const getGameStats = async (userId: number) => {
+  const [gameStats, setGameStats] = useState<{
+    total: GameStat;
+    normal: GameStat;
+    ladder: GameStat;
+  }>({
+    total: defaultGameStat,
+    normal: defaultGameStat,
+    ladder: defaultGameStat,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getGameStats = async () => {
+    if (!userId) return;
+
     const response = await fetchAsyncToBackEnd(
       `/game/by-ftid/${userId}?limit=1000&offset=0`
     );
 
     if (response.ok) {
       const gameRecords: GameRecord[] = await response.json();
-      console.log(gameRecords);
 
       setGameStats({
         total: getGameStat(gameRecords),
@@ -57,7 +62,7 @@ export default function getGameStats(userId: number) {
   };
 
   useEffect(() => {
-    getGameStats(userId);
+    getGameStats();
   }, [userId]);
 
   return isLoading ? null : gameStats;

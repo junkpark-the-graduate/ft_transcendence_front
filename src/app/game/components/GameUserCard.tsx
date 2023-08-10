@@ -1,7 +1,7 @@
 "use client";
 
 import getGameStats from "@/utils/user/getGameStats";
-import getRank from "@/utils/user/getRank";
+import getRankById from "@/utils/user/getRankById";
 import {
   Text,
   Divider,
@@ -20,11 +20,8 @@ type User = {
 };
 
 export default function GameUserCard({ user }: { user: User | null }) {
-  const gameStats = user ? getGameStats(user.id) : null;
-  const ranking = getRank();
-  const numericId = Number(user?.id);
-  const index: number = ranking?.findIndex((obj) => obj.id === numericId) ?? -1;
-  const userRank = index !== -1 ? index + 1 : undefined;
+  const userRank = getRankById(user?.id);
+  const gameStats = getGameStats(user?.id);
 
   return (
     <Box bg="#414147" borderRadius="8px" px={8} py={6}>

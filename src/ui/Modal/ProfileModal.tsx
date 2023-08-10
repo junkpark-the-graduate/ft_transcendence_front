@@ -23,6 +23,7 @@ import BlockButton from "../Button/BlockButton";
 import FollowButton from "../Button/FollowButton";
 import { useRouter } from "next/navigation";
 import getRankById from "@/utils/user/getRankById";
+import getGameStats from "@/utils/user/getGameStats";
 
 export interface ProfileModalProps {
   userData: UserData | null | undefined;
@@ -36,6 +37,7 @@ export default function ProfileModal({
   const myData = getMyData();
   const router = useRouter();
   const rank = getRankById(userData?.id);
+  const gameStats = getGameStats(userData?.id);
 
   return (
     <Box>
@@ -90,7 +92,11 @@ export default function ProfileModal({
                     score: {userData?.mmr}
                   </StackItem>
                   <StackItem borderRadius="8px" px={2} mx={1} bg="#191919">
-                    stats: ? W ? L
+                    {`stats: ${gameStats?.total.winGame} W ${
+                      gameStats
+                        ? gameStats.total.totalGame - gameStats.total.winGame
+                        : 0
+                    } L`}
                   </StackItem>
                 </Flex>
               </HStack>
