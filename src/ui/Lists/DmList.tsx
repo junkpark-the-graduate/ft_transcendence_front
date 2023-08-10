@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -24,13 +24,26 @@ import { GoSync } from "react-icons/go";
 import { set } from "react-hook-form";
 import { getMyData } from "@/utils/user/getMyData";
 import { getUserData } from "@/utils/user/getUserData";
+import { get } from "http";
 
 const DmList: React.FC = () => {
-  const myData = getMyData();
+  const accessToken = Cookies.get("accessToken");
+  const [user, setUser] = useState<{ [key: string]: any }>({});
   const router = useRouter();
   const toast = useToast();
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [channels, setChannels] = useState<any[]>([]);
+
+  const getUser = async () => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.json();
+  };
 
   async function getDirectChannels() {
     const accessToken = Cookies.get("accessToken");
@@ -66,22 +79,30 @@ const DmList: React.FC = () => {
   }
 
   useEffect(() => {
+    if (!accessToken) router.push("/");
+    getUser().then((res) => {
+      setUser(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
     getDirectChannels().then(async (res) => {
       const updatedChannels = await Promise.all(
         res.map(async (channel: any) => {
-          const userids = channel.name.split("-");
-          const directChannelUserId = userids.find(
-            (id: any) => id !== myData?.id
-          );
+          const userIds: number[] = channel.name
+            .split("-")
+            .map((id: string) => parseInt(id, 10)); // 문자열을 숫자로 변환
+          const directChannelUserId = userIds.find((id) => id !== user.id);
+          if (!directChannelUserId) return channel;
           const directChannelUser = await getUserDataById(directChannelUserId);
           channel.name = directChannelUser?.name;
           return channel;
         })
       );
-
       setChannels(updatedChannels);
     });
-  }, []);
+  }, [user]);
 
   async function connectJoinedChannel(channelId: number) {
     const accessToken = Cookies.get("accessToken");
@@ -99,9 +120,6 @@ const DmList: React.FC = () => {
   }
 
   async function onClickChannel(channelId: number) {
-    // "channels" 배열에서 해당 channelId에 맞는 채널을 찾습니다.
-    const channel = channels.find((c) => c.id === channelId);
-    // setSelectedChannelId(channelId);
     const res = await connectJoinedChannel(channelId);
     const resJson = await res.json();
 

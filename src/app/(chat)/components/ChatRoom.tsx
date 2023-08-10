@@ -39,7 +39,7 @@ interface ChatProps {
 }
 
 const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
-  const [userId, setUserId] = useState<number>(0); // [1
+  const [user, setUser] = useState<{ [key: string]: any }>({});
   const [channel, setChannel] = useState<{ [key: string]: any }>({});
   const [username, setUsername] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -50,26 +50,10 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
   const toast = useToast();
   const [directChannelName, setDirectChannelName] = useState<string>("");
 
-  async function checkChannelAdmin() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/admin`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return res;
-  }
-
   async function goToAdminPageHandler() {
-    const res = await checkChannelAdmin();
-    const resJson = await res.json();
-    if (res.status > 299) {
+    if (user.id !== channel.ownerId) {
       toast({
-        title: resJson.message,
+        title: "You are not the owner of this channel",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -77,7 +61,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
     } else router.push(`/channel/${channelId}/admin`);
   }
 
-  const getUserInfo = async () => {
+  const getUser = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`, {
       method: "GET",
       headers: {
@@ -85,9 +69,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    const data = await res.json();
-    setUserId(data.id);
-    setUsername(data.name);
+    return res.json();
   };
 
   async function getChannel() {
@@ -123,24 +105,25 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
 
   useEffect(() => {
     if (!accessToken) router.push("/");
-    getUserInfo();
-    getChannel().then(async (res) => {
+    getUser().then((res) => {
+      setUser(res);
+    });
+
+    getChannel().then((res) => {
       setChannel(res);
-      const userids = res.name.split("-");
-      const directChannelUserId = userids.find((id: any) => id !== userId);
-      const directChannelUser = await getUserDataById(directChannelUserId);
-      console.log(directChannelUser);
-      setDirectChannelName(directChannelUser?.name);
     });
   }, []);
 
   useEffect(() => {
-    if (
-      EChannelType[Number(channel.type)] !== "direct" ||
-      channelMembers.length === 0
-    )
-      return;
-  }, [channelMembers, userId]);
+    if (!channelMembers || !user) return;
+    if (EChannelType[Number(channel.type)] === "direct") {
+      const userids = channel.name.split("-").map((id: string) => Number(id));
+      const directChannelUserId = userids.find((id: any) => id !== user.id);
+      getUserDataById(directChannelUserId).then((res) => {
+        setDirectChannelName(res.name);
+      });
+    }
+  }, [channel, user]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -200,7 +183,12 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
     if (message && socket) {
-      const chatData = { username, message, socketId: socket.id, userId };
+      const chatData = {
+        username,
+        message,
+        socketId: socket.id,
+        userId: user.id,
+      };
       socket.emit("submit_chat", chatData);
       setChatList((oldChatList) => [...oldChatList, chatData]);
       setMessage("");
@@ -280,7 +268,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
       <Divider mt={2} mb={3} />
       <ChatScrollContainer>
         {chatList.map((chatItem, index) => {
-          const isCurrentUser = chatItem.userId === userId;
+          const isCurrentUser = chatItem.userId === user.id;
           return (
             <Stack
               key={index}
