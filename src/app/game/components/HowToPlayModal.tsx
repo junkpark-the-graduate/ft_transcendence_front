@@ -20,7 +20,14 @@ export default function HowToPlayModal() {
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
-        <ModalContent mt={40} p={3} bg="#29292D">
+        <ModalContent
+          mt={40}
+          p={4}
+          border="#A0A0A3 3px solid"
+          boxShadow={"7px 7px black"}
+          borderRadius="0"
+          bg="#29292D"
+        >
           <ModalHeader pt={1} pb={3} textAlign="center">
             How to Pong
           </ModalHeader>

@@ -47,7 +47,15 @@ export default function ProfileModal({
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent mt={40} p={4} bg="#29292D" {...props}>
+        <ModalContent
+          mt={40}
+          p={4}
+          border="#A0A0A3 3px solid"
+          boxShadow={"7px 7px black"}
+          borderRadius="0"
+          bg="#29292D"
+          {...props}
+        >
           <ModalHeader>
             <Flex>
               <Avatar size="xl" name={userData?.name} src={userData?.image} />
@@ -114,7 +122,7 @@ export default function ProfileModal({
               flex="1"
               fontSize={14}
               size="sm"
-              text="detail"
+              text="visit"
               onClick={() => {
                 router.push(`/user/profile/${userData?.id}`);
               }}

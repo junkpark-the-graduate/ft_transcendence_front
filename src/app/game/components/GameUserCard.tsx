@@ -13,10 +13,10 @@ import {
 } from "@chakra-ui/react";
 
 type User = {
+  id: number;
   name: string;
   image: string;
   mmr: number;
-  id: number;
 };
 
 export default function GameUserCard({ user }: { user: User | null }) {
