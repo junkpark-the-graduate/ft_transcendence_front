@@ -316,7 +316,10 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
         {chatList.map((chatItem, index) => {
           const isCurrentUser = chatItem.user.id === user.id;
           return (
-            <Stack align={isCurrentUser ? "flex-end" : "flex-start"}>
+            <Stack
+              key={index}
+              align={isCurrentUser ? "flex-end" : "flex-start"}
+            >
               <Box
                 maxW="70%"
                 backgroundColor={isCurrentUser ? "teal" : "gray.300"}
