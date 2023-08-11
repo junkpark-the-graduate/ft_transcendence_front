@@ -224,7 +224,11 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
         duration: 9000,
         isClosable: true,
       });
-    } else router.back();
+    } else {
+      const route =
+        EChannelType[Number(channel.type)] === "direct" ? "/dm" : "/channel";
+      router.push(route);
+    }
   };
 
   return (

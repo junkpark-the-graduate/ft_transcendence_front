@@ -10,10 +10,18 @@ import {
   Avatar,
   Stack,
   HStack,
+  Spacer,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
-import { GoCircleSlash } from "react-icons/go";
+import {
+  GoCircleSlash,
+  GoMute,
+  GoSquirrel,
+  GoStar,
+  GoStarFill,
+} from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
+import { set } from "react-hook-form";
 
 interface Props {
   channelId: number;
@@ -91,6 +99,48 @@ const ChannelMemberlList: React.FC<Props> = ({
     }
   }
 
+  async function adminMember(memberId: number) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/admin?memberId=${memberId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  }
+
+  async function adminMemberHandler(member: any) {
+    const res = await adminMember(member.user.id);
+    const resJson = await res.json();
+    const message = member.isAdmin ? "관리자 해제" : "관리자 등록";
+
+    if (res.status > 299) {
+      toast({
+        title: resJson.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: message,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+    members.map((m) => {
+      if (m.user.id === member.user.id) {
+        m.isAdmin = !m.isAdmin;
+      }
+    });
+    setMembers([...members]);
+  }
+
   return (
     <Box>
       <Stack spacing={2} mt={4} px={2}>
@@ -104,14 +154,22 @@ const ChannelMemberlList: React.FC<Props> = ({
                 mr={4}
               />
               <Text fontSize="md">{member.user.name}</Text>
+              <Spacer />
               {channel.ownerId !== member.user.id && (
-                <Box marginLeft={"auto"}>
+                <Box>
                   <BaseIconButton
-                    aria-label="ban"
+                    aria-label="admin"
+                    icon={member.isAdmin ? <GoStarFill /> : <GoStar />}
+                    size="xs"
+                    ml={2}
+                    onClick={() => adminMemberHandler(member)}
+                  />
+                  <BaseIconButton
+                    aria-label="admin"
                     icon={<GoCircleSlash />}
                     size="xs"
                     ml={2}
-                    onClick={() => banMemberHandler(member)}
+                    onClick={() => adminMemberHandler(member)}
                   />
                 </Box>
               )}
