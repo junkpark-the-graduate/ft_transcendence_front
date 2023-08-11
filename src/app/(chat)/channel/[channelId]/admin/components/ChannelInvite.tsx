@@ -16,7 +16,6 @@ import { useInView } from "react-intersection-observer";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { useRouter } from "next/navigation";
 import ChannelInput from "@/ui/Input/ChannelInput";
-import { set } from "react-hook-form";
 
 interface User {
   id: number;
@@ -43,7 +42,6 @@ const ChannelInvite: React.FC<Props> = ({
   setMembers,
   bannedMembers,
 }) => {
-  const router = useRouter();
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
   const [page, setPage] = useState<number>(1);

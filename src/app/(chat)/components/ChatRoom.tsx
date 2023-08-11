@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import {
@@ -25,30 +25,39 @@ import {
 import ChannelBadge from "@/ui/Badges/ChannelBadge";
 import ChatScrollContainer from "./ChatScrollContainer";
 import { EChannelType } from "../channel/types/EChannelType";
+import { useInView } from "react-intersection-observer";
+import { get } from "http";
 
-type ChatType = {
-  socketId: string;
-  username: string;
+interface IUser {
+  id: number;
+  image: string;
+  name: string;
+}
+
+interface IChat {
   message: string;
-  userId: number;
-};
+  user: IUser;
+}
 
-interface ChatProps {
+interface IChatProps {
   channelId: number; // 여기서는 channelId라는 이름의 문자열 속성을 예시로 들었습니다.
   channelMembers: any[];
 }
 
-const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
+const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   const [user, setUser] = useState<{ [key: string]: any }>({});
   const [channel, setChannel] = useState<{ [key: string]: any }>({});
-  const [username, setUsername] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const [chatList, setChatList] = useState<ChatType[]>([]);
+  const [chatList, setChatList] = useState<IChat[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
   const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
   const router = useRouter();
   const toast = useToast();
   const [directChannelName, setDirectChannelName] = useState<string>("");
+  const [chatHistoryPage, setChatHistoryPage] = useState<number>(1);
+  const [ref, inView] = useInView({
+    threshold: 0.5,
+  });
 
   async function goToAdminPageHandler() {
     if (user.id !== channel.ownerId) {
@@ -145,7 +154,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
       console.log(`${username} connected`);
     });
 
-    socketIo.on("new_chat", (data: ChatType) => {
+    socketIo.on("new_chat", (data: IChat) => {
       console.log("new_chat data!!!!!", data);
       setChatList((oldChatList) => [...oldChatList, data]);
     });
@@ -174,6 +183,14 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
       });
     });
 
+    socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
+      console.log("get_chat_history data!!!!!", chatHistory.chatHistory);
+      setChatList((oldChatList) => [
+        ...chatHistory.chatHistory,
+        ...oldChatList,
+      ]);
+    });
+
     return () => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
@@ -184,11 +201,14 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
     event.preventDefault();
     if (message && socket) {
       const chatData = {
-        username,
         message,
-        socketId: socket.id,
-        userId: user.id,
+        user: {
+          id: user.id,
+          name: user.name,
+          image: user.image,
+        },
       };
+
       socket.emit("submit_chat", chatData);
       setChatList((oldChatList) => [...oldChatList, chatData]);
       setMessage("");
@@ -231,8 +251,8 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
     }
   };
 
-  return (
-    <Box w="full" h="full" borderRadius="8px" px={2} py={1}>
+  const ChatHeader = () => {
+    return (
       <Box>
         <Flex alignItems="center">
           <BaseIconButton
@@ -269,17 +289,35 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
           />
         </Flex>
       </Box>
+    );
+  };
+
+  useEffect(() => {
+    if (inView) {
+      setChatHistoryPage((prev) => prev + 1);
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    getChatHistoryHandler();
+  }, [chatHistoryPage]);
+
+  const getChatHistoryHandler = async () => {
+    if (!socket) return;
+    socket.emit("get_chat_history", { page: chatHistoryPage });
+  };
+
+  return (
+    <Box w="full" h="full" borderRadius="8px" px={2} py={1}>
+      <ChatHeader />
       <Divider mt={2} mb={3} />
       <ChatScrollContainer>
+        <div ref={ref}></div>
         {chatList.map((chatItem, index) => {
-          const isCurrentUser = chatItem.userId === user.id;
+          const isCurrentUser = chatItem.user.id === user.id;
           return (
-            <Stack
-              key={index}
-              align={isCurrentUser ? "flex-end" : "flex-start"}
-            >
+            <Stack align={isCurrentUser ? "flex-end" : "flex-start"}>
               <Box
-                key={index}
                 maxW="70%"
                 backgroundColor={isCurrentUser ? "teal" : "gray.300"}
                 borderRadius="md"
@@ -296,7 +334,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
                 )}
                 {!isCurrentUser && (
                   <Text fontSize="md" color={"black"}>
-                    {chatItem.username} : {chatItem.message}
+                    {chatItem.user.name} : {chatItem.message}
                   </Text>
                 )}
               </Box>
@@ -333,6 +371,7 @@ const ChatRoom: React.FC<ChatProps> = ({ channelId, channelMembers }) => {
           </Flex>
         </form>
       </Box>
+      <Button onClick={() => getChatHistoryHandler()}>get chat</Button>
     </Box>
   );
 };
