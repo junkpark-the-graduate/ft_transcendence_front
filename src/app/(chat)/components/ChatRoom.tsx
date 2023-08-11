@@ -26,7 +26,6 @@ import ChannelBadge from "@/ui/Badges/ChannelBadge";
 import ChatScrollContainer from "./ChatScrollContainer";
 import { EChannelType } from "../channel/types/EChannelType";
 import { useInView } from "react-intersection-observer";
-import { get } from "http";
 
 interface IUser {
   id: number;

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Box, BoxProps } from "@chakra-ui/react";
+import { set } from "react-hook-form";
 
 interface ChatScrollContainerProps extends BoxProps {
   children: React.ReactNode;
@@ -13,19 +14,10 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
 }) => {
   const outerDiv = useRef<HTMLDivElement>(document.createElement("div"));
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
+  const previousScrollHeight = useRef<number>(0);
+  const previousScrollTop = useRef<number>(0);
+  const [loadingCount, setLoadingCount] = useState<number>(0);
 
-  // start the container at the bottom
-  useEffect(() => {
-    const outerHeight = outerDiv.current.clientHeight;
-    const innerHeight = outerDiv.current.scrollHeight;
-
-    outerDiv.current.scrollTo({
-      top: innerHeight - outerHeight,
-      left: 0,
-    });
-  }, []);
-
-  // scroll smoothly on change of children
   useEffect(() => {
     if (autoScroll) {
       const outerHeight = outerDiv.current.clientHeight;
@@ -39,7 +31,6 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
     }
   }, [children, autoScroll]);
 
-  // Detect when user scrolls up and disable autoScroll
   useEffect(() => {
     const handleScroll = () => {
       const outerHeight = outerDiv.current.clientHeight;
@@ -60,6 +51,21 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
         outerDiv.current.removeEventListener("scroll", handleScroll);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    if (loadingCount < 11) {
+      const diff = outerDiv.current.scrollHeight - previousScrollHeight.current;
+      outerDiv.current.scrollTop = previousScrollTop.current + diff;
+    } else {
+      outerDiv.current.scrollTop = 200;
+    }
+    setLoadingCount((prev) => prev + 1);
+  }, [children]);
+
+  useEffect(() => {
+    previousScrollHeight.current = outerDiv.current.scrollHeight;
+    previousScrollTop.current = outerDiv.current.scrollTop;
   }, []);
 
   return (
