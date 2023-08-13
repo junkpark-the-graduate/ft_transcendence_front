@@ -47,6 +47,8 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   const [user, setUser] = useState<{ [key: string]: any }>({});
   const [channel, setChannel] = useState<{ [key: string]: any }>({});
   const [message, setMessage] = useState<string>("");
+  const [newChat, setNewChat] = useState<IChat | null>(null);
+  const [newChatHistory, setNewChatHistory] = useState<IChat[]>([]);
   const [chatList, setChatList] = useState<IChat[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
   const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
@@ -152,7 +154,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     });
 
     getBlockingUserList().then((res: any) => {
-      console.log("get blocking - set blocking");
       setBlockingUserList(res);
     });
   }, []);
@@ -218,6 +219,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     });
 
     socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
+      setNewChatHistory(chatHistory.chatHistory);
       setChatList((prev) => [
         ...filterBlockingUserMessage(chatHistory.chatHistory),
         ...prev,
@@ -252,7 +254,8 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
       };
 
       socket.emit("submit_chat", chatData);
-      setChatList((oldChatList) => [...oldChatList, chatData]);
+      setNewChat(chatData);
+      setChatList((prev: IChat[]) => [...prev, chatData]);
       setMessage("");
     }
   };
@@ -337,7 +340,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     <Box w="full" h="full" borderRadius="8px" px={2} py={1}>
       <ChatHeader />
       <Divider mt={2} mb={3} />
-      <ChatScrollContainer>
+      <ChatScrollContainer newChat={newChat} newChatHistory={newChatHistory}>
         <div ref={ref}></div>
         {chatList.map((chatItem, index) => {
           const isCurrentUser = chatItem.user.id === user.id;
@@ -371,35 +374,36 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
           );
         })}
       </ChatScrollContainer>
-      <Box>
-        <form onSubmit={submitChat}>
-          <Divider my={3} />
-          <Flex flexDirection="row">
-            <ChatInput
-              mr={2}
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter your message"
-            />
-            <Button
-              px={6}
-              type="submit"
-              textColor="white"
-              bg="#191919"
-              _hover={{
-                background: "#191919",
-              }}
-              _focus={{
-                background: "#191919",
-              }}
-              leftIcon={<GoPaperAirplane />}
-            >
-              Send
-            </Button>
-          </Flex>
-        </form>
-      </Box>
+      <Divider my={3} />
+      <form onSubmit={submitChat}>
+        <Flex flexDirection="row">
+          <ChatInput
+            mr={2}
+            type="text"
+            value={message}
+            onChange={(e) => {
+              e.preventDefault();
+              setMessage(e.target.value);
+            }}
+            placeholder="Enter your message"
+          />
+          <Button
+            px={6}
+            type="submit"
+            textColor="white"
+            bg="#191919"
+            _hover={{
+              background: "#191919",
+            }}
+            _focus={{
+              background: "#191919",
+            }}
+            leftIcon={<GoPaperAirplane />}
+          >
+            Send
+          </Button>
+        </Flex>
+      </form>
     </Box>
   );
 };

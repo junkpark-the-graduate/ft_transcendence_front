@@ -2,14 +2,28 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Box, BoxProps } from "@chakra-ui/react";
-import { set } from "react-hook-form";
+
+interface IUser {
+  id: number;
+  image: string;
+  name: string;
+}
+
+interface IChat {
+  message: string;
+  user: IUser;
+}
 
 interface ChatScrollContainerProps extends BoxProps {
   children: React.ReactNode;
+  newChat: IChat | null;
+  newChatHistory: IChat[];
 }
 
 const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
   children,
+  newChat,
+  newChatHistory,
   ...props
 }) => {
   const outerDiv = useRef<HTMLDivElement>(document.createElement("div"));
@@ -17,6 +31,9 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
   const previousScrollHeight = useRef<number>(0);
   const previousScrollTop = useRef<number>(0);
   const [loadingCount, setLoadingCount] = useState<number>(0);
+  const [prevChildrenLength, setPrevChildrenLength] = useState(
+    React.Children.count(children)
+  );
 
   useEffect(() => {
     if (autoScroll) {
@@ -54,19 +71,37 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
   }, []);
 
   useEffect(() => {
-    if (loadingCount < 11) {
-      const diff = outerDiv.current.scrollHeight - previousScrollHeight.current;
-      outerDiv.current.scrollTop = previousScrollTop.current + diff;
-    } else {
-      outerDiv.current.scrollTop = 200;
+    const currentChildrenLength = React.Children.count(children);
+
+    if (currentChildrenLength !== prevChildrenLength) {
+      console.log("loadingCount", loadingCount);
+
+      // 로딩 초기
+      if (loadingCount === 0) {
+        outerDiv.current.scrollTop = outerDiv.current.scrollHeight;
+      }
+      // 새로운 채팅 기록이 없을 때
+      else if (newChatHistory.length == 0) {
+        const diff =
+          outerDiv.current.scrollHeight - previousScrollHeight.current;
+        outerDiv.current.scrollTop = previousScrollTop.current + diff;
+      }
+      // 새로운 채팅 기록이 있을 때
+      else {
+        outerDiv.current.scrollTop = 200;
+      }
+
+      setLoadingCount((prev) => prev + 1);
     }
-    setLoadingCount((prev) => prev + 1);
-  }, [children]);
+
+    setPrevChildrenLength(currentChildrenLength);
+  }, [newChatHistory]);
 
   useEffect(() => {
-    previousScrollHeight.current = outerDiv.current.scrollHeight;
-    previousScrollTop.current = outerDiv.current.scrollTop;
-  }, []);
+    if (newChat !== null) {
+      outerDiv.current.scrollTop = outerDiv.current.scrollHeight;
+    }
+  }, [newChat]);
 
   return (
     <Box
