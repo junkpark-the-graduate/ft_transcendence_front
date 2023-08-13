@@ -58,7 +58,6 @@ export default function BlockButton({
         flex="1"
         fontSize={14}
         mr={2}
-        my={2}
         size="sm"
         text="message"
         onClick={handleConnectDm}

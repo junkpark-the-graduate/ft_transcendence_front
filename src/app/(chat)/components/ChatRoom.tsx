@@ -26,6 +26,8 @@ import ChannelBadge from "@/ui/Badges/ChannelBadge";
 import ChatScrollContainer from "./ChatScrollContainer";
 import { EChannelType } from "../channel/types/EChannelType";
 import { useInView } from "react-intersection-observer";
+import ChatModal from "@/ui/Modal/ChatModal";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface IUser {
   id: number;
@@ -39,7 +41,7 @@ interface IChat {
 }
 
 interface IChatProps {
-  channelId: number; // 여기서는 channelId라는 이름의 문자열 속성을 예시로 들었습니다.
+  channelId: number;
   channelMembers: any[];
 }
 
@@ -51,7 +53,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   const [newChatHistory, setNewChatHistory] = useState<IChat[]>([]);
   const [chatList, setChatList] = useState<IChat[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const accessToken = Cookies.get("accessToken"); // get the accessToken from the cookie
+  const accessToken = Cookies.get("accessToken");
   const router = useRouter();
   const toast = useToast();
   const [directChannelName, setDirectChannelName] = useState<string>("");
@@ -60,20 +62,29 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     threshold: 0.5,
   });
   const [blockingUserList, setBlockingUserList] = useState<any[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   async function getBlockingUserList() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/block/userid`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd("/block/userid");
+    return await res.json();
+  }
+
+  const getUser = async () => {
+    const res = await fetchAsyncToBackEnd("/user");
+    return await res.json();
+  };
+
+  async function getChannel() {
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`);
     const resJson = await res.json();
+    console.log(resJson);
     return resJson;
+  }
+
+  async function getUserDataById(userId: number) {
+    const res = await fetchAsyncToBackEnd(`/user/${userId}`);
+    return await res.json();
   }
 
   function filterBlockingUserMessage(chatList: IChat[]) {
@@ -98,48 +109,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
         isClosable: true,
       });
     } else router.push(`/channel/${channelId}/admin`);
-  }
-
-  const getUser = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/user`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    return res.json();
-  };
-
-  async function getChannel() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const resJson = await res.json();
-    return resJson;
-  }
-
-  async function getUserDataById(userId: number) {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    const resJson = await res.json();
-    return resJson;
   }
 
   useEffect(() => {
@@ -294,6 +263,11 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
       router.push(route);
     }
   };
+  const selectUserHandler = (userId: number) => {
+    console.log("selectUserHandler", userId);
+    setSelectedUserId(userId);
+    setIsModalOpen(true);
+  };
 
   const ChatHeader = () => {
     return (
@@ -304,7 +278,11 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
             icon={<GoArrowLeft />}
             aria-label="go back"
             onClick={() => {
-              router.back();
+              const route =
+                EChannelType[Number(channel.type)] === "direct"
+                  ? "/dm"
+                  : "/channel";
+              router.push(route);
             }}
           />
           {EChannelType[Number(channel.type)] !== "direct" && (
@@ -365,9 +343,14 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
                   </Text>
                 )}
                 {!isCurrentUser && (
-                  <Text fontSize="md" color={"black"}>
-                    {chatItem.user.name} : {chatItem.message}
-                  </Text>
+                  <Box
+                    as="button"
+                    onClick={() => selectUserHandler(chatItem.user.id)}
+                  >
+                    <Text fontSize="md" color={"black"}>
+                      {chatItem.user.name} : {chatItem.message}
+                    </Text>
+                  </Box>
                 )}
               </Box>
             </Stack>
@@ -404,6 +387,15 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
           </Button>
         </Flex>
       </form>
+      <ChatModal
+        channelId={channelId}
+        userId={selectedUserId}
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        channelMember={channelMembers.find(
+          (member) => member.user.id === user.id
+        )}
+      />
     </Box>
   );
 };
