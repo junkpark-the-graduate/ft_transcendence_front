@@ -53,7 +53,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   const router = useRouter();
   const toast = useToast();
   const [directChannelName, setDirectChannelName] = useState<string>("");
-  const [chatHistoryPage, setChatHistoryPage] = useState<number>(1);
+  const [chatHistoryPage, setChatHistoryPage] = useState<number>(2);
   const [ref, inView] = useInView({
     threshold: 0.5,
   });
@@ -71,7 +71,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
       }
     );
     const resJson = await res.json();
-    console.log(resJson);
     return resJson;
   }
 
@@ -143,6 +142,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
 
   useEffect(() => {
     if (!accessToken) router.push("/");
+
     getUser().then((res) => {
       setUser(res);
     });
@@ -152,6 +152,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     });
 
     getBlockingUserList().then((res: any) => {
+      console.log("get blocking - set blocking");
       setBlockingUserList(res);
     });
   }, []);
@@ -217,18 +218,26 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     });
 
     socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
-      console.log("get_chat_history data!!!!!", chatHistory.chatHistory);
       setChatList((prev) => [
         ...filterBlockingUserMessage(chatHistory.chatHistory),
         ...prev,
       ]);
     });
 
+    socketIo.emit("get_chat_history", { page: 1 });
+
     return () => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
     };
-  }, [channelId, accessToken]);
+  }, [channelId, accessToken, blockingUserList]);
+
+  useEffect(() => {
+    if (inView && socket) {
+      socket.emit("get_chat_history", { page: chatHistoryPage });
+      setChatHistoryPage((prev) => prev + 1);
+    }
+  }, [inView]);
 
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
@@ -268,7 +277,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
 
     const res = await exitChannel();
     const resJson = await res.json();
-    console.log(resJson);
 
     if (res.status > 299) {
       toast({
@@ -323,21 +331,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
         </Flex>
       </Box>
     );
-  };
-
-  useEffect(() => {
-    if (inView) {
-      setChatHistoryPage((prev) => prev + 1);
-    }
-  }, [inView]);
-
-  useEffect(() => {
-    getChatHistoryHandler();
-  }, [chatHistoryPage]);
-
-  const getChatHistoryHandler = async () => {
-    if (!socket) return;
-    socket.emit("get_chat_history", { page: chatHistoryPage });
   };
 
   return (
