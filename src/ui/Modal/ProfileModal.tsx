@@ -22,8 +22,8 @@ import { EUserStatus } from "@/app/user/types/EUserStatus";
 import BlockButton from "../Button/BlockButton";
 import FollowButton from "../Button/FollowButton";
 import { useRouter } from "next/navigation";
-import UserRank from "../Dashboard/Rank";
-import getRank from "@/utils/user/getRank";
+import getRankById from "@/utils/user/getRankById";
+import getGameStats from "@/utils/user/getGameStats";
 import DmBaseButton from "../Button/DmBaseButton";
 
 export interface ProfileModalProps {
@@ -37,6 +37,8 @@ export default function ProfileModal({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const myData = getMyData();
   const router = useRouter();
+  const rank = getRankById(userData?.id);
+  const gameStats = getGameStats(userData?.id);
 
   return (
     <Box>
@@ -46,7 +48,15 @@ export default function ProfileModal({
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent mt={40} p={4} bg="#29292D" {...props}>
+        <ModalContent
+          mt={40}
+          p={4}
+          border="#A0A0A3 3px solid"
+          boxShadow={"7px 7px black"}
+          borderRadius="0"
+          bg="#29292D"
+          {...props}
+        >
           <ModalHeader>
             <Flex>
               <Avatar size="xl" name={userData?.name} src={userData?.image} />
@@ -76,14 +86,18 @@ export default function ProfileModal({
             <Center>
               <HStack spacing={3}>
                 <Flex>
-                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
-                    rank:
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#191919">
+                    rank: {rank}
                   </StackItem>
-                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
-                    score:
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#191919">
+                    score: {userData?.mmr}
                   </StackItem>
-                  <StackItem borderRadius="8px" px={2} mx={1} bg="#414147">
-                    stats:
+                  <StackItem borderRadius="8px" px={2} mx={1} bg="#191919">
+                    {`stats: ${gameStats?.total.winGame} W ${
+                      gameStats
+                        ? gameStats.total.totalGame - gameStats.total.winGame
+                        : 0
+                    } L`}
                   </StackItem>
                 </Flex>
               </HStack>
@@ -101,7 +115,7 @@ export default function ProfileModal({
               flex="1"
               fontSize={14}
               size="sm"
-              text="detail"
+              text="visit"
               onClick={() => {
                 router.push(`/user/profile/${userData?.id}`);
               }}

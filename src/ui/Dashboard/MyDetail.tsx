@@ -1,21 +1,14 @@
-import {
-  Box,
-  Flex,
-  Avatar,
-  Heading,
-  Text,
-  GridItem,
-  Grid,
-  Center,
-} from "@chakra-ui/react";
+import { Box, Flex, Avatar, Text, GridItem, Grid } from "@chakra-ui/react";
 import LinkButton from "@/ui/Button/LinkButton";
-import { GoCircleSlash, GoGear, GoTrash } from "react-icons/go";
+import { GoGear, GoSignOut } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
-import { getMyData } from "@/utils/user/getMyData";
 import { EUserStatus } from "../../app/user/types/EUserStatus";
+import BlockedUsersModal from "@/app/user/components/BlockedUsersModal";
+import { UserData } from "./Dashboard";
+import { useRouter } from "next/navigation";
 
-export default function MyDetail() {
-  const myData = getMyData();
+export default function MyDetail({ userData }: { userData: UserData }) {
+  const router = useRouter();
 
   return (
     <Box position="relative" px={5} pt={4} borderRadius={8} mb={2}>
@@ -29,22 +22,23 @@ export default function MyDetail() {
               ml={4}
               mt={4}
               size="2xl"
-              name={myData?.name}
-              src={myData?.image}
+              name={userData?.name}
+              src={userData?.image}
+              border="white 5px solid"
             />
           </GridItem>
           <GridItem colSpan={2}>
             <Text fontSize={28} mb={2}>
-              {myData?.name}
+              {userData?.name}
             </Text>
-            <Text fontSize={16}>42 ID: {myData?.id}</Text>
-            <Text fontSize={16}>email: {myData?.email}</Text>
+            <Text fontSize={16}>42 ID: {userData?.id}</Text>
+            <Text fontSize={16}>email: {userData?.email}</Text>
             <Text fontSize={16}>
-              TFA enable: {myData?.twoFactorEnabled ? "true" : "false"}
+              TFA enable: {userData?.twoFactorEnabled ? "true" : "false"}
             </Text>
             <Text fontSize={16}>
               status:{" "}
-              {myData?.status === EUserStatus.online ? "online" : "offline"}
+              {userData?.status === EUserStatus.online ? "online" : "offline"}
             </Text>
           </GridItem>
           <GridItem colSpan={1} pt={6}>
@@ -54,18 +48,16 @@ export default function MyDetail() {
                 text="edit profile"
                 goTo="/user/edit"
               />
-              <LinkButton
-                icon={<GoCircleSlash />}
-                text="blocked users"
-                goTo="/user/block"
-              />
+              <BlockedUsersModal />
               <BaseButton
                 my={1}
                 size="sm"
                 textColor={"red"}
-                text="delete account"
-                leftIcon={<GoTrash />}
-                onClick={() => {}}
+                text="logout pong"
+                leftIcon={<GoSignOut />}
+                onClick={() => {
+                  router.push(`/`);
+                }}
               />
             </Flex>
           </GridItem>

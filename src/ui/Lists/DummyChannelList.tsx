@@ -5,7 +5,6 @@ import {
   Stack,
   Flex,
   Avatar,
-  Text,
   Divider,
   Spacer,
   Menu,

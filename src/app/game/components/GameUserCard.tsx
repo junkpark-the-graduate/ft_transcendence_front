@@ -1,5 +1,7 @@
 "use client";
 
+import getGameStats from "@/utils/user/getGameStats";
+import getRankById from "@/utils/user/getRankById";
 import {
   Text,
   Divider,
@@ -11,13 +13,15 @@ import {
 } from "@chakra-ui/react";
 
 type User = {
+  id: number;
   name: string;
   image: string;
   mmr: number;
 };
 
 export default function GameUserCard({ user }: { user: User | null }) {
-  const userRank = 1;
+  const userRank = getRankById(user?.id);
+  const gameStats = getGameStats(user?.id);
 
   return (
     <Box bg="#414147" borderRadius="8px" px={8} py={6}>
@@ -43,7 +47,11 @@ export default function GameUserCard({ user }: { user: User | null }) {
               score: {user ? user.mmr : "???"}
             </Text>
             <Text fontSize={15} color={"white"}>
-              ? W / ? L
+              {gameStats
+                ? `${gameStats.total.winGame} W / ${
+                    gameStats.total.totalGame - gameStats.total.winGame
+                  } L`
+                : "? W / ? L"}
             </Text>
           </Flex>
         </Flex>

@@ -5,17 +5,14 @@ import {
   CircularProgress,
   CircularProgressLabel,
   Flex,
+  HStack,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import { useEffect, useState } from "react";
 
-export interface StatsProps {
-  id: number | undefined;
-}
-
-interface GameRecord {
+export interface GameRecord {
   id: number;
   player1Id: number;
   player2Id: number;
@@ -23,54 +20,71 @@ interface GameRecord {
   gameResult: string;
   createdAt: Date;
 }
-
-interface GameStat {
+export interface GameStat {
   totalGame: number;
   winGame: number;
   winRate: number;
 }
 
-export default function UserStats({ id }: StatsProps) {
+//async function getGameRecords(
+//  id: number,
+//  gameType: string,
+//  limit: number,
+//  offset: number
+//): Promise<GameRecord[]> {
+//  const res = await fetchAsyncToBackEnd(
+//    `/game/by-ftid/${id}?limit=${limit}&offset=${offset}&gameType=${gameType}`
+//  );
+//  if (!res.ok) {
+//    throw new Error("getGameRecords fetch failed");
+//  }
+//  const records = await res.json();
+//  return records;
+//}
+
+export default function UserStats({ id }: { id: number }) {
   const defaultGameStat: GameStat = { totalGame: 0, winGame: 0, winRate: 0 };
+  const [totalGameStat, setTotalGameStat] = useState<GameStat>(defaultGameStat);
   const [normalGameStat, setNormalGameStat] =
     useState<GameStat>(defaultGameStat);
   const [ladderGameStat, setLadderGameStat] =
     useState<GameStat>(defaultGameStat);
-  const [totalWinRate, setTotalWinRate] = useState(0);
 
   useEffect(() => {
-    const getGameStat = async (gameType: string, setState: any) => {
-      fetchAsyncToBackEnd(
-        `/game/by-ftid/${id}?limit=10&offset=0&gameType=${gameType}`
-      ).then((res) => {
-        res.json().then((normalRecords: Array<GameRecord>) => {
-          const totalGame: number = normalRecords.length;
-          if (totalGame === 0) {
-            return;
-          }
-          const winGame: number = normalRecords.filter((record) => {
-            const player: string =
-              id === record.player1Id ? "player1" : "player2";
-            return record.gameResult === player ? true : false;
-          }).length;
-          const winRate = Math.floor((winGame / totalGame) * 100);
-          setState({ totalGame, winGame, winRate });
+    fetchAsyncToBackEnd(`/game/by-ftid/${id}?limit=1000&offset=0`).then(
+      (res) => {
+        res.json().then((totalRecords: GameRecord[]) => {
+          const getWinGame = (records: GameRecord[]) => {
+            return records.filter((record) => {
+              const player: string =
+                id === record.player1Id ? "player1" : "player2";
+              return record.gameResult === player ? true : false;
+            }).length;
+          };
+
+          const getGameStat = (records: GameRecord[]) => {
+            const totalGame = records.length;
+            if (!totalGame) return defaultGameStat;
+            const winGame = getWinGame(records);
+            const winRate = Math.round((winGame / totalGame) * 100);
+            return { totalGame, winGame, winRate };
+          };
+
+          setTotalGameStat(getGameStat(totalRecords));
+          setNormalGameStat(
+            getGameStat(
+              totalRecords.filter((record) => record.gameType === "normal")
+            )
+          );
+          setLadderGameStat(
+            getGameStat(
+              totalRecords.filter((record) => record.gameType === "ladder")
+            )
+          );
         });
-      });
-    };
-
-    getGameStat("normal", setNormalGameStat);
-    getGameStat("ladder", setLadderGameStat);
-  }, []);
-  useEffect(() => {
-    setTotalWinRate(
-      Math.round(
-        ((normalGameStat.winGame + ladderGameStat.winGame) /
-          (normalGameStat.totalGame + ladderGameStat.totalGame)) *
-          100
-      )
+      }
     );
-  }, [normalGameStat, ladderGameStat]);
+  }, []);
 
   return (
     <Box flex={3} bg="#414147" px={2} pb={4} borderRadius={8}>
@@ -88,38 +102,36 @@ export default function UserStats({ id }: StatsProps) {
         <Flex direction={"row"}>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="orange" mb={3} fontSize="12px">
+              <Badge colorScheme="orange" mb={4} fontSize="12px">
                 total game
               </Badge>
               <CircularProgress
                 size="60px"
-                value={totalWinRate}
+                value={totalGameStat.winRate}
                 color="orange"
-                thickness="12px"
+                thickness="10px"
                 mb={3}
               >
-                <CircularProgressLabel>{totalWinRate} %</CircularProgressLabel>
+                <CircularProgressLabel>
+                  {totalGameStat.winRate} %
+                </CircularProgressLabel>
               </CircularProgress>
               <Text fontSize={14}>
-                {normalGameStat.winGame + ladderGameStat.winGame} W /{" "}
-                {normalGameStat.totalGame -
-                  normalGameStat.winGame +
-                  ladderGameStat.totalGame -
-                  ladderGameStat.winGame}{" "}
-                L
+                {totalGameStat.winGame} W /{" "}
+                {totalGameStat.totalGame - totalGameStat.winGame} L
               </Text>
             </Flex>
           </Box>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="teal" mb={3} fontSize="12px">
+              <Badge colorScheme="teal" mb={4} fontSize="12px">
                 normal game
               </Badge>
               <CircularProgress
                 size="60px"
                 value={normalGameStat.winRate}
                 color="teal"
-                thickness="12px"
+                thickness="10px"
                 mb={3}
               >
                 <CircularProgressLabel>
@@ -134,14 +146,14 @@ export default function UserStats({ id }: StatsProps) {
           </Box>
           <Box flex={1}>
             <Flex direction="column" alignItems="center">
-              <Badge colorScheme="teal" mb={3} fontSize="12px">
+              <Badge colorScheme="teal" mb={4} fontSize="12px">
                 ladder game
               </Badge>
               <CircularProgress
                 size="60px"
                 value={ladderGameStat.winRate}
                 color="teal"
-                thickness="12px"
+                thickness="10px"
                 mb={3}
               >
                 <CircularProgressLabel>

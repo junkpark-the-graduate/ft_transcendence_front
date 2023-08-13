@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   Select,
   FormLabel,
@@ -18,22 +20,15 @@ import GameButton from "@/ui/Button/GameButton";
 export default function GameSettingModal({ setIsMatching }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [ballColor, setBallColor] = useState(localStorage.getItem("ballColor"));
-  const [backgroundColor, setBackgroundColor] = useState(
-    localStorage.getItem("backgroundColor")
-  );
-  const [paddleColor, setPaddleColor] = useState(
-    localStorage.getItem("paddleColor")
-  );
-  const [planeColor, setPlaneColor] = useState(
-    localStorage.getItem("planeColor")
-  );
+  const [ballColor, setBallColor] = useState("white");
+  const [backgroundColor, setBackgroundColor] = useState("white");
+  const [paddleColor, setPaddleColor] = useState("white");
+  const [planeColor, setPlaneColor] = useState("white");
 
   const handleSelectBallColor = (event: any) => {
     setBallColor(event.target.value);
     localStorage.setItem("ballColor", event.target.value);
   };
-
   const handleSelectBackGroundColor = (event: any) => {
     setBackgroundColor(event.target.value);
     localStorage.setItem("backgroundColor", event.target.value);
@@ -46,6 +41,15 @@ export default function GameSettingModal({ setIsMatching }: any) {
     setPlaneColor(event.target.value);
     localStorage.setItem("planeColor", event.target.value);
   };
+
+  useEffect(() => {
+    if (localStorage) {
+      setBallColor(localStorage.getItem("ballColor") ?? "white");
+      setBackgroundColor(localStorage.getItem("backgroundColor") ?? "white");
+      setPaddleColor(localStorage.getItem("paddleColor") ?? "white");
+      setPlaneColor(localStorage.getItem("planeColor") ?? "white");
+    }
+  }, []);
 
   const selectStyle = {
     color: "white",
@@ -80,12 +84,13 @@ export default function GameSettingModal({ setIsMatching }: any) {
         <ModalOverlay />
         <ModalContent
           mt={40}
-          p={3}
+          p={4}
+          border="#A0A0A3 3px solid"
+          boxShadow={"7px 7px black"}
+          borderRadius="0"
           bg="#29292D"
-          // borderRadius={0}
-          // border={"white 2px solid"}
-          // boxShadow={"7px 7px black"}
         >
+          {" "}
           <ModalHeader pt={1} pb={3} textAlign="center">
             Game Setting
           </ModalHeader>

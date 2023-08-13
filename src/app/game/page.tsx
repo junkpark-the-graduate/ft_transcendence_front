@@ -19,7 +19,7 @@ import { GoFlame, GoXCircle, GoZap } from "react-icons/go";
 import { Title } from "@/ui/Intro/Title";
 import GameUserCard from "./components/GameUserCard";
 import GameButton from "@/ui/Button/GameButton";
-import RankingModal from "./components/RankingModal";
+import RankingModal from "../../ui/Modal/RankingModal";
 import HowToPlayModal from "./components/HowToPlayModal";
 import GameSettingModal from "./components/GameSettingModal";
 import TabType1 from "@/ui/Tab/TabType1";
@@ -31,7 +31,7 @@ export default function Page({
     roomId?: string;
   };
 }) {
-  const [gameType, setGameType] = useState("normal");
+  const [gameType, setGameType] = useState<"normal" | "ladder">("normal");
   const [isMatching, setIsMatching] = useState(false);
   const [isMatched, setIsMatched] = useState(false);
   const [user, setUser] = useState<any>(null);
@@ -39,20 +39,8 @@ export default function Page({
 
   const router = useRouter();
 
-  const handleStartMatch = () => {
-    const gameType = localStorage.getItem("gameType");
-
-    console.log("start match");
-    setIsMatching(true);
-    gameType === "normal"
-      ? socket.emit("normal_matching")
-      : socket.emit("ladder_matching");
-  };
-
   socket.on("match_found", (data: any) => {
     const { roomId, opponent } = data;
-
-    console.log(opponent);
     setOpponent(opponent);
     setIsMatched(true);
     setTimeout(() => {
@@ -71,18 +59,15 @@ export default function Page({
       if (roomId) router.push(`/game/join?roomId=${roomId}`);
     });
     if (searchParams.roomId) {
-      console.log("searchParams.roomId", searchParams.roomId);
-      socket.emit("join_room", searchParams.roomId, (data: any) => {
-        console.log(data);
-      });
+      socket.emit("join_room", searchParams.roomId);
     }
     fetchAsyncToBackEnd("/user").then((res) => {
       res.json().then((data) => {
-        console.log("my data: ", data);
         setUser(data);
       });
     });
 
+    // TODO: 매칭 후 디스코넥트 안됨!!
     return () => {
       socket.emit("cancel_matching");
       socket.removeAllListeners();
@@ -91,7 +76,7 @@ export default function Page({
 
   return (
     <GridType1 side={<TabType1 />}>
-      <Box w="full" px={8} py={4} alignItems="center" alignContent="center">
+      <Box px={4} py={4} alignItems="center" alignContent="center">
         <Center my={16}>
           <Flex direction="column">
             <Title />
@@ -125,18 +110,18 @@ export default function Page({
                 text="Normal Game"
                 leftIcon={<GoZap />}
                 onClick={() => {
+                  setIsMatching(true);
                   setGameType("normal");
-                  localStorage.setItem("gameType", gameType);
-                  handleStartMatch();
+                  socket.emit("normal_matching");
                 }}
               />
               <GameButton
                 text="Ladder Game"
                 leftIcon={<GoFlame />}
                 onClick={() => {
+                  setIsMatching(true);
                   setGameType("ladder");
-                  localStorage.setItem("gameType", gameType);
-                  handleStartMatch();
+                  socket.emit("ladder_matching");
                 }}
               />
               <Box position="relative" mt={8} mb={4} alignItems="center">
@@ -146,7 +131,7 @@ export default function Page({
                 </AbsoluteCenter>
               </Box>
               <GameSettingModal />
-              <RankingModal />
+              <RankingModal mode={true} />
               <HowToPlayModal />
             </Stack>
           )}

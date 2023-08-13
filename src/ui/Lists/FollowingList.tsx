@@ -10,7 +10,6 @@ import {
   MenuList,
   Spacer,
   Stack,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
