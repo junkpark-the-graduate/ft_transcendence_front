@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Flex, Text, useToast, Avatar, HStack   IconButton,
+import {
+  Box,
+  Flex,
+  Text,
+  useToast,
+  Avatar,
+  HStack,
+  IconButton,
 } from "@chakra-ui/react";
 import { EChannelType } from "../../app/(chat)/channel/types/EChannelType";
 import Cookies from "js-cookie";

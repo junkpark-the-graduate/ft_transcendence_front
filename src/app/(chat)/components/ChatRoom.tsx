@@ -57,6 +57,36 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   const [ref, inView] = useInView({
     threshold: 0.5,
   });
+  const [blockingUserList, setBlockingUserList] = useState<any[]>([]);
+
+  async function getBlockingUserList() {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/block/userid`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const resJson = await res.json();
+    console.log(resJson);
+    return resJson;
+  }
+
+  function filterBlockingUserMessage(chatList: IChat[]) {
+    const filteredChatList = chatList.map((chat) => {
+      const isBlocked = blockingUserList.some(
+        (blockingUser) => blockingUser.blockingId === chat.user.id
+      );
+      if (isBlocked) {
+        chat.message = "This message is blocked";
+      }
+      return chat;
+    });
+    return filteredChatList;
+  }
 
   async function goToAdminPageHandler() {
     if (user.id !== channel.ownerId) {
@@ -120,6 +150,10 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     getChannel().then((res) => {
       setChannel(res);
     });
+
+    getBlockingUserList().then((res: any) => {
+      setBlockingUserList(res);
+    });
   }, []);
 
   useEffect(() => {
@@ -155,7 +189,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
 
     socketIo.on("new_chat", (data: IChat) => {
       console.log("new_chat data!!!!!", data);
-      setChatList((oldChatList) => [...oldChatList, data]);
+      setChatList((prev) => [...prev, ...filterBlockingUserMessage([data])]);
     });
 
     socketIo.on("disconnect", () => {
@@ -184,9 +218,9 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
 
     socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
       console.log("get_chat_history data!!!!!", chatHistory.chatHistory);
-      setChatList((oldChatList) => [
-        ...chatHistory.chatHistory,
-        ...oldChatList,
+      setChatList((prev) => [
+        ...filterBlockingUserMessage(chatHistory.chatHistory),
+        ...prev,
       ]);
     });
 
@@ -373,7 +407,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
           </Flex>
         </form>
       </Box>
-      <Button onClick={() => getChatHistoryHandler()}>get chat</Button>
     </Box>
   );
 };

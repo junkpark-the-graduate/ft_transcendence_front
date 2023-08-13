@@ -51,21 +51,14 @@ export default function UserDetail({ userData }: { userData: UserData }) {
             </Text>
           </GridItem>
           <GridItem colSpan={1}>
-            <Flex flexDirection={"column"} pt={3}>
+            <Flex flexDirection={"column"} pt={3} gap={2}>
               <FollowButton
                 myId={myId}
                 userId={userData.id}
                 icon={true}
                 isDisabled={isMyProfile ? true : false}
               />
-              <BaseButton
-                my={2}
-                size="sm"
-                leftIcon={<GoComment />}
-                text="message"
-                onClick={() => {}}
-                isDisabled={isMyProfile ? true : false}
-              />
+              <DmBaseButton userId={userData.id} icon={true} />
               <BlockButton
                 myId={myId}
                 userId={userData.id}
