@@ -389,12 +389,10 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
       </form>
       <ChatModal
         channelId={channelId}
-        userId={selectedUserId}
+        memberId={selectedUserId}
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
-        channelMember={channelMembers.find(
-          (member) => member.user.id === user.id
-        )}
+        user={channelMembers.find((member) => member.user.id === user.id)}
       />
     </Box>
   );

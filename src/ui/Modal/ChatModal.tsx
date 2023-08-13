@@ -26,18 +26,18 @@ import Cookies from "js-cookie";
 
 interface ChatModalProps {
   channelId: number;
-  userId: number;
+  memberId: number;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  channelMember: any;
+  user?: any;
 }
 
 const ChatModal: React.FC<ChatModalProps> = ({
   channelId,
-  userId,
+  memberId,
   isOpen,
   setIsOpen,
-  channelMember,
+  user,
   ...props
 }) => {
   const router = useRouter();
@@ -47,20 +47,20 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
   useEffect(() => {
-    if (!userId) return;
+    if (!memberId) return;
 
-    fetchAsyncToBackEnd(`/user/${userId}`).then((res: any) => {
+    fetchAsyncToBackEnd(`/user/${memberId}`).then((res: any) => {
       res.json().then((data: any) => {
         setUserData(data);
       });
     });
 
-    fetchAsyncToBackEnd(`/user/ranking/${userId}`).then((res: any) => {
+    fetchAsyncToBackEnd(`/user/ranking/${memberId}`).then((res: any) => {
       res.json().then((data: any) => {
         setRank(data.rank);
       });
     });
-  }, [userId]);
+  }, [memberId]);
 
   const onClose = () => {
     setIsOpen(false);
@@ -68,7 +68,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
   const handleMute = async () => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/muted-member?memberId=${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/muted-member?memberId=${memberId}`,
       {
         method: "POST",
         headers: {
@@ -90,6 +90,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
       });
     }
   };
+  console.log("user", user);
 
   return (
     <Box>
@@ -165,7 +166,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                     console.log("해당 유저 게임초대");
                   }}
                 />
-                {channelMember && (
+                {user?.isAdmin && (
                   <BaseButton
                     fontSize={14}
                     size="sm"
