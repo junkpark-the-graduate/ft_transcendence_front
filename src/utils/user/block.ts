@@ -1,7 +1,6 @@
 import { getTokenClient } from "../auth/getTokenClient";
 
 export const block = async (
-  userId: number | undefined,
   blocking: number | undefined,
   setIsBlocking: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
@@ -16,14 +15,13 @@ export const block = async (
       }
     );
     setIsBlocking(true);
-    localStorage.setItem("isFollowing", JSON.stringify(true));
+    localStorage.setItem("isBlocking", JSON.stringify(true));
   } catch (error) {
     console.error(error);
   }
 };
 
 export const unblock = async (
-  userId: number | undefined,
   blocking: number | undefined,
   setIsBlocking: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
@@ -38,7 +36,7 @@ export const unblock = async (
       }
     );
     setIsBlocking(false);
-    localStorage.setItem("isFollowing", JSON.stringify(false));
+    localStorage.setItem("isBlocking", JSON.stringify(false));
   } catch (error) {
     console.error(error);
   }

@@ -32,13 +32,12 @@ export default function FollowButton({
   }, [followingList, blockingList, userId]);
 
   const handleFollow = async () => {
-    await follow(myId, userId, () => setIsFollowing(true));
-    if (isBlocking === true)
-      await unblock(myId, userId, () => setIsBlocking(false));
+    await follow(userId, () => setIsFollowing(true));
+    if (isBlocking === true) await unblock(userId, () => setIsBlocking(false));
   };
 
   const handleUnfollow = async () => {
-    await unfollow(myId, userId, () => setIsFollowing(false));
+    await unfollow(userId, () => setIsFollowing(false));
   };
 
   return icon ? (
