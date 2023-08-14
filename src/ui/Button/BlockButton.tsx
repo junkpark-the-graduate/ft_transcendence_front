@@ -56,7 +56,7 @@ export default function BlockButton({
   ) : (
     <Flex>
       <BaseButton
-        w="90px"
+        w="85px"
         flex="1"
         fontSize={14}
         mr={2}

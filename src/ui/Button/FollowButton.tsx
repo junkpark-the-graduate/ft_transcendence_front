@@ -57,7 +57,7 @@ export default function FollowButton({
   ) : (
     <Flex>
       <BaseButton
-        w="90px"
+        w="85px"
         fontSize={14}
         mr={2}
         flex="1"
