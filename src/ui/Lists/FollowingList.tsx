@@ -34,37 +34,28 @@ import ProfileModal from "../Modal/ProfileModal";
 import Cookies from "js-cookie";
 import DmIconButton from "../Button/DmIconButton";
 
-function FollowingListItem({
-  myId,
-  userId,
-}: {
-  myId: number | undefined;
-  userId: number | undefined;
-}) {
-  const accessToken = Cookies.get("accessToken");
+function FollowingListItem({ userId }: { userId: number | undefined }) {
   const userData = getUserData(userId);
-  const userStatus = getUserStatus(userId);
   const router = useRouter();
-  const toast = useToast();
   const [isBlocking, setIsBlocking] = useState(false);
   const [isFollowing, setIsFollowing] = useState(true);
 
   const handleFollow = async () => {
-    await follow(myId, userId, () => setIsFollowing(true));
-    await unblock(myId, userId, () => setIsBlocking(false));
+    await follow(userId, () => setIsFollowing(true));
+    await unblock(userId, () => setIsBlocking(false));
   };
 
   const handleUnfollow = async () => {
-    await unfollow(myId, userId, () => setIsFollowing(false));
+    await unfollow(userId, () => setIsFollowing(false));
   };
 
   const handleBlock = async () => {
-    await block(myId, userId, () => setIsBlocking(true));
-    await unfollow(myId, userId, () => setIsFollowing(false));
+    await block(userId, () => setIsBlocking(true));
+    await unfollow(userId, () => setIsFollowing(false));
   };
 
   const handleUnblock = async () => {
-    await unblock(myId, userId, () => setIsBlocking(false));
+    await unblock(userId, () => setIsBlocking(false));
   };
 
   return (
@@ -132,19 +123,11 @@ export default function FollowingList() {
         {followings &&
           followings.map((following) => (
             <React.Fragment key={following}>
-              <FollowingListItem myId={myData?.id} userId={Number(following)} />
+              <FollowingListItem userId={Number(following)} />
               <Divider borderColor="#414147" />
             </React.Fragment>
           ))}
       </Stack>
     </Box>
   );
-}
-function toast(arg0: {
-  title: any;
-  status: string;
-  duration: number;
-  isClosable: boolean;
-}) {
-  throw new Error("Function not implemented.");
 }

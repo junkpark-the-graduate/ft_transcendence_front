@@ -15,8 +15,6 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
 
 export interface MatchHistoryProps {

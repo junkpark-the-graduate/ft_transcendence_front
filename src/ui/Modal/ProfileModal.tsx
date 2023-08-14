@@ -112,6 +112,7 @@ export default function ProfileModal({
             <BlockButton myId={myData?.id} userId={userData?.id} icon={false} />
             <DmBaseButton userId={userData?.id} icon={false} />
             <BaseButton
+              w="85px"
               flex="1"
               fontSize={14}
               size="sm"
