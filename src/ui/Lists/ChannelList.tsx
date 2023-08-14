@@ -1,8 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Flex, Text, useToast, Avatar, HStack } from "@chakra-ui/react";
-import { EChannelType } from "../../app/channel/types/EChannelType";
+import {
+  Box,
+  Flex,
+  Text,
+  useToast,
+  Avatar,
+  HStack,
+  IconButton,
+} from "@chakra-ui/react";
+import { EChannelType } from "../../app/(chat)/channel/types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import PasswordModal from "@/ui/Modal/PasswordModal";
@@ -11,13 +19,21 @@ import ButtonBox from "@/ui/Box/ButtonBox";
 import CreateChannelModal from "@/ui/Modal/CreateChannelModal";
 import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
 import ChannelBadge from "../Badges/ChannelBadge";
+import { GoSync } from "react-icons/go";
+import { getChannels } from "@/utils/channel/getChannels";
+import { set } from "react-hook-form";
 
 interface Props {
   channels: any[];
   setChannels: any;
+  setJoinedChannels: any;
 }
 
-const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
+const ChannelList: React.FC<Props> = ({
+  channels,
+  setChannels,
+  setJoinedChannels,
+}) => {
   const router = useRouter();
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -64,7 +80,7 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
     const resJson = await res.json();
 
     if (res.status < 300) {
-      router.push(`/channel/${channelId}/chat`);
+      router.push(`/channel/${channelId}/chat-room`);
     } else {
       toast({
         title: resJson.message,
@@ -89,7 +105,7 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
     if (channel) {
       if (channel.type === EChannelType.protected) {
         if (await isAlreadyJoinedChannel(channelId)) {
-          router.push(`/channel/${channelId}/chat`);
+          router.push(`/channel/${channelId}/chat-room`);
         } else {
           console.log("setIsOpen");
           setIsOpen(true);
@@ -98,6 +114,10 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
         handleJoinChannel(channelId);
       }
     }
+  }
+
+  async function syncChannelsHandler() {
+    await getChannels(setChannels);
   }
 
   return (
@@ -111,17 +131,31 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
               value={searchKeyword}
               onChange={() => console.log("검색어 입력")}
             />
-            <CreateChannelModal channels={channels} setChannels={setChannels} />
+            <CreateChannelModal
+              channels={channels}
+              setChannels={setChannels}
+              setJoinedChannels={setJoinedChannels}
+            />
+            <IconButton
+              aria-label="채널 목록 새로고침"
+              icon={<GoSync />}
+              bg="#414147"
+              borderRadius={"8px"}
+              textColor="white"
+              _hover={{
+                background: "#191919",
+              }}
+              onClick={syncChannelsHandler}
+            />
           </Flex>
         </Box>
         <Flex direction="column" gap={3}>
           {channels.map((channel: any) => (
             <ButtonBox
               key={channel.id}
-              // onClick={() => onClickChannel(channel.id)}
               onClick={() => onClickChannel(channel.id)}
               textAlign={"left"}
-              position={"relative"} // Add relative positioning so we can use absolute positioning on child
+              position={"relative"}
             >
               <Flex direction="row" gap={5} alignItems="center">
                 <Avatar size="sm" name={channel.name} />
@@ -143,18 +177,6 @@ const ChannelList: React.FC<Props> = ({ channels, setChannels }) => {
           setIsOpen={setIsOpen}
           channelId={selectedChannelId}
         />
-        {/* <Box fontSize={14} mt={10} bg="#414147">
-          <Flex>
-            test password modal -{">"}
-            <Box ml={3}>
-              <PasswordModal
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                channelId={selectedChannelId}
-              />
-            </Box>
-          </Flex>
-        </Box> */}
       </Box>
     </>
   );

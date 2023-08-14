@@ -10,6 +10,7 @@ import {
   MenuList,
   Spacer,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
@@ -30,6 +31,8 @@ import { follow, unfollow } from "@/utils/user/follow";
 import { getUserStatus } from "@/utils/user/getUserStatus";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import ProfileModal from "../Modal/ProfileModal";
+import Cookies from "js-cookie";
+import DmIconButton from "../Button/DmIconButton";
 
 function FollowingListItem({
   myId,
@@ -38,9 +41,11 @@ function FollowingListItem({
   myId: number | undefined;
   userId: number | undefined;
 }) {
+  const accessToken = Cookies.get("accessToken");
   const userData = getUserData(userId);
   const userStatus = getUserStatus(userId);
   const router = useRouter();
+  const toast = useToast();
   const [isBlocking, setIsBlocking] = useState(false);
   const [isFollowing, setIsFollowing] = useState(true);
 
@@ -75,12 +80,7 @@ function FollowingListItem({
       <ProfileModal userData={userData} />
       <Spacer />
       <Flex>
-        <BaseIconButton
-          size="sm"
-          icon={<GoComment />}
-          aria-label="dm"
-          onClick={() => {}}
-        />
+        <DmIconButton userId={userId} icon={<GoComment />} aria-label="dm" />
         <BaseIconButton
           size="sm"
           icon={<GoPerson />}
@@ -139,4 +139,12 @@ export default function FollowingList() {
       </Stack>
     </Box>
   );
+}
+function toast(arg0: {
+  title: any;
+  status: string;
+  duration: number;
+  isClosable: boolean;
+}) {
+  throw new Error("Function not implemented.");
 }

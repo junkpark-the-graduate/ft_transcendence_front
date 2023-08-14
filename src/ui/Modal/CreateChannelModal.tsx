@@ -23,17 +23,19 @@ import BaseButton from "../Button/Button";
 import { GoPlus } from "react-icons/go";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { EChannelType } from "@/app/channel/types/EChannelType";
+import { EChannelType } from "@/app/(chat)/channel/types/EChannelType";
 import BaseInput from "../Input/Input";
 
 export interface CreateChannelModalProps {
   channels: any;
   setChannels: any;
+  setJoinedChannels: any;
 }
 
 export default function CreateChannelModal({
   channels,
   setChannels,
+  setJoinedChannels,
   ...props
 }: CreateChannelModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -88,8 +90,14 @@ export default function CreateChannelModal({
       });
       return;
     }
-    console.log(resJson);
-    setChannels([...channels, resJson]);
+
+    if (
+      EChannelType[resJson.type] === EChannelType[EChannelType.public] ||
+      EChannelType[resJson.type] === EChannelType[EChannelType.protected]
+    ) {
+      setChannels([...channels, resJson]);
+    }
+    setJoinedChannels([...channels, resJson]);
     setChannelName("");
     onClose();
   }
@@ -103,9 +111,6 @@ export default function CreateChannelModal({
         borderRadius={"8px"}
         textColor="white"
         _hover={{
-          background: "#191919",
-        }}
-        _focus={{
           background: "#191919",
         }}
         onClick={onOpen}

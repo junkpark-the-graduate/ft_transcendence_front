@@ -16,13 +16,13 @@ import {
   Spacer,
   Button,
 } from "@chakra-ui/react";
-import { EChannelType } from "../types/EChannelType";
+import { EChannelType } from "../../../types/EChannelType";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { GoArrowLeft, GoTrash } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
 
-import ChannelEditInput from "@/ui/Input/ChannelEditInput";
+import ChannelInput from "@/ui/Input/ChannelInput";
 import ChannelBadge from "@/ui/Badges/ChannelBadge";
 
 interface Props {
@@ -93,12 +93,12 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
         duration: 9000,
         isClosable: true,
       });
+      setChannel((prev) => ({
+        ...prev,
+        name: newChannelName,
+        type: EChannelType[newChannelType as keyof typeof EChannelType],
+      }));
     }
-    setChannel((prev) => ({
-      ...prev,
-      name: newChannelName,
-      type: EChannelType[newChannelType as keyof typeof EChannelType],
-    }));
   }
 
   async function deleteChannel() {
@@ -151,7 +151,7 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
           icon={<GoArrowLeft />}
           aria-label="go back"
           onClick={() => {
-            router.push(`/channel/${channel.id}/chat`);
+            router.push(`/channel/${channel.id}/chat-room`);
           }}
         />
         <Text ml={1}>{channel.name}</Text>
@@ -162,7 +162,7 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
       <Box px={2} width="100%" height="82%" overflowY="auto" maxHeight="80vh">
         <FormControl>
           <FormLabel> New Channel Name</FormLabel>
-          <ChannelEditInput
+          <ChannelInput
             placeholder="Enter new channel name"
             value={newChannelName}
             onChange={(e) => setNewChannelName(e.target.value)}
@@ -196,7 +196,7 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
         </FormControl>
         <FormControl mt={4}>
           <FormLabel>New Channel Password</FormLabel>
-          <ChannelEditInput
+          <ChannelInput
             placeholder="Enter new channel password"
             value={newChannelPassword}
             onChange={(e) => setNewChannelPassword(e.target.value)}

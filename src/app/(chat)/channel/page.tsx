@@ -17,13 +17,15 @@ export default function Page() {
     getJoinedChannels(setJoinedChannels);
   }, []);
 
-  // const handleCreateChannel = (newChannel: any) => {
-  //   setChannels([...channels, newChannel]);
-  // };
-
   return (
     <GridType1
-      children={<ChannelList channels={channels} setChannels={setChannels} />}
+      children={
+        <ChannelList
+          channels={channels}
+          setChannels={setChannels}
+          setJoinedChannels={setJoinedChannels}
+        />
+      }
       side={
         <Box w="full" px={1}>
           <Text
@@ -46,8 +48,4 @@ export default function Page() {
       }
     />
   );
-}
-
-{
-  /* <CreateChannel channels={channels} setChannels={setChannels} /> */
 }

@@ -24,7 +24,13 @@ const Channel: React.FC = () => {
   return (
     <>
       <GridType1
-        children={<ChannelList channels={channels} setChannels={setChannels} />}
+        children={
+          <ChannelList
+            channels={channels}
+            setChannels={setChannels}
+            setJoinedChannels={setJoinedChannels}
+          />
+        }
         side={
           <Box px={1}>
             <Text

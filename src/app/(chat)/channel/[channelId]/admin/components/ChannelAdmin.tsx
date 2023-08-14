@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import GridType4 from "@/ui/Grid/GridType4";
 import ChannelEdit from "./ChannelEdit";
-import ChannelMemberList from "./ChannelMemberList";
+import ChannelMemberlList from "./ChannelMemberList";
 import ChannelBannedMemberList from "./ChannelBannedMemberList";
+import ChannelInvite from "./ChannelInvite";
 
 interface Props {
   channelId: number;
@@ -23,7 +26,7 @@ const ChannelAdmin: React.FC<Props> = ({ channelId }) => {
         />
       }
       children1={
-        <ChannelMemberList
+        <ChannelMemberlList
           channelId={channelId}
           channel={channel}
           members={members}
@@ -37,6 +40,14 @@ const ChannelAdmin: React.FC<Props> = ({ channelId }) => {
           channelId={channelId}
           bannedMembers={bannedMembers}
           setBannedMembers={setBannedMembers}
+        />
+      }
+      children3={
+        <ChannelInvite
+          channelId={channelId}
+          members={members}
+          setMembers={setMembers}
+          bannedMembers={bannedMembers}
         />
       }
     />

@@ -1,7 +1,11 @@
-import { Badge } from "@chakra-ui/react";
-import { EChannelType } from "../../app/channel/types/EChannelType";
+import { Badge, BadgeProps } from "@chakra-ui/react";
+import { EChannelType } from "../../app/(chat)/channel/types/EChannelType";
 
-export default function ChannelBadge({ type }: { type: number }) {
+export interface ChannelBadgeProps extends BadgeProps {
+  type: number;
+}
+
+export default function ChannelBadge({ type, ...props }: ChannelBadgeProps) {
   const strType = EChannelType[type];
   return (
     <Badge
@@ -13,6 +17,7 @@ export default function ChannelBadge({ type }: { type: number }) {
           : "red"
       }
       fontSize="xs"
+      {...props}
     >
       {strType}
     </Badge>
