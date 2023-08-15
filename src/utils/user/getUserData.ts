@@ -1,6 +1,6 @@
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { useEffect, useState } from "react";
-import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 export interface UserData {
   id: number;
