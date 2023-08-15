@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
 export interface RankingObject {
   id: number;
@@ -13,7 +14,7 @@ export default function getRank() {
 
   const fetchRank = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/user/ranking`);
+      const res = await fetchAsyncToBackEnd(`/user/ranking`);
       const rankingData = await res.json();
       setRanking(rankingData);
       setIsLoading(false);

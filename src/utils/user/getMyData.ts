@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getTokenClient } from "../auth/getTokenClient";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
+import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
 interface MyData {
   id: number;
@@ -18,11 +18,7 @@ export function getMyData() {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/user`, {
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-        },
-      });
+      const res = await fetchAsyncToBackEnd(`/user`);
       const userData = await res.json();
       setUserData(userData);
       setIsLoading(false);

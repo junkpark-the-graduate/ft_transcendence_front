@@ -1,17 +1,14 @@
-import { getTokenClient } from "../auth/getTokenClient";
+import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
 export const follow = async (
   following: number | undefined,
   setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const res: Response = await fetch(
-      `http://127.0.0.1:3001/follow?followingId=${Number(following)}`,
+    const res: Response = await fetchAsyncToBackEnd(
+      `/follow?followingId=${Number(following)}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-        },
       }
     );
     setIsFollowing(true);
@@ -26,13 +23,10 @@ export const unfollow = async (
   setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const res: Response = await fetch(
-      `http://127.0.0.1:3001/follow?followingId=${Number(following)}`,
+    const res: Response = await fetchAsyncToBackEnd(
+      `/follow?followingId=${Number(following)}`,
       {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-        },
       }
     );
     setIsFollowing(false);

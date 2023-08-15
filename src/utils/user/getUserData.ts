@@ -1,5 +1,6 @@
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { useEffect, useState } from "react";
+import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
 export interface UserData {
   id: number;
@@ -17,7 +18,7 @@ export function getUserData(id: number | undefined) {
   const fetchUserInfo = async (id: number | undefined) => {
     try {
       if (typeof id !== "undefined") {
-        const res = await fetch(`http://127.0.0.1:3001/user/${id}`);
+        const res = await fetchAsyncToBackEnd(`/user/${id}`);
         const userData = await res.json();
         setUserData(userData);
         setIsLoading(false);
