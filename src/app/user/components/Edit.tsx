@@ -19,12 +19,12 @@ import {
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
-import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { getMyData } from "@/utils/user/getMyData";
 import BaseHeading from "@/ui/Typo/Heading";
 import BaseInput from "@/ui/Input/Input";
 import FileInput from "@/ui/Input/FileInput";
 import FullBox from "@/ui/Box/FullBox";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 type FormData = {
   name: string;
@@ -56,12 +56,8 @@ const Edit = () => {
 
   const checkDuplicateName = async (name: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/user/check-name`, {
+      const res = await fetchAsyncToBackEnd(`/user/check-name?name=${name}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
       });
       const data = await res.json();
       return data.isDuplicate;
@@ -73,6 +69,7 @@ const Edit = () => {
 
   const handleNameValidation = async () => {
     const finalName = inputName || userData?.name || "";
+    const numericRegex = /^[0-9]+$/;
     const nameRegex = /^[a-zA-Z0-9]+$/;
 
     if (!inputName) {
@@ -98,6 +95,16 @@ const Edit = () => {
     if (finalName.length > 20) {
       toast({
         description: "이름은 20자 이하여야 합니다.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      setIsNameValid(2);
+      return;
+    }
+    if (numericRegex.test(finalName)) {
+      toast({
+        description: "숫자로만 구성된 이름은 사용이 불가합니다.",
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -166,11 +173,8 @@ const Edit = () => {
       formData.append("file", selectedFile);
       formData.append("filename", selectedFile.name);
 
-      const res = await fetch("http://127.0.0.1:3001/user/upload", {
+      const res = await fetchAsyncToBackEnd("/user/upload", {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-        },
         body: formData,
       });
       if (!res.ok) {
@@ -178,10 +182,9 @@ const Edit = () => {
       }
     }
     setIsUploading(true);
-    const res = await fetch("http://127.0.0.1:3001/user", {
+    const res = await fetchAsyncToBackEnd("/user", {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${getTokenClient()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
