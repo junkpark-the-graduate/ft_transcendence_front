@@ -1,17 +1,14 @@
-import { getTokenClient } from "../auth/getTokenClient";
+import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
 export const block = async (
   blocking: number | undefined,
   setIsBlocking: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const res: Response = await fetch(
-      `http://127.0.0.1:3001/block?blockingId=${Number(blocking)}`,
+    const res: Response = await fetchAsyncToBackEnd(
+      `/block?blockingId=${Number(blocking)}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-        },
       }
     );
     setIsBlocking(true);
@@ -26,13 +23,10 @@ export const unblock = async (
   setIsBlocking: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const res: Response = await fetch(
-      `http://127.0.0.1:3001/block?blockingId=${Number(blocking)}`,
+    const res: Response = await fetchAsyncToBackEnd(
+      `/block?blockingId=${Number(blocking)}`,
       {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-        },
       }
     );
     setIsBlocking(false);

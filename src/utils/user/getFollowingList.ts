@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTokenClient } from "../auth/getTokenClient";
+import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
 export function getFollowingList(userId: number | undefined) {
   const [followings, setFollowings] = useState<number[]>([]);
@@ -8,11 +8,7 @@ export function getFollowingList(userId: number | undefined) {
   const fetchFollowings = async () => {
     try {
       if (typeof userId !== "undefined") {
-        const res = await fetch(`http://127.0.0.1:3001/follow/userid`, {
-          headers: {
-            Authorization: `Bearer ${getTokenClient()}`,
-          },
-        });
+        const res = await fetchAsyncToBackEnd(`/follow/userid`);
         const data = await res.json();
         setIsLoading(false);
         setFollowings(data.map((x: any) => x.followingId));
