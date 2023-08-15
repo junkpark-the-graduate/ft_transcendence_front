@@ -53,6 +53,10 @@ export default function Dashboard({ userId }: { userId: number | null }) {
     if (userId) {
       fetchAsyncToBackEnd(`/game/by-ftid/${userId}?limit=10&offset=0`).then(
         (res) => {
+          if (res.status !== 200) {
+            setNotFound(true);
+            return;
+          }
           res.json().then((matchHistory: Array<MatchHistory>) => {
             setMatchHistory(matchHistory);
           });
@@ -64,6 +68,10 @@ export default function Dashboard({ userId }: { userId: number | null }) {
     if (!userId && user) {
       fetchAsyncToBackEnd(`/game/by-ftid/${user.id}?limit=10&offset=0`).then(
         (res) => {
+          if (res.status !== 200) {
+            setNotFound(true);
+            return;
+          }
           res.json().then((matchHistory: Array<MatchHistory>) => {
             setMatchHistory(matchHistory);
           });
@@ -74,32 +82,30 @@ export default function Dashboard({ userId }: { userId: number | null }) {
 
   return (
     <>
-      {!notFound ? (
-        user ? (
-          <Flex p={4} direction="column">
-            <Divider borderColor="#A0A0A3" mt={2} mb={4} />
-            {userId ? (
-              <UserDetail userData={user} />
-            ) : (
-              <MyDetail userData={user} />
-            )}
-            <Divider borderColor="#A0A0A3" my={6} />
-            <Box flex={5}>
-              <Flex>
-                <UserRank id={user.id} />
-                <UserScore userData={user} />
-                <UserStats id={user.id} />
-              </Flex>
-              <UserMatchHistory id={user.id} matchHistory={matchHistory} />
-            </Box>
-          </Flex>
-        ) : (
-          <Center w="full" h="full" alignItems="center">
-            <Spinner size="xl" />
-          </Center>
-        )
-      ) : (
+      {notFound ? (
         <Custom404 />
+      ) : user ? (
+        <Flex p={4} direction="column">
+          <Divider borderColor="#A0A0A3" mt={2} mb={4} />
+          {userId ? (
+            <UserDetail userData={user} />
+          ) : (
+            <MyDetail userData={user} />
+          )}
+          <Divider borderColor="#A0A0A3" my={6} />
+          <Box flex={5}>
+            <Flex>
+              <UserRank id={user.id} />
+              <UserScore userData={user} />
+              <UserStats id={user.id} />
+            </Flex>
+            <UserMatchHistory id={user.id} matchHistory={matchHistory} />
+          </Box>
+        </Flex>
+      ) : (
+        <Center w="full" h="full" alignItems="center">
+          <Spinner size="xl" />
+        </Center>
       )}
     </>
   );
