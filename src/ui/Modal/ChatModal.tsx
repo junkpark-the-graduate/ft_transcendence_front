@@ -14,15 +14,17 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import BaseButton from "../Button/Button";
-import { UserData } from "@/utils/user/getUserData";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
-import BlockButton from "../Button/BlockButton";
-import FollowButton from "../Button/FollowButton";
 import { useRouter } from "next/navigation";
 import DmBaseButton from "../Button/DmBaseButton";
 import { useEffect, useState } from "react";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import Cookies from "js-cookie";
+import ChatModalButtons from "../Button/ChatModalButtons";
+
+interface IBlockingUserId {
+  blockingId: number;
+}
 
 interface ChatModalProps {
   channelId: number;
@@ -30,6 +32,9 @@ interface ChatModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   user?: any;
+  setBlockingUserIdList: React.Dispatch<
+    React.SetStateAction<IBlockingUserId[]>
+  >;
 }
 
 const ChatModal: React.FC<ChatModalProps> = ({
@@ -38,27 +43,24 @@ const ChatModal: React.FC<ChatModalProps> = ({
   isOpen,
   setIsOpen,
   user,
+  setBlockingUserIdList,
   ...props
 }) => {
   const router = useRouter();
-  const [rank, setRank] = useState(0);
-  const [userData, setUserData] = useState<UserData | null | undefined>(null);
-  const [myData, setMyData] = useState<UserData | null | undefined>(null);
+  const [memberData, setMemberData] = useState<any>(null);
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
+
+  async function getUserData(userId: number) {
+    const res = await fetchAsyncToBackEnd(`/user/${userId}`);
+    const resJson = await res.json();
+    return resJson;
+  }
+
   useEffect(() => {
     if (!memberId) return;
-
-    fetchAsyncToBackEnd(`/user/${memberId}`).then((res: any) => {
-      res.json().then((data: any) => {
-        setUserData(data);
-      });
-    });
-
-    fetchAsyncToBackEnd(`/user/ranking/${memberId}`).then((res: any) => {
-      res.json().then((data: any) => {
-        setRank(data.rank);
-      });
+    getUserData(memberId).then((res) => {
+      setMemberData(res);
     });
   }, [memberId]);
 
@@ -83,14 +85,13 @@ const ChatModal: React.FC<ChatModalProps> = ({
     // TODO muteTime 지금 완전 짧게 되어있으니까 수정해야함!
     if (res.status < 300) {
       toast({
-        title: `${userData?.name} is muted`,
+        title: `${memberData?.name} is muted`,
         status: "success",
         duration: 9000,
         isClosable: true,
       });
     }
   };
-  console.log("user", user);
 
   return (
     <Box>
@@ -107,17 +108,21 @@ const ChatModal: React.FC<ChatModalProps> = ({
         >
           <ModalHeader>
             <Flex>
-              <Avatar size="xl" name={userData?.name} src={userData?.image} />
+              <Avatar
+                size="xl"
+                name={memberData?.name}
+                src={memberData?.image}
+              />
               <Box ml={8}>
                 <Text fontSize={24} mb={2}>
-                  {userData?.name}
+                  {memberData?.name}
                 </Text>
                 <Text fontSize={16} textColor="#A0A0A3">
-                  42 id: {userData?.id}
+                  42 id: {memberData?.id}
                 </Text>
                 <Text fontSize={16} textColor="#A0A0A3">
                   status:{" "}
-                  {userData?.status === EUserStatus.online
+                  {memberData?.status === EUserStatus.online
                     ? "online"
                     : "offline"}
                 </Text>
@@ -133,17 +138,12 @@ const ChatModal: React.FC<ChatModalProps> = ({
           >
             <Center>
               <Stack>
-                <FollowButton
-                  myId={myData?.id}
-                  userId={userData?.id}
-                  icon={false}
+                <ChatModalButtons
+                  myId={user?.id}
+                  userId={memberData?.id}
+                  setBlockingUserIdList={setBlockingUserIdList}
                 />
-                <BlockButton
-                  myId={myData?.id}
-                  userId={userData?.id}
-                  icon={false}
-                />
-                <DmBaseButton userId={userData?.id} icon={false} />
+                <DmBaseButton userId={memberData?.id} icon={false} />
                 <BaseButton
                   fontSize={14}
                   size="sm"
@@ -152,7 +152,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   bg="#414147"
                   style={{ whiteSpace: "nowrap" }}
                   onClick={() => {
-                    router.push(`/user/profile/${userData?.id}`);
+                    router.push(`/user/profile/${memberData?.id}`);
                   }}
                 />
                 <BaseButton

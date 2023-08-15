@@ -37,12 +37,17 @@ interface IUser {
 
 interface IChat {
   message: string;
+  isBlocked: boolean;
   user: IUser;
 }
 
 interface IChatProps {
   channelId: number;
   channelMembers: any[];
+}
+
+interface IBlockingUserId {
+  blockingId: number;
 }
 
 const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
@@ -57,17 +62,21 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   const router = useRouter();
   const toast = useToast();
   const [directChannelName, setDirectChannelName] = useState<string>("");
-  const [chatHistoryPage, setChatHistoryPage] = useState<number>(2);
+  const [chatHistoryPage, setChatHistoryPage] = useState<number>(1);
   const [ref, inView] = useInView({
     threshold: 0.5,
   });
-  const [blockingUserList, setBlockingUserList] = useState<any[]>([]);
+  const [blockingUserIdList, setBlockingUserIdList] = useState<
+    IBlockingUserId[]
+  >([]);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  async function getBlockingUserList() {
+  async function getBlockingUserIdList() {
     const res = await fetchAsyncToBackEnd("/block/userid");
-    return await res.json();
+    const resJson = await res.json();
+    console.log("blockingList", resJson);
+    return resJson;
   }
 
   const getUser = async () => {
@@ -78,7 +87,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   async function getChannel() {
     const res = await fetchAsyncToBackEnd(`/channel/${channelId}`);
     const resJson = await res.json();
-    console.log(resJson);
     return resJson;
   }
 
@@ -89,11 +97,14 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
 
   function filterBlockingUserMessage(chatList: IChat[]) {
     const filteredChatList = chatList.map((chat) => {
-      const isBlocked = blockingUserList.some(
+      const isBlocked = blockingUserIdList.some(
         (blockingUser) => blockingUser.blockingId === chat.user.id
       );
       if (isBlocked) {
-        chat.message = "This message is blocked";
+        chat.isBlocked = true;
+        // chat.message = "This message is blocked";
+      } else {
+        chat.isBlocked = false;
       }
       return chat;
     });
@@ -122,8 +133,8 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
       setChannel(res);
     });
 
-    getBlockingUserList().then((res: any) => {
-      setBlockingUserList(res);
+    getBlockingUserIdList().then((res: any) => {
+      setBlockingUserIdList(res);
     });
   }, []);
 
@@ -188,20 +199,24 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     });
 
     socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
-      setNewChatHistory(chatHistory.chatHistory);
       setChatList((prev) => [
         ...filterBlockingUserMessage(chatHistory.chatHistory),
         ...prev,
       ]);
+      setNewChatHistory(chatHistory.chatHistory);
     });
-
-    socketIo.emit("get_chat_history", { page: 1 });
 
     return () => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
     };
-  }, [channelId, accessToken, blockingUserList]);
+  }, [channelId, accessToken]);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.emit("get_chat_history", { page: chatHistoryPage });
+    setChatHistoryPage((prev) => prev + 1);
+  }, [socket]);
 
   useEffect(() => {
     if (inView && socket) {
@@ -210,11 +225,17 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     }
   }, [inView]);
 
+  useEffect(() => {
+    if (!socket) return;
+    setChatList(filterBlockingUserMessage(chatList));
+  }, [socket, blockingUserIdList]);
+
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
     if (message && socket) {
       const chatData = {
         message,
+        isBlocked: false,
         user: {
           id: user.id,
           name: user.name,
@@ -264,7 +285,6 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
     }
   };
   const selectUserHandler = (userId: number) => {
-    console.log("selectUserHandler", userId);
     setSelectedUserId(userId);
     setIsModalOpen(true);
   };
@@ -322,6 +342,7 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
         <div ref={ref}></div>
         {chatList.map((chatItem, index) => {
           const isCurrentUser = chatItem.user.id === user.id;
+
           return (
             <Stack
               key={index}
@@ -348,7 +369,10 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
                     onClick={() => selectUserHandler(chatItem.user.id)}
                   >
                     <Text fontSize="md" color={"black"}>
-                      {chatItem.user.name} : {chatItem.message}
+                      {chatItem.user.name} :{" "}
+                      {chatItem.isBlocked
+                        ? "this message is blocked"
+                        : chatItem.message}
                     </Text>
                   </Box>
                 )}
@@ -392,7 +416,8 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
         memberId={selectedUserId}
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
-        user={channelMembers.find((member) => member.user.id === user.id)}
+        user={channelMembers?.find((member) => member.user.id === user.id)}
+        setBlockingUserIdList={setBlockingUserIdList}
       />
     </Box>
   );
