@@ -213,10 +213,9 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
   }, [channelId, accessToken]);
 
   useEffect(() => {
-    if (!socket) return;
-    socket.emit("get_chat_history", { page: chatHistoryPage });
-    setChatHistoryPage((prev) => prev + 1);
-  }, [socket]);
+    if (!socket || !newChatHistory) return;
+    setChatList((prev) => [...filterBlockingUserMessage(prev)]);
+  }, [socket, newChatHistory]);
 
   useEffect(() => {
     if (inView && socket) {
