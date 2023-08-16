@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTokenClient } from "../auth/getTokenClient";
+import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
 export function getBlockingList(userId: number | undefined) {
   const [blockings, setBlockings] = useState<number[]>([]);
@@ -8,11 +8,7 @@ export function getBlockingList(userId: number | undefined) {
   const fetchBlockings = async () => {
     try {
       if (typeof userId !== "undefined") {
-        const res = await fetch(`http://127.0.0.1:3001/block/userid`, {
-          headers: {
-            Authorization: `Bearer ${getTokenClient()}`,
-          },
-        });
+        const res = await fetchAsyncToBackEnd(`/block/userid`);
         const data = await res.json();
         setIsLoading(false);
         setBlockings(data.map((x: any) => x.blockingId));

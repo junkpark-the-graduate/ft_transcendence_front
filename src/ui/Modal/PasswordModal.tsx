@@ -16,6 +16,7 @@ import {
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import BaseButton from "../Button/Button";
+import BaseInput from "../Input/Input";
 
 interface PasswordModalProps {
   isOpen: boolean;
@@ -92,7 +93,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
           <ModalBody mx={3} mb={6}>
             <form onSubmit={handleEnter}>
               <Flex>
-                <Input
+                <BaseInput
                   color="white"
                   placeholder="password"
                   value={password}

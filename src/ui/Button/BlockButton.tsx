@@ -30,13 +30,13 @@ export default function BlockButton({
   }, [followingList, blockingList, userId]);
 
   const handleBlock = async () => {
-    await block(myId, userId, () => setIsBlocking(true));
+    await block(userId, () => setIsBlocking(true));
     if (isFollowing === true)
-      await unfollow(myId, userId, () => setIsFollowing(false));
+      await unfollow(userId, () => setIsFollowing(false));
   };
 
   const handleUnblock = async () => {
-    await unblock(myId, userId, () => setIsBlocking(false));
+    await unblock(userId, () => setIsBlocking(false));
   };
 
   return icon ? (
@@ -56,7 +56,7 @@ export default function BlockButton({
   ) : (
     <Flex>
       <BaseButton
-        w="90px"
+        w="85px"
         flex="1"
         fontSize={14}
         mr={2}

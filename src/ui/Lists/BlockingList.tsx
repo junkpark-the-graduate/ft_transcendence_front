@@ -19,18 +19,18 @@ import BaseButton from "../Button/Button";
 import { GoCircleSlash } from "react-icons/go";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 
-function BlockingListItem({ myId, userId }: { myId: number; userId: number }) {
+function BlockingListItem({ userId }: { userId: number }) {
   const userData = getUserData(userId);
   const [isBlocking, setIsBlocking] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
 
   const handleBlock = async () => {
-    await block(myId, userId, () => setIsBlocking(true));
-    await unfollow(myId, userId, () => setIsFollowing(false));
+    await block(userId, () => setIsBlocking(true));
+    await unfollow(userId, () => setIsFollowing(false));
   };
 
   const handleUnblock = async () => {
-    await unblock(myId, userId, () => setIsBlocking(false));
+    await unblock(userId, () => setIsBlocking(false));
   };
 
   return (
@@ -71,7 +71,7 @@ export default function BlockingList() {
         <Stack spacing={2}>
           {blockings.map((blockings, index, array) => (
             <React.Fragment key={blockings}>
-              <BlockingListItem myId={myId} userId={Number(blockings)} />
+              <BlockingListItem userId={Number(blockings)} />
               {index !== array.length - 1 && <Divider borderColor="#414147" />}
             </React.Fragment>
           ))}

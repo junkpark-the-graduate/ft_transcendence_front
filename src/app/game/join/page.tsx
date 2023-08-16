@@ -83,7 +83,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
                   {`Game Type: ${gameResult.gameType}`}
                 </Text>
                 <Text fontSize={16} bg="#171717" px={4} borderRadius={5}>
-                  {`Winner:${gameResult.gameWinner}`}
+                  {`Winner: ${gameResult.gameWinner}`}
                 </Text>
                 <Text fontSize={16} bg="#171717" px={4} borderRadius={5}>
                   Score: {gameResult.score}

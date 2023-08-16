@@ -53,6 +53,9 @@ export default function UserStats({ id }: { id: number }) {
   useEffect(() => {
     fetchAsyncToBackEnd(`/game/by-ftid/${id}?limit=1000&offset=0`).then(
       (res) => {
+        if (res.status != 200) {
+          return;
+        }
         res.json().then((totalRecords: GameRecord[]) => {
           const getWinGame = (records: GameRecord[]) => {
             return records.filter((record) => {
