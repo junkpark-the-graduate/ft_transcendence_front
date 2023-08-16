@@ -11,8 +11,9 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
-import { GoX } from "react-icons/go";
+import { GoTrash } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
+import ChannelInput from "@/ui/Input/ChannelInput";
 
 interface Props {
   channelId: number;
@@ -27,6 +28,11 @@ const ChanneBannedMemberlList: React.FC<Props> = ({
 }) => {
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
+  const [tmpMembers, setTmpMembers] = useState<any[]>([]);
+
+  useEffect(() => {
+    setTmpMembers(bannedMembers);
+  }, [bannedMembers]);
 
   async function getBannedMembers() {
     const res = await fetch(
@@ -86,10 +92,32 @@ const ChanneBannedMemberlList: React.FC<Props> = ({
     }
   }
 
+  async function searchChannelMemberHandler(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    if (event.target.value === "") {
+      setTmpMembers(bannedMembers);
+    } else {
+      const tmp: any[] = [];
+      bannedMembers.map((m) => {
+        if (m.user.name.includes(event.target.value)) {
+          tmp.push(m);
+        }
+      });
+      setTmpMembers(tmp);
+    }
+  }
+
   return (
     <Box>
+      <ChannelInput
+        placeholder="search channel member"
+        onChange={(event) => {
+          searchChannelMemberHandler(event);
+        }}
+      />
       <Stack spacing={2} mt={4} px={2}>
-        {bannedMembers.map((member, index) => (
+        {tmpMembers.map((member, index) => (
           <React.Fragment key={member.user.id}>
             <HStack>
               <Avatar
@@ -102,8 +130,8 @@ const ChanneBannedMemberlList: React.FC<Props> = ({
               <Box marginLeft={"auto"}>
                 <BaseIconButton
                   aria-label="ban"
-                  icon={<GoX />}
-                  size="m"
+                  icon={<GoTrash />}
+                  size="xs"
                   ml={2}
                   onClick={() => deleteBannedMemberHandler(member)}
                 />
