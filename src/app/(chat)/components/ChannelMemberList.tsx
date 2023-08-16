@@ -30,7 +30,7 @@ function ChannelMemberListItem({ userId }: { userId: number | undefined }) {
           boxSize="1em"
         />
       </Avatar>
-      <ProfileModal userData={userData} />
+      {userData?.name}
       <Spacer />
       <Flex>
         <DmIconButton userId={userId} icon={<GoComment />} aria-label="dm" />
