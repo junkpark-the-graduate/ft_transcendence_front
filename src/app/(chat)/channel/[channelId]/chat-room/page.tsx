@@ -27,6 +27,7 @@ export default function Page({ params }: { params: { channelId: number } }) {
         <ChatRoom
           channelId={params.channelId}
           channelMembers={channelMembers}
+          setChannelMembers={setChannelMembers}
         />
       }
       side={

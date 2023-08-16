@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Stack,
@@ -35,6 +36,8 @@ interface ChatModalProps {
   setBlockingUserIdList: React.Dispatch<
     React.SetStateAction<IBlockingUserId[]>
   >;
+  channelMembers: any[];
+  setChannelMembers: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ChatModal: React.FC<ChatModalProps> = ({
@@ -44,12 +47,15 @@ const ChatModal: React.FC<ChatModalProps> = ({
   setIsOpen,
   user,
   setBlockingUserIdList,
+  channelMembers,
+  setChannelMembers,
   ...props
 }) => {
   const router = useRouter();
   const [memberData, setMemberData] = useState<any>(null);
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
+  const [isChannelMember, setIsChannelMember] = useState<boolean>(false);
 
   async function getUserData(userId: number) {
     const res = await fetchAsyncToBackEnd(`/user/${userId}`);
@@ -62,6 +68,13 @@ const ChatModal: React.FC<ChatModalProps> = ({
     getUserData(memberId).then((res) => {
       setMemberData(res);
     });
+
+    if (channelMembers) {
+      //channelMembers에 memberId가 있는지 확인
+      const ret = channelMembers.some((member) => member.user.id === memberId);
+      setIsChannelMember(ret);
+      console.log("ret", ret);
+    }
   }, [memberId]);
 
   const onClose = () => {
@@ -90,6 +103,74 @@ const ChatModal: React.FC<ChatModalProps> = ({
         duration: 9000,
         isClosable: true,
       });
+    }
+  };
+
+  const handleBan = async () => {
+    if (confirm(`정말로 ${memberData.name} 유저를 차단하시겠습니까?`)) {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/banned-member?memberId=${memberId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const resJson = await res.json();
+
+      if (res.status > 299) {
+        toast({
+          title: "차단에 실패하였습니다.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: `${memberData.name} 유저가 차단되었습니다.`,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        setIsChannelMember(false);
+        setChannelMembers(channelMembers.filter((m) => m.user.id !== memberId));
+      }
+    }
+  };
+
+  const handleKick = async () => {
+    if (confirm(`정말로 ${memberData.name} 유저를 쫓아내겠습니까?`)) {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/kicked-member?memberId=${memberId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const resJson = await res.json();
+
+      if (res.status > 299) {
+        toast({
+          title: "차단에 실패하였습니다.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: `${memberData.name} 유저를 채널에서 쫓아냈습니다.`,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        setIsChannelMember(false);
+        setChannelMembers(channelMembers.filter((m) => m.user.id !== memberId));
+      }
     }
   };
 
@@ -166,7 +247,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                     console.log("해당 유저 게임초대");
                   }}
                 />
-                {user?.isAdmin && (
+                {user?.isAdmin && isChannelMember && (
                   <BaseButton
                     fontSize={14}
                     size="sm"
@@ -177,9 +258,36 @@ const ChatModal: React.FC<ChatModalProps> = ({
                     style={{ whiteSpace: "nowrap" }}
                   />
                 )}
+                {user?.isAdmin && isChannelMember && (
+                  <BaseButton
+                    fontSize={14}
+                    size="sm"
+                    text="ban"
+                    mr={2}
+                    onClick={handleBan}
+                    bg="#414147"
+                    style={{ whiteSpace: "nowrap" }}
+                  />
+                )}
+                {user?.isAdmin && isChannelMember && (
+                  <BaseButton
+                    fontSize={14}
+                    size="sm"
+                    text="kick"
+                    mr={2}
+                    onClick={handleKick}
+                    bg="#414147"
+                    style={{ whiteSpace: "nowrap" }}
+                  />
+                )}
               </Stack>
             </Center>
           </ModalBody>
+          <ModalFooter>
+            <Text textAlign="center" w="full" fontSize={16}>
+              {!isChannelMember && "채널에 없는 유저입니다"}
+            </Text>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>

@@ -44,13 +44,18 @@ interface IChat {
 interface IChatProps {
   channelId: number;
   channelMembers: any[];
+  setChannelMembers: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 interface IBlockingUserId {
   blockingId: number;
 }
 
-const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
+const ChatRoom: React.FC<IChatProps> = ({
+  channelId,
+  channelMembers,
+  setChannelMembers,
+}) => {
   const [user, setUser] = useState<{ [key: string]: any }>({});
   const [channel, setChannel] = useState<{ [key: string]: any }>({});
   const [message, setMessage] = useState<string>("");
@@ -417,6 +422,8 @@ const ChatRoom: React.FC<IChatProps> = ({ channelId, channelMembers }) => {
         setIsOpen={setIsModalOpen}
         user={channelMembers?.find((member) => member.user.id === user.id)}
         setBlockingUserIdList={setBlockingUserIdList}
+        channelMembers={channelMembers}
+        setChannelMembers={setChannelMembers}
       />
     </Box>
   );

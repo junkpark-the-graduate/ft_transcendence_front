@@ -30,7 +30,7 @@ export default function ChatModalButtons({
   const [blockingList, setBlockingList] = useState<any[]>([]);
 
   async function getFollowingList(myId: number | undefined) {
-    const res = await fetchAsyncToBackEnd(`/follow/${myId}`);
+    const res = await fetchAsyncToBackEnd(`/follow/userId`);
     const resJson = await res.json();
     console.log("follwingList", resJson);
     return resJson;

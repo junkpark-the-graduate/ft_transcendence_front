@@ -84,7 +84,7 @@ const ChannelMemberlList: React.FC<Props> = ({
   }
 
   async function banMemberHandler(member: any) {
-    if (confirm(`정말로 해당 ${member.user.name}} 차단하시겠습니까?`)) {
+    if (confirm(`정말로 ${member.user.name} 유저를 차단하시겠습니까?`)) {
       const res = await banMember(member.user.id);
       if (res.status > 299) {
         toast({
@@ -121,7 +121,7 @@ const ChannelMemberlList: React.FC<Props> = ({
   }
 
   async function kickMemberHandler(member: any) {
-    if (confirm(`정말로 해당 ${member.user.name}}를 쫓아내겠습니까?`)) {
+    if (confirm(`정말로 ${member.user.name} 유저를 쫓아내겠습니까?`)) {
       const res = await banMember(member.user.id);
       if (res.status > 299) {
         toast({
