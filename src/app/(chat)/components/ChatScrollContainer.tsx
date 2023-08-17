@@ -77,7 +77,7 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
       console.log("loadingCount", loadingCount);
 
       // 로딩 초기
-      if (loadingCount === 0) {
+      if (loadingCount < 2) {
         outerDiv.current.scrollTop = outerDiv.current.scrollHeight;
       }
       // 새로운 채팅 기록이 없을 때
@@ -107,7 +107,7 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
     <Box
       ref={outerDiv}
       position="relative"
-      height="80%"
+      height="85%"
       pr={5}
       overflowY="scroll"
       {...props}
