@@ -339,7 +339,7 @@ const ChatRoom: React.FC<IChatProps> = ({
   };
 
   return (
-    <Box w="full" h="full" borderRadius="8px" px={2} py={1}>
+    <Box w="full" h="83vh" borderRadius="8px">
       <ChatHeader />
       <Divider mt={2} mb={3} />
       <ChatScrollContainer newChat={newChat} newChatHistory={newChatHistory}>

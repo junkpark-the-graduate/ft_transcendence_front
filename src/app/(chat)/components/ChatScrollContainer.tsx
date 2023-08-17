@@ -107,7 +107,7 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
     <Box
       ref={outerDiv}
       position="relative"
-      height="80%"
+      height="85%"
       pr={5}
       overflowY="scroll"
       {...props}
