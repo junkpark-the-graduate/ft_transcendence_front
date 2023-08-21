@@ -76,6 +76,7 @@ const ChatRoom: React.FC<IChatProps> = ({
   >([]);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [inviteGameRoomId, setInviteGameRoomId] = useState<string>("");
 
   async function getBlockingUserIdList() {
     const res = await fetchAsyncToBackEnd("/block/userid");
@@ -203,6 +204,10 @@ const ChatRoom: React.FC<IChatProps> = ({
       });
     });
 
+    socketIo.on("open_invite_game_modal", (data: { roomId: string }) => {
+      console.log("open_invite_game_modal", data);
+    });
+
     socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
       setChatList((prev) => [
         ...filterBlockingUserMessage(chatHistory.chatHistory),
@@ -292,6 +297,15 @@ const ChatRoom: React.FC<IChatProps> = ({
     setSelectedUserId(userId);
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    if (!socket || !inviteGameRoomId) return;
+    console.log("inviteGameRoom", inviteGameRoomId);
+    socket.emit("invite_game", {
+      roomId: inviteGameRoomId,
+      memberId: selectedUserId,
+    });
+  }, [inviteGameRoomId]);
 
   const ChatHeader = () => {
     return (
@@ -424,6 +438,7 @@ const ChatRoom: React.FC<IChatProps> = ({
         setBlockingUserIdList={setBlockingUserIdList}
         channelMembers={channelMembers}
         setChannelMembers={setChannelMembers}
+        setInviteGameRoomId={setInviteGameRoomId}
       />
     </Box>
   );

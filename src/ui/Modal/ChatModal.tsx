@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import Cookies from "js-cookie";
 import ChatModalButtons from "../Button/ChatModalButtons";
+import { socket } from "@/app/game/socket";
 
 interface IBlockingUserId {
   blockingId: number;
@@ -38,6 +39,7 @@ interface ChatModalProps {
   >;
   channelMembers: any[];
   setChannelMembers: React.Dispatch<React.SetStateAction<any[]>>;
+  setInviteGameRoomId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ChatModal: React.FC<ChatModalProps> = ({
@@ -49,6 +51,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   setBlockingUserIdList,
   channelMembers,
   setChannelMembers,
+  setInviteGameRoomId,
   ...props
 }) => {
   const router = useRouter();
@@ -174,6 +177,13 @@ const ChatModal: React.FC<ChatModalProps> = ({
     }
   };
 
+  const handleGameInvite = () => {
+    socket.emit("create_room", (roomId: any) => {
+      setInviteGameRoomId(roomId);
+      // router.push(`/game/join?roomId=${roomId}`);
+    });
+  };
+
   return (
     <Box>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -243,9 +253,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   mr={2}
                   bg="#414147"
                   style={{ whiteSpace: "nowrap" }}
-                  onClick={() => {
-                    console.log("해당 유저 게임초대");
-                  }}
+                  onClick={handleGameInvite}
                 />
                 {user?.isAdmin && isChannelMember && (
                   <BaseButton
