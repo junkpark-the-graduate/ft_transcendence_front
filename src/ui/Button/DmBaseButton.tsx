@@ -1,22 +1,20 @@
 import { useEffect } from "react";
 import BaseButton from "@/ui/Button/Button";
-import { GoCircleSlash, GoComment } from "react-icons/go";
-import { Flex, useToast } from "@chakra-ui/react";
-import { block, unblock } from "@/utils/user/block";
-import { getBlockingList } from "@/utils/user/getBlockingList";
-import { unfollow } from "@/utils/user/follow";
-import { getFollowingList } from "@/utils/user/getFollowingList";
-import { useAppContext } from "@/app/providers";
+import { ButtonProps, Flex, useToast } from "@chakra-ui/react";
 import { createDm } from "@/utils/channel/dm";
 import { useRouter } from "next/navigation";
+import { GoComment } from "react-icons/go";
 
-export default function BlockButton({
-  userId,
-  icon,
-}: {
+export interface DmBaseButtonProps extends ButtonProps {
   userId: number | undefined;
   icon: boolean;
-}) {
+}
+
+export default function DmBaseButton({
+  userId,
+  icon,
+  ...props
+}: DmBaseButtonProps) {
   const router = useRouter();
   const toast = useToast();
 
@@ -49,6 +47,7 @@ export default function BlockButton({
         onClick={handleConnectDm}
         bg="#414147"
         style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+        {...props}
       />
     </Flex>
   ) : (
@@ -63,6 +62,7 @@ export default function BlockButton({
         onClick={handleConnectDm}
         bg="#414147"
         style={{ whiteSpace: "nowrap" }} // 텍스트 길이를 고정
+        {...props}
       />
     </Flex>
   );
