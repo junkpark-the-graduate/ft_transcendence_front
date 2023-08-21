@@ -24,7 +24,9 @@ import BaseHeading from "@/ui/Typo/Heading";
 import BaseInput from "@/ui/Input/Input";
 import FileInput from "@/ui/Input/FileInput";
 import FullBox from "@/ui/Box/FullBox";
-import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
+import { uploadUserInfo } from "@/utils/edit/uploadUserInfo";
+import { uploadUserImg } from "@/utils/edit/uploadUserImg";
+import { checkDuplicateName } from "@/utils/edit/checkDuplicateName";
 
 type FormData = {
   name: string;
@@ -54,17 +56,14 @@ const Edit = () => {
     }
   }, [userData]);
 
-  const checkDuplicateName = async (name: string) => {
-    try {
-      const res = await fetchAsyncToBackEnd(`/user/check-name?name=${name}`, {
-        method: "POST",
-      });
-      const data = await res.json();
-      return data.isDuplicate;
-    } catch (error) {
-      console.error("Error checking duplicate name:", error);
-      return false;
-    }
+  const handleToggleAuth = () => {
+    setTwoFactor(!twoFactor);
+    toast({
+      title: `Two-factor authentication ${twoFactor ? "disabled" : "enabled"}`,
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
   };
 
   const handleNameValidation = async () => {
@@ -144,16 +143,6 @@ const Edit = () => {
     setIsNameValid(1);
   };
 
-  const handleToggleAuth = () => {
-    setTwoFactor(!twoFactor);
-    toast({
-      title: `Two-factor authentication ${twoFactor ? "disabled" : "enabled"}`,
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
-  };
-
   async function onSubmit() {
     const newName = inputName || userData?.name || "";
 
@@ -169,35 +158,11 @@ const Edit = () => {
 
     const formData = new FormData();
 
-    if (selectedFile) {
-      formData.append("file", selectedFile);
-      formData.append("filename", selectedFile.name);
-
-      const res = await fetchAsyncToBackEnd("/user/upload", {
-        method: "PATCH",
-        body: formData,
-      });
-      if (!res.ok) {
-        console.log("Failed to update user image");
-      }
-    }
-    setIsUploading(true);
-    const res = await fetchAsyncToBackEnd("/user", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: newName,
-        twoFactorEnabled: twoFactor,
-      }),
-    });
-    if (res.ok) {
-      setIsUploading(false);
+    uploadUserImg(selectedFile, formData, setIsUploading);
+    uploadUserInfo(newName, twoFactor, setIsUploading);
+    if (!isUploading) {
       router.push("/user/profile");
       router.refresh();
-    } else {
-      console.log("Failed to update user");
     }
   }
 
