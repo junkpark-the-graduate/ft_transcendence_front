@@ -30,7 +30,6 @@ export default function GridType3({
         {...props}
       >
         <GridItem
-
           display={{ base: "flex", md: "flex" }}
           colSpan={5}
           rowSpan={15}

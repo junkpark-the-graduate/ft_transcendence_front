@@ -22,6 +22,7 @@ import ChannelBadge from "../Badges/ChannelBadge";
 import { GoSync } from "react-icons/go";
 import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { useInView } from "react-intersection-observer";
+import { set } from "react-hook-form";
 
 interface Props {
   setJoinedChannels: any;
@@ -45,7 +46,11 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
     return <div>Loading...</div>;
   }
 
-  async function getChannels() {
+  async function getChannels(
+    page: number,
+    limit: number,
+    searchKeyword: string
+  ) {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/keyword?page=${page}&limit=${limit}&searchKeyword=${searchKeyword}`,
       {
@@ -61,7 +66,7 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
   }
 
   const getPaginatedChannels = useCallback(async () => {
-    const res = await getChannels();
+    const res = await getChannels(page, limit, searchKeyword);
     setChannels((prevChannels: any) => [...prevChannels, ...res]);
   }, [page, limit, searchKeyword]);
 
@@ -154,8 +159,8 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
   }
 
   async function syncChannelsHandler() {
-    const res = await getChannels();
-    setChannels(res);
+    setPage(1);
+    setChannels([]);
   }
 
   return (

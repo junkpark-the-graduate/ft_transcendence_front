@@ -57,6 +57,9 @@ const ChatRoom: React.FC<IChatProps> = ({
   channelMembers,
   setChannelMembers,
 }) => {
+  const accessToken = Cookies.get("accessToken");
+  const router = useRouter();
+  const toast = useToast();
   const [user, setUser] = useState<{ [key: string]: any }>({});
   const [channel, setChannel] = useState<{ [key: string]: any }>({});
   const [message, setMessage] = useState<string>("");
@@ -64,9 +67,6 @@ const ChatRoom: React.FC<IChatProps> = ({
   const [newChatHistory, setNewChatHistory] = useState<IChat[]>([]);
   const [chatList, setChatList] = useState<IChat[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const accessToken = Cookies.get("accessToken");
-  const router = useRouter();
-  const toast = useToast();
   const [directChannelName, setDirectChannelName] = useState<string>("");
   const [chatHistoryPage, setChatHistoryPage] = useState<number>(1);
   const [ref, inView] = useInView({
@@ -114,26 +114,22 @@ const ChatRoom: React.FC<IChatProps> = ({
       const isBlocked = blockingUserIdList.some(
         (blockingUser) => blockingUser.blockingId === chat.user.id
       );
-      if (isBlocked) {
-        chat.isBlocked = true;
-        // chat.message = "This message is blocked";
-      } else {
-        chat.isBlocked = false;
-      }
+      if (isBlocked) chat.isBlocked = true;
+      else chat.isBlocked = false;
       return chat;
     });
     return filteredChatList;
   }
 
   async function goToAdminPageHandler() {
-    if (user.id !== channel.ownerId) {
+    if (user.id !== channel.ownerId)
       toast({
         title: "You are not the owner of this channel",
         status: "error",
         duration: 9000,
         isClosable: true,
       });
-    } else router.push(`/channel/${channelId}/admin`);
+    else router.push(`/channel/${channelId}/admin`);
   }
 
   useEffect(() => {
