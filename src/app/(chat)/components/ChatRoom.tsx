@@ -28,6 +28,7 @@ import { EChannelType } from "../channel/types/EChannelType";
 import { useInView } from "react-intersection-observer";
 import ChatModal from "@/ui/Modal/ChatModal";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
+import InviteGameModal from "@/ui/Modal/InviteGameModal";
 
 interface IUser {
   id: number;
@@ -77,6 +78,13 @@ const ChatRoom: React.FC<IChatProps> = ({
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [inviteGameRoomId, setInviteGameRoomId] = useState<string>("");
+  const [isInviteGameModalOpen, setIsInviteGameModalOpen] =
+    useState<boolean>(false);
+  const [gameHost, setGameHost] = useState<IUser>({
+    name: "",
+    id: 0,
+    image: "",
+  });
 
   async function getBlockingUserIdList() {
     const res = await fetchAsyncToBackEnd("/block/userid");
@@ -204,9 +212,15 @@ const ChatRoom: React.FC<IChatProps> = ({
       });
     });
 
-    socketIo.on("open_invite_game_modal", (data: { roomId: string }) => {
-      console.log("open_invite_game_modal", data);
-    });
+    socketIo.on(
+      "open_invite_game_modal",
+      (data: { roomId: string; user: IUser }) => {
+        console.log("open_invite_game_modal", data);
+        setInviteGameRoomId(data.roomId);
+        setGameHost(data.user);
+        setIsInviteGameModalOpen(true);
+      }
+    );
 
     socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
       setChatList((prev) => [
@@ -304,6 +318,7 @@ const ChatRoom: React.FC<IChatProps> = ({
     socket.emit("invite_game", {
       roomId: inviteGameRoomId,
       memberId: selectedUserId,
+      user: user,
     });
   }, [inviteGameRoomId]);
 
@@ -439,6 +454,12 @@ const ChatRoom: React.FC<IChatProps> = ({
         channelMembers={channelMembers}
         setChannelMembers={setChannelMembers}
         setInviteGameRoomId={setInviteGameRoomId}
+      />
+      <InviteGameModal
+        isOpen={isInviteGameModalOpen}
+        setIsOpen={setIsInviteGameModalOpen}
+        gameHost={gameHost}
+        roomId={inviteGameRoomId}
       />
     </Box>
   );

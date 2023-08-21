@@ -180,7 +180,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const handleGameInvite = () => {
     socket.emit("create_room", (roomId: any) => {
       setInviteGameRoomId(roomId);
-      // router.push(`/game/join?roomId=${roomId}`);
+      router.push(`/game/join?roomId=${roomId}`);
     });
   };
 

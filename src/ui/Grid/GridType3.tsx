@@ -19,36 +19,26 @@ export default function GridType3({
 }: BaseGridProps) {
   return (
     <FullBox>
+      <NavBar />
       <Grid
-        gridTemplateRows={"repeat(16, 1fr)"}
         gridTemplateColumns={"repeat(7, 1fr)"}
-        w="100%"
-        h="100%"
-        bg="#29292D"
-        borderRadius={"6px"}
+        w="full"
+        h="93%"
         color="white"
         fontWeight="bold"
+        gap={3}
         {...props}
       >
         <GridItem
-          rowSpan={1}
-          colSpan={7}
-          pl={2}
-          pt={0}
-          borderBottom={"#414147 solid 2px"}
-          bg="none"
-        >
-          <NavBar />
-        </GridItem>
-        <GridItem
+
           display={{ base: "flex", md: "flex" }}
-          rowSpan={15}
           colSpan={5}
-          bg="none"
-          borderRight={"#414147 solid 2px"}
+          rowSpan={15}
+          bg="#29292D"
           px={5}
+          my={2}
           py={3}
-          overflowY="auto"
+          borderRadius="8px"
         >
           <Box w="100%" h="100%">
             {children}
@@ -58,7 +48,9 @@ export default function GridType3({
           display={{ base: "flex", md: "flex" }}
           rowSpan={15}
           colSpan={2}
-          bg="none"
+          bg="#29292D"
+          borderRadius="8px"
+          my={2}
           px={3}
           py={4}
           overflowY="auto"

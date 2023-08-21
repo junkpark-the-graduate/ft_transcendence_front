@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import GridType4 from "@/ui/Grid/GridType4";
+import GridType4 from "@/ui/Grid/GridType3";
 import ChannelEdit from "./ChannelEdit";
 import ChannelMemberlList from "./ChannelMemberList";
 import ChannelBannedMemberList from "./ChannelBannedMemberList";
