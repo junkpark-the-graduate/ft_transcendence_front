@@ -48,7 +48,7 @@ export default function CreateChannelModal({
   const toast = useToast();
 
   async function postChannel() {
-    const res = await fetch("http://127.0.0.1:3001/channel", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,

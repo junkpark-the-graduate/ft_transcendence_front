@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 async function verify(twoFactorCode: string) {
   try {
     const res = await fetch(
-      `http://127.0.0.1:3001/auth/tfa-verification?twoFactorCode=${twoFactorCode}`,
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth/tfa-verification?twoFactorCode=${twoFactorCode}`,
       {
         method: "POST",
         headers: {

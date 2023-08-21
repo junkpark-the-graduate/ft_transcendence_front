@@ -19,9 +19,11 @@ import {
   GoSquirrel,
   GoStar,
   GoStarFill,
+  GoX,
 } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { set } from "react-hook-form";
+import ChannelInput from "@/ui/Input/ChannelInput";
 
 interface Props {
   channelId: number;
@@ -42,6 +44,11 @@ const ChannelMemberlList: React.FC<Props> = ({
 }) => {
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
+  const [tmpMembers, setTmpMembers] = React.useState<any[]>([]);
+
+  useEffect(() => {
+    setTmpMembers(members);
+  }, [members]);
 
   async function getChannelMembers() {
     const res = await fetch(
@@ -77,7 +84,7 @@ const ChannelMemberlList: React.FC<Props> = ({
   }
 
   async function banMemberHandler(member: any) {
-    if (confirm(`정말로 해당 ${member.user.name}} 차단하시겠습니까?`)) {
+    if (confirm(`정말로 ${member.user.name} 유저를 차단하시겠습니까?`)) {
       const res = await banMember(member.user.id);
       if (res.status > 299) {
         toast({
@@ -95,6 +102,42 @@ const ChannelMemberlList: React.FC<Props> = ({
         });
         setMembers(members.filter((m) => m.user.id !== member.user.id));
         setBannedMembers([...bannedMembers, member]);
+      }
+    }
+  }
+
+  async function kickMember(memberId: number) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/kicked-member?memberId=${memberId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  }
+
+  async function kickMemberHandler(member: any) {
+    if (confirm(`정말로 ${member.user.name} 유저를 쫓아내겠습니까?`)) {
+      const res = await banMember(member.user.id);
+      if (res.status > 299) {
+        toast({
+          title: "차단에 실패하였습니다.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: `${member.user.name} 유저를 채널에서 쫓아냈습니다.`,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        setMembers(members.filter((m) => m.user.id !== member.user.id));
       }
     }
   }
@@ -141,10 +184,32 @@ const ChannelMemberlList: React.FC<Props> = ({
     setMembers([...members]);
   }
 
+  async function searchChannelMemberHandler(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    if (event.target.value === "") {
+      setTmpMembers(members);
+    } else {
+      const tmp: any[] = [];
+      members.map((m) => {
+        if (m.user.name.includes(event.target.value)) {
+          tmp.push(m);
+        }
+      });
+      setTmpMembers(tmp);
+    }
+  }
+
   return (
     <Box>
+      <ChannelInput
+        placeholder="search channel member"
+        onChange={(event) => {
+          searchChannelMemberHandler(event);
+        }}
+      />
       <Stack spacing={2} mt={4} px={2}>
-        {members.map((member, index) => (
+        {tmpMembers.map((member, index) => (
           <React.Fragment key={member.user.id}>
             <HStack>
               <Avatar
@@ -166,10 +231,17 @@ const ChannelMemberlList: React.FC<Props> = ({
                   />
                   <BaseIconButton
                     aria-label="admin"
+                    icon={<GoX />}
+                    size="m"
+                    ml={2}
+                    onClick={() => kickMemberHandler(member)}
+                  />
+                  <BaseIconButton
+                    aria-label="admin"
                     icon={<GoCircleSlash />}
                     size="xs"
                     ml={2}
-                    onClick={() => adminMemberHandler(member)}
+                    onClick={() => banMemberHandler(member)}
                   />
                 </Box>
               )}

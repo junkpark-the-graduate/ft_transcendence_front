@@ -32,7 +32,7 @@ export default function GridType1({
           my={2}
           py={3}
           borderRadius="8px"
-          overflowY="auto"
+          // overflowY="auto"
         >
           <Box w="100%" h="100%">
             {children}
