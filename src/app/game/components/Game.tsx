@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { socket } from "../socket";
@@ -16,15 +16,16 @@ interface KeyState {
 
 const PADDLE_WIDTH = 8;
 const PADDLE_HEIGHT = 1;
-const keyState: KeyState = {
-  37: false, // left
-  39: false, // right
-};
 
 // TODO refactoring
 export default function Game() {
   const router = useRouter();
   const [score, setScore] = useState("0 : 0");
+  const [isGaming, setIsGaming] = useState(false);
+  const keyState: KeyState = {
+    37: false, // left
+    39: false, // right
+  };
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -84,11 +85,9 @@ export default function Game() {
 
     plane.position.z = -2;
 
-    socket.on("score", (data: any) => {
-      setScore(`${data.score.player1} : ${data.score.player2}`);
-    });
-
     socket.on("game", (data: any) => {
+      setIsGaming(true);
+      setScore(`${data.score.player1} : ${data.score.player2}`);
       paddle.position.x = data.paddle1.x;
       paddle.position.y = data.paddle1.y;
 
@@ -150,8 +149,9 @@ export default function Game() {
     window.addEventListener("keydown", handleKeyDown, true);
     window.addEventListener("keyup", handleKeyUp, true);
 
+    let animationId: any;
     function animate() {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       if (keyState[37]) {
         socket.emit("key_left");
       }
@@ -166,6 +166,7 @@ export default function Game() {
       socket.removeAllListeners();
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animationId);
     };
   }, []);
 
@@ -181,8 +182,19 @@ export default function Game() {
         z-index="100"
         display={"block"}
       >
-        {score}
+        {isGaming ? score : "대기중"}
       </Text>
+      {isGaming ? null : (
+        <Button
+          position="absolute"
+          onClick={() => {
+            socket.emit("leave_room");
+            router.push("/game");
+          }}
+        >
+          나가기
+        </Button>
+      )}
     </Box>
   );
 }

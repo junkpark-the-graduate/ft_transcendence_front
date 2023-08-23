@@ -33,12 +33,16 @@ import { EUserStatus } from "@/app/user/types/EUserStatus";
 import ProfileModal from "../Modal/ProfileModal";
 import Cookies from "js-cookie";
 import DmIconButton from "../Button/DmIconButton";
+import { socket } from "@/app/user/socket";
 
 function FollowingListItem({ userId }: { userId: number | undefined }) {
   const userData = getUserData(userId);
   const router = useRouter();
   const [isBlocking, setIsBlocking] = useState(false);
   const [isFollowing, setIsFollowing] = useState(true);
+
+  // TODO: ここでsocketを使うのはどうかと思う 뭔지 모르겟음
+  // const tmp = socket;
 
   const handleFollow = async () => {
     await follow(userId, () => setIsFollowing(true));
