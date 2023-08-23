@@ -85,6 +85,13 @@ export default function Game() {
 
     plane.position.z = -2;
 
+    socket.on("decline_invitation", () => {
+      alert("초대가 거절되었습니다. 5초 뒤 방을 나갑니다.");
+      setTimeout(() => {
+        router.push("/game");
+      }, 5000);
+    });
+
     socket.on("game", (data: any) => {
       setIsGaming(true);
       setScore(`${data.score.player1} : ${data.score.player2}`);
@@ -176,7 +183,7 @@ export default function Game() {
         position="absolute"
         top="10px"
         fontSize="30px"
-        color="tomato"
+        color="gray"
         width="100%"
         textAlign="center"
         z-index="100"
