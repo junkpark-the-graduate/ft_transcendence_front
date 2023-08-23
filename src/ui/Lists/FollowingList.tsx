@@ -28,12 +28,10 @@ import { getUserData } from "@/utils/user/getUserData";
 import { getMyData } from "@/utils/user/getMyData";
 import { block, unblock } from "@/utils/user/block";
 import { follow, unfollow } from "@/utils/user/follow";
-import { getUserStatus } from "@/utils/user/getUserStatus";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import ProfileModal from "../Modal/ProfileModal";
 import Cookies from "js-cookie";
 import DmIconButton from "../Button/DmIconButton";
-import { socket } from "@/app/user/socket";
 
 function FollowingListItem({ userId }: { userId: number | undefined }) {
   const userData = getUserData(userId);
