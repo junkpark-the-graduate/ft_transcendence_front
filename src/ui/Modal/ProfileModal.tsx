@@ -61,7 +61,14 @@ export default function ProfileModal({
             <Flex>
               <Avatar size="xl" name={userData?.name} src={userData?.image} />
               <Box ml={8}>
-                <Text fontSize={24} mb={2}>
+                <Text
+                  as="button"
+                  fontSize={24}
+                  mb={2}
+                  onClick={() => {
+                    router.push(`/user/profile/${userData?.id}`);
+                  }}
+                >
                   {userData?.name}
                 </Text>
                 <Text fontSize={16} textColor="#A0A0A3">
@@ -104,23 +111,29 @@ export default function ProfileModal({
             </Center>
           </ModalBody>
           <ModalFooter>
-            <FollowButton
-              myId={myData?.id}
-              userId={userData?.id}
-              icon={false}
-            />
-            <BlockButton myId={myData?.id} userId={userData?.id} icon={false} />
-            <DmBaseButton userId={userData?.id} icon={false} />
-            <BaseButton
-              w="85px"
-              flex="1"
-              fontSize={14}
-              size="sm"
-              text="visit"
-              onClick={() => {
-                router.push(`/user/profile/${userData?.id}`);
-              }}
-            />
+            <Flex gap={2}>
+              <FollowButton
+                myId={myData?.id}
+                userId={userData?.id}
+                icon={false}
+              />
+              <BlockButton
+                myId={myData?.id}
+                userId={userData?.id}
+                icon={false}
+              />
+              <DmBaseButton userId={userData?.id} icon={false} />
+              <BaseButton
+                w="85px"
+                flex="1"
+                fontSize={14}
+                size="sm"
+                text="visit"
+                onClick={() => {
+                  router.push(`/user/profile/${userData?.id}`);
+                }}
+              />
+            </Flex>
           </ModalFooter>
         </ModalContent>
       </Modal>

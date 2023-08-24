@@ -58,7 +58,6 @@ export default function FollowButton({
       <BaseButton
         w="85px"
         fontSize={14}
-        mr={2}
         flex="1"
         size="sm"
         text={isFollowing ? "unfollow" : "follow"}

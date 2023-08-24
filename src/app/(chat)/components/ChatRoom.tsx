@@ -404,6 +404,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
             <Stack
               key={index}
               align={isCurrentUser ? "flex-end" : "flex-start"}
+              pl={4}
             >
               <Box
                 maxW="70%"

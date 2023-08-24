@@ -9,7 +9,6 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalOverlay,
   Stack,
   Text,
@@ -227,67 +226,71 @@ const ChatModal: React.FC<ChatModalProps> = ({
             </Flex>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody
-            mx={4}
-            py={4}
-            borderTop={"#A0A0A3 1px solid"}
-            // borderBottom={"#A0A0A3 1px solid"}
-          >
+          <ModalBody mx={4} py={4} borderTop={"#A0A0A3 1px solid"}>
             <Center>
-              <Stack>
-                <Flex>
+              <Stack gap={2}>
+                <Flex gap={2}>
                   <ChatModalButtons
                     myId={user?.id}
                     userId={memberData?.id}
                     setBlockingUserIdList={setBlockingUserIdList}
                   />
-                  <DmBaseButton userId={memberData?.id} icon={false} />
+                  <DmBaseButton w="85px" userId={memberData?.id} icon={false} />
                   <BaseButton
+                    w="85px"
                     isDisabled={!isConnectedMember}
-                    fontSize={14}
+                    flex="1"
                     size="sm"
                     text="invite"
-                    bg="#414147"
                     style={{ whiteSpace: "nowrap" }}
                     onClick={handleGameInvite}
                   />
                 </Flex>
                 <Flex gap={2}>
-                  <BaseButton text="admin" size="sm" flex={1} />
+                  <Button
+                    as={Box}
+                    bg="teal"
+                    textColor="white"
+                    size="sm"
+                    flex={1}
+                    w="85px"
+                    borderRadius={"8px"}
+                    fontSize={15}
+                    px="25px"
+                    fontWeight={800}
+                    _hover={{ bg: "teal" }}
+                    _focus={{ bg: "teal" }}
+                  >
+                    admin
+                  </Button>
                   {user?.isAdmin && (
                     <BaseButton
                       isDisabled={!isConnectedMember}
-                      fontSize={14}
+                      w="85px"
                       size="sm"
                       text="mute"
                       flex={1}
                       onClick={handleMute}
-                      bg="#414147"
-                      style={{ whiteSpace: "nowrap" }}
                     />
                   )}
                   {user?.isAdmin && (
                     <BaseButton
                       isDisabled={!isConnectedMember}
-                      fontSize={14}
+                      w="85px"
                       size="sm"
                       text="ban"
                       flex={1}
                       onClick={handleBan}
-                      bg="#414147"
-                      style={{ whiteSpace: "nowrap" }}
                     />
                   )}
                   {user?.isAdmin && (
                     <BaseButton
                       isDisabled={!isConnectedMember}
-                      fontSize={14}
+                      w="85px"
                       size="sm"
                       text="kick"
                       flex={1}
                       onClick={handleKick}
-                      bg="#414147"
-                      style={{ whiteSpace: "nowrap" }}
                     />
                   )}
                 </Flex>
