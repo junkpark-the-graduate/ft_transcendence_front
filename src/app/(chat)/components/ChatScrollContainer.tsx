@@ -43,7 +43,7 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
       outerDiv.current.scrollTo({
         top: innerHeight - outerHeight,
         left: 0,
-        behavior: "smooth",
+        behavior: "auto",
       });
     }
   }, [children, autoScroll]);
