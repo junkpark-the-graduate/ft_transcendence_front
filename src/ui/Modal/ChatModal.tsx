@@ -7,8 +7,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Stack,
@@ -248,7 +246,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   style={{ whiteSpace: "nowrap" }}
                   onClick={handleGameInvite}
                 />
-                {user?.isAdmin && isChannelMember && (
+                {user?.isAdmin && (
                   <BaseButton
                     isDisabled={!isConnectedMember}
                     fontSize={14}
@@ -287,11 +285,6 @@ const ChatModal: React.FC<ChatModalProps> = ({
               </Stack>
             </Center>
           </ModalBody>
-          <ModalFooter>
-            <Text textAlign="center" w="full" fontSize={16}>
-              {!isChannelMember && "채널에 없는 유저입니다"}
-            </Text>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>

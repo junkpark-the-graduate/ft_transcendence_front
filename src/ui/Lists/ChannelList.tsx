@@ -1,7 +1,6 @@
 "use client";
 
-import React, { use, useCallback, useEffect, useState } from "react";
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Flex,
