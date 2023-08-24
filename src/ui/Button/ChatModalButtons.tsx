@@ -118,7 +118,7 @@ export default function ChatModalButtons({
       return blockingList.some((item) => item.blockingId === Number(userId));
     });
     setIsFollowing(() => {
-      return followingList.some((item) => item.following === Number(userId));
+      return followingList.some((item) => item.followingId === Number(userId));
     });
   }, [blockingList, followingList]);
 
