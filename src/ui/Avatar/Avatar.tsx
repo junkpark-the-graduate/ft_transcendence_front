@@ -8,7 +8,7 @@ export default function BaseAvatar({ ...props }: BaseAvatarProps) {
 
   return (
     <Flex>
-      <Avatar size="sm" src={userData?.image}>
+      <Avatar size="sm" name={userData?.name} src={userData?.image}>
         <AvatarBadge
           bg="green"
           // bg={userData?.status === EUserStatus.online ? "green" : "red"}
