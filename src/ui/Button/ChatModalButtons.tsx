@@ -75,27 +75,23 @@ export default function ChatModalButtons({
     return resJson;
   }
 
-  async function follow(myId: number, userId: number) {
+  async function follow(userId: number) {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow`,
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow?followingId=${userId}`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${getTokenClient()}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          userId: myId,
-          following: Number(userId),
-        }),
       }
     );
     console.log("follow", res);
   }
 
-  async function unfollow(myId: number, userId: number) {
+  async function unfollow(userId: number) {
     await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow/${myId}/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow?followingId=${userId}`,
       {
         method: "DELETE",
         headers: {
@@ -129,7 +125,7 @@ export default function ChatModalButtons({
   const handleBlock = async (): Promise<void> => {
     await block(userId);
     if (isFollowing === true) {
-      await unfollow(myId, userId);
+      await unfollow(userId);
       setIsFollowing(false);
     }
     setBlockingUserIdList((prev) => [...prev, { blockingId: Number(userId) }]);
@@ -145,7 +141,7 @@ export default function ChatModalButtons({
   };
 
   const handleFollow = async () => {
-    await follow(myId, userId);
+    await follow(userId);
     if (isBlocking === true) {
       await unblock(userId);
       setIsBlocking(false);
@@ -157,7 +153,7 @@ export default function ChatModalButtons({
   };
 
   const handleUnfollow = async () => {
-    await unfollow(myId, userId);
+    await unfollow(userId);
     setIsFollowing(false);
   };
 

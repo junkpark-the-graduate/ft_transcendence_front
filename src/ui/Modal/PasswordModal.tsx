@@ -62,7 +62,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
 
     if (res.status < 300) {
       setIsOpen(false);
-      router.push(`/channel/${channelId}/chat`);
+      router.push(`/channel/${channelId}/chat-room`);
     } else {
       setErrorMessage(resJson.message);
     }
