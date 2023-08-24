@@ -1,6 +1,7 @@
 import {
   Avatar,
   AvatarBadge,
+  Badge,
   Box,
   Divider,
   Flex,
@@ -15,7 +16,15 @@ import { EUserStatus } from "@/app/user/types/EUserStatus";
 import DmIconButton from "@/ui/Button/DmIconButton";
 import BaseIconButton from "@/ui/Button/IconButton";
 
-function MemberListItem({ userId }: { userId: number | undefined }) {
+function MemberListItem({
+  userId,
+  isOwner,
+  isAdmin,
+}: {
+  userId: number | undefined;
+  isOwner: boolean;
+  isAdmin: boolean;
+}) {
   const userData = getUserData(userId);
   const router = useRouter();
 
@@ -30,6 +39,8 @@ function MemberListItem({ userId }: { userId: number | undefined }) {
         />
       </Avatar>
       {userData?.name}
+      {isAdmin && !isOwner && <Badge ml={2}>Admin</Badge>}
+      {isAdmin && isOwner && <Badge ml={2}>Owner</Badge>}
       <Spacer />
       <Flex>
         <DmIconButton userId={userId} icon={<GoComment />} aria-label="dm" />
@@ -48,21 +59,35 @@ function MemberListItem({ userId }: { userId: number | undefined }) {
 
 interface IProps {
   connectedMembers: any[];
+  channelMembers: any[];
+  ownerId: number;
 }
 
 export default function ChannelConnectedMemberList({
   connectedMembers,
+  channelMembers,
+  ownerId,
 }: IProps) {
   return (
     <Box>
       <Stack spacing={2}>
         {connectedMembers &&
-          connectedMembers.map((member) => (
-            <React.Fragment key={member.id}>
-              <MemberListItem userId={Number(member.id)} />
-              <Divider borderColor="#414147" />
-            </React.Fragment>
-          ))}
+          connectedMembers.map((member) => {
+            const channelMember = channelMembers.find(
+              (channelMember) => channelMember.userId === member.id
+            );
+            const isOwner = ownerId === member.id ? true : false;
+            return (
+              <React.Fragment key={member.id}>
+                <MemberListItem
+                  userId={Number(member.id)}
+                  isOwner={isOwner}
+                  isAdmin={channelMember?.isAdmin}
+                />
+                <Divider borderColor="#414147" />
+              </React.Fragment>
+            );
+          })}
       </Stack>
     </Box>
   );
