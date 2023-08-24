@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { socket } from "../socket";
@@ -26,6 +26,7 @@ export default function Game() {
     37: false, // left
     39: false, // right
   };
+  const toast = useToast();
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -86,7 +87,12 @@ export default function Game() {
     plane.position.z = -2;
 
     socket.on("decline_invitation", () => {
-      alert("초대가 거절되었습니다. 5초 뒤 방을 나갑니다.");
+      toast({
+        title: "게임이 거절되었습니다. 5초 뒤 방을 나갑니다.",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      });
       setTimeout(() => {
         router.push("/game");
       }, 5000);
@@ -193,6 +199,7 @@ export default function Game() {
       </Text>
       {isGaming ? null : (
         <Button
+          m="2"
           position="absolute"
           onClick={() => {
             socket.emit("leave_room");
