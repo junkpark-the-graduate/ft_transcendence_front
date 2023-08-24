@@ -81,7 +81,7 @@ const JoinedChannelList: React.FC<Props> = ({
     const res = await connectJoinedChannel(channelId);
     const resJson = await res.json();
     if (res.status < 300) {
-      router.push(`/channel/${channelId}/chat`);
+      router.push(`/channel/${channelId}/chat-room`);
     } else {
       toast({
         title: resJson.message,

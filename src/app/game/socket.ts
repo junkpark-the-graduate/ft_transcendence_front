@@ -14,3 +14,14 @@ export const socket = io(`${process.env.NEXT_PUBLIC_GAME_END_POINT}`, {
 socket.on("connect", () => {
   console.log("connected to server");
 });
+
+// chat.page.tsx
+// import @/game/socket
+// socket = socket;
+// socket.emit("create_room", 상대 정보, (data) => {
+// {url} = data;
+// 메세지 보내주고
+// chatsocket.emit("message", ftID, url);
+// router.push(url);
+// 라우팅?
+// })
