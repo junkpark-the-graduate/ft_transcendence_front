@@ -40,6 +40,7 @@ interface IUser {
 interface IChat {
   message: string;
   isBlocked: boolean;
+  isBlocked: boolean;
   user: IUser;
 }
 
@@ -94,6 +95,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     image: "",
   });
 
+  async function getBlockingUserIdList() {
   async function getBlockingUserIdList() {
     const res = await fetchAsyncToBackEnd("/block/userid");
     const resJson = await res.json();
@@ -152,6 +154,8 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
       setChannelMembers(res.channelMembers);
     });
 
+    getBlockingUserIdList().then((res: any) => {
+      setBlockingUserIdList(res);
     getBlockingUserIdList().then((res: any) => {
       setBlockingUserIdList(res);
     });

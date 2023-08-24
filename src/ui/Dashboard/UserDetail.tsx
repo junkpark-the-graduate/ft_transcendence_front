@@ -1,22 +1,10 @@
 "use client";
 
-import {
-  Avatar,
-  Box,
-  Flex,
-  Grid,
-  GridItem,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
-import BaseButton from "@/ui/Button/Button";
+import { Avatar, Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import FollowButton from "@/ui/Button/FollowButton";
 import { getMyData } from "@/utils/user/getMyData";
 import BlockButton from "@/ui/Button/BlockButton";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
-import { GoComment } from "react-icons/go";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import DmBaseButton from "../Button/DmBaseButton";
 import { UserData } from "./Dashboard";
 
@@ -58,7 +46,11 @@ export default function UserDetail({ userData }: { userData: UserData }) {
                 icon={true}
                 isDisabled={isMyProfile ? true : false}
               />
-              <DmBaseButton userId={userData.id} icon={true} />
+              <DmBaseButton
+                userId={userData.id}
+                icon={true}
+                isDisabled={isMyProfile ? true : false}
+              />
               <BlockButton
                 myId={myId}
                 userId={userData.id}

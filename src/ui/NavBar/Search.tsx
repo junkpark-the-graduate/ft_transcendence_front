@@ -24,6 +24,14 @@ export default function Search() {
     setSearchId(event.target.value);
   };
 
+  const handleSearchKeyDown = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      await handleSearchIconClick();
+    }
+  };
+
   const handleSearchIconClick = async () => {
     if (searchId.trim() === "") {
       return;
@@ -56,6 +64,7 @@ export default function Search() {
           borderRadius="8px"
           value={searchId}
           onChange={handleSearchInputChange}
+          onKeyDown={handleSearchKeyDown}
           placeholder="user name or ID"
           _hover={{
             background: "#414147",
@@ -76,7 +85,7 @@ export default function Search() {
       )}
       {searchOpen && (
         <BaseIconButton
-          mr={3}
+          mr={2}
           h={8}
           icon={<SearchIcon />}
           aria-label="search"

@@ -21,6 +21,7 @@ export function getMyData() {
       const res = await fetchAsyncToBackEnd(`/user`);
       const userData = await res.json();
       setUserData(userData);
+      console.log(userData.image);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
