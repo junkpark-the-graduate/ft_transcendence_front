@@ -161,9 +161,8 @@ export default function ChatModalButtons({
     <>
       <Flex>
         <BaseButton
-          w="90px"
+          w="85px"
           fontSize={14}
-          mr={2}
           flex="1"
           size="sm"
           text={isFollowing ? "unfollow" : "follow"}
@@ -175,10 +174,9 @@ export default function ChatModalButtons({
       </Flex>
       <Flex>
         <BaseButton
-          w="90px"
+          w="85px"
           flex="1"
           fontSize={14}
-          mr={2}
           size="sm"
           text={isBlocking ? "unblock" : "block"}
           onClick={isBlocking ? handleUnblock : handleBlock}

@@ -56,7 +56,6 @@ export default function DmBaseButton({
         w="85px"
         flex="1"
         fontSize={14}
-        mr={2}
         size="sm"
         text="message"
         onClick={handleConnectDm}

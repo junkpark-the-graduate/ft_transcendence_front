@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import BaseButton from "../Button/Button";
+import { socket } from "@/app/game/socket";
 
 interface IUser {
   id: number;
@@ -35,6 +36,7 @@ const InviteGameModal: React.FC<InviteGameModalProps> = ({
   const router = useRouter();
 
   const onClose = () => {
+    socket.emit("decline_invitation", { roomId });
     setIsOpen(false);
   };
 

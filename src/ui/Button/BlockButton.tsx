@@ -59,7 +59,6 @@ export default function BlockButton({
         w="85px"
         flex="1"
         fontSize={14}
-        mr={2}
         size="sm"
         text={isBlocking ? "unblock" : "block"}
         onClick={isBlocking ? handleUnblock : handleBlock}
