@@ -37,8 +37,7 @@ interface ChatModalProps {
   setBlockingUserIdList: React.Dispatch<
     React.SetStateAction<IBlockingUserId[]>
   >;
-  channelMembers: any[];
-  setChannelMembers: React.Dispatch<React.SetStateAction<any[]>>;
+  connectedMembers: any[];
   setInviteGameRoomId: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -49,8 +48,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   setIsOpen,
   user,
   setBlockingUserIdList,
-  channelMembers,
-  setChannelMembers,
+  connectedMembers,
   setInviteGameRoomId,
   ...props
 }) => {
@@ -58,7 +56,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const [memberData, setMemberData] = useState<any>(null);
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
-  const [isChannelMember, setIsChannelMember] = useState<boolean>(false);
+  const [isConnectedMember, setIsConnectedMember] = useState<boolean>(false);
 
   async function getUserData(userId: number) {
     const res = await fetchAsyncToBackEnd(`/user/${userId}`);
@@ -72,13 +70,9 @@ const ChatModal: React.FC<ChatModalProps> = ({
       setMemberData(res);
     });
 
-    if (channelMembers) {
-      //channelMembers에 memberId가 있는지 확인
-      const ret = channelMembers.some((member) => member.user.id === memberId);
-      setIsChannelMember(ret);
-      console.log("ret", ret);
-    }
-  }, [memberId]);
+    const ret = connectedMembers.some((member) => member.id === memberId);
+    setIsConnectedMember(ret);
+  }, [memberId, isOpen]);
 
   const onClose = () => {
     setIsOpen(false);
@@ -97,7 +91,6 @@ const ChatModal: React.FC<ChatModalProps> = ({
     );
     const resJson = await res.json();
 
-    // TODO -> muted 된 유저라면 mute 버튼을 비활성화. set을 활용하고 싶은걸
     // TODO muteTime 지금 완전 짧게 되어있으니까 수정해야함!
     if (res.status < 300) {
       toast({
@@ -137,8 +130,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
           duration: 9000,
           isClosable: true,
         });
-        setIsChannelMember(false);
-        setChannelMembers(channelMembers.filter((m) => m.user.id !== memberId));
+        setIsConnectedMember(false);
       }
     }
   };
@@ -171,8 +163,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
           duration: 9000,
           isClosable: true,
         });
-        setIsChannelMember(false);
-        setChannelMembers(channelMembers.filter((m) => m.user.id !== memberId));
+        setIsConnectedMember(false);
       }
     }
   };
@@ -247,6 +238,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   }}
                 />
                 <BaseButton
+                  isDisabled={!isConnectedMember}
                   fontSize={14}
                   size="sm"
                   text="invite game"
@@ -255,8 +247,9 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   style={{ whiteSpace: "nowrap" }}
                   onClick={handleGameInvite}
                 />
-                {user?.isAdmin && isChannelMember && (
+                {user?.isAdmin && (
                   <BaseButton
+                    isDisabled={!isConnectedMember}
                     fontSize={14}
                     size="sm"
                     text="mute"
@@ -266,8 +259,9 @@ const ChatModal: React.FC<ChatModalProps> = ({
                     style={{ whiteSpace: "nowrap" }}
                   />
                 )}
-                {user?.isAdmin && isChannelMember && (
+                {user?.isAdmin && (
                   <BaseButton
+                    isDisabled={!isConnectedMember}
                     fontSize={14}
                     size="sm"
                     text="ban"
@@ -277,8 +271,9 @@ const ChatModal: React.FC<ChatModalProps> = ({
                     style={{ whiteSpace: "nowrap" }}
                   />
                 )}
-                {user?.isAdmin && isChannelMember && (
+                {user?.isAdmin && (
                   <BaseButton
+                    isDisabled={!isConnectedMember}
                     fontSize={14}
                     size="sm"
                     text="kick"
@@ -291,11 +286,6 @@ const ChatModal: React.FC<ChatModalProps> = ({
               </Stack>
             </Center>
           </ModalBody>
-          <ModalFooter>
-            <Text textAlign="center" w="full" fontSize={16}>
-              {!isChannelMember && "채널에 없는 유저입니다"}
-            </Text>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>

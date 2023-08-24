@@ -22,7 +22,6 @@ import ChannelBadge from "../Badges/ChannelBadge";
 import { GoSync } from "react-icons/go";
 import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { useInView } from "react-intersection-observer";
-import { set } from "react-hook-form";
 
 interface Props {
   setJoinedChannels: any;
