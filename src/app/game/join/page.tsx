@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import Game from "../components/Game";
 import { useEffect, useState } from "react";
-import { socket } from "../socket";
+import { socket } from "@/app/game/socket";
 import { useRouter } from "next/navigation";
 import GridType1 from "@/ui/Grid/GridType1";
 import GridType2 from "@/ui/Grid/GridType2";
@@ -44,6 +44,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
       setGameResult(gameResult);
     });
     return () => {
+      socket.emit("leave_room");
       socket.removeAllListeners();
     };
   }, []);
