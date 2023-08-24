@@ -213,7 +213,9 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
         duration: 9000,
         isClosable: true,
       });
-      router.back();
+      const route =
+        EChannelType[Number(channel.type)] === "direct" ? "/dm" : "/channel";
+      router.push(route);
     });
 
     socketIo.on("muted", () => {
@@ -478,6 +480,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
         setBlockingUserIdList={setBlockingUserIdList}
         connectedMembers={connectedMembers}
         setInviteGameRoomId={setInviteGameRoomId}
+        channelType={channel.type}
       />
       <InviteGameModal
         isOpen={isInviteGameModalOpen}

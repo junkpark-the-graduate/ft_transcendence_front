@@ -23,6 +23,7 @@ import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import Cookies from "js-cookie";
 import ChatModalButtons from "../Button/ChatModalButtons";
 import { socket } from "@/app/game/socket";
+import { EChannelType } from "@/app/(chat)/channel/types/EChannelType";
 
 interface IBlockingUserId {
   blockingId: number;
@@ -39,6 +40,7 @@ interface ChatModalProps {
   >;
   connectedMembers: any[];
   setInviteGameRoomId: React.Dispatch<React.SetStateAction<string>>;
+  channelType: EChannelType;
 }
 
 const ChatModal: React.FC<ChatModalProps> = ({
@@ -50,6 +52,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   setBlockingUserIdList,
   connectedMembers,
   setInviteGameRoomId,
+  channelType,
   ...props
 }) => {
   const router = useRouter();
@@ -57,7 +60,6 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
   const [isConnectedMember, setIsConnectedMember] = useState<boolean>(false);
-
   async function getUserData(userId: number) {
     const res = await fetchAsyncToBackEnd(`/user/${userId}`);
     const resJson = await res.json();
@@ -125,7 +127,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
       if (res.status > 299) {
         toast({
-          title: "차단에 실패하였습니다.",
+          title: `${memberData.name} 유저를 차단할 수 없습니다.`,
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -235,7 +237,13 @@ const ChatModal: React.FC<ChatModalProps> = ({
                     userId={memberData?.id}
                     setBlockingUserIdList={setBlockingUserIdList}
                   />
-                  <DmBaseButton w="85px" userId={memberData?.id} icon={false} />
+                  {EChannelType[Number(channelType)] !== "direct" && (
+                    <DmBaseButton
+                      w="85px"
+                      userId={memberData?.id}
+                      icon={false}
+                    />
+                  )}
                   <BaseButton
                     w="85px"
                     isDisabled={!isConnectedMember}
@@ -247,22 +255,24 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   />
                 </Flex>
                 <Flex gap={2}>
-                  <Button
-                    as={Box}
-                    bg="teal"
-                    textColor="white"
-                    size="sm"
-                    flex={1}
-                    w="85px"
-                    borderRadius={"8px"}
-                    fontSize={15}
-                    px="25px"
-                    fontWeight={800}
-                    _hover={{ bg: "teal" }}
-                    _focus={{ bg: "teal" }}
-                  >
-                    admin
-                  </Button>
+                  {user?.isAdmin && (
+                    <Button
+                      as={Box}
+                      bg="teal"
+                      textColor="white"
+                      size="sm"
+                      flex={1}
+                      w="85px"
+                      borderRadius={"8px"}
+                      fontSize={15}
+                      px="25px"
+                      fontWeight={800}
+                      _hover={{ bg: "teal" }}
+                      _focus={{ bg: "teal" }}
+                    >
+                      admin
+                    </Button>
+                  )}
                   {user?.isAdmin && (
                     <BaseButton
                       isDisabled={!isConnectedMember}
