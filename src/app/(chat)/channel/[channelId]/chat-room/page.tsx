@@ -1,13 +1,38 @@
 "use client";
 
 import ChatRoom from "../../../components/ChatRoom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import GridType1 from "@/ui/Grid/GridType1";
 import ChannelConnectedMemberList from "@/app/(chat)/components/ChannelConnectedMemberList";
+import Cookies from "js-cookie";
+import { getChannels } from "@/utils/channel/getChannels";
 
 export default function Page({ params }: { params: { channelId: number } }) {
   const [connnectedMembers, setConnectedMembers] = useState<any>([]);
+  const [channel, setChannel] = useState<any>([]);
+  const accessToken = Cookies.get("accessToken");
+
+  const getChannel = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${params.channelId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const resJson = await res.json();
+    return resJson;
+  };
+
+  useEffect(() => {
+    getChannel().then((res) => {
+      setChannel(res);
+    });
+  }, []);
 
   return (
     <GridType1
@@ -16,6 +41,8 @@ export default function Page({ params }: { params: { channelId: number } }) {
           channelId={params.channelId}
           connectedMembers={connnectedMembers}
           setConnectedMembers={setConnectedMembers}
+          channel={channel}
+          channelMembers={channel.channelMembers}
         />
       }
       side={
@@ -31,7 +58,11 @@ export default function Page({ params }: { params: { channelId: number } }) {
             Connected Members
           </Text>
           <Box px={3}>
-            <ChannelConnectedMemberList connectedMembers={connnectedMembers} />
+            <ChannelConnectedMemberList
+              connectedMembers={connnectedMembers}
+              channelMembers={channel.channelMembers}
+              ownerId={channel.ownerId}
+            />
           </Box>
         </Box>
       }
