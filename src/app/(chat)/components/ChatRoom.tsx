@@ -47,6 +47,8 @@ interface IChatRoomProps {
   channelId: number;
   connectedMembers: any[];
   setConnectedMembers: React.Dispatch<React.SetStateAction<any[]>>;
+  channel: any;
+  channelMembers: any[];
 }
 
 interface IBlockingUserId {
@@ -57,6 +59,8 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   channelId,
   connectedMembers,
   setConnectedMembers,
+  channel,
+  channelMembers,
 }) => {
   const accessToken = Cookies.get("accessToken");
   const router = useRouter();
@@ -66,8 +70,6 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
   const [user, setUser] = useState<{ [key: string]: any }>({});
 
-  const [channel, setChannel] = useState<{ [key: string]: any }>({});
-  const [channelMembers, setChannelMembers] = useState<any[]>([]);
   const [directChannelName, setDirectChannelName] = useState<string>("");
   const [blockingUserIdList, setBlockingUserIdList] = useState<
     IBlockingUserId[]
@@ -106,12 +108,6 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     return await res.json();
   };
 
-  async function getChannel() {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`);
-    const resJson = await res.json();
-    return resJson;
-  }
-
   async function getUserDataById(userId: number) {
     const res = await fetchAsyncToBackEnd(`/user/${userId}`);
     return await res.json();
@@ -146,11 +142,6 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     Promise.all([
       getUser().then((res) => {
         setUser(res);
-      }),
-
-      getChannel().then((res) => {
-        setChannel(res);
-        setChannelMembers(res.channelMembers);
       }),
 
       getBlockingUserIdList().then((res: any) => {

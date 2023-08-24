@@ -10,24 +10,8 @@ import { getChannels } from "@/utils/channel/getChannels";
 
 export default function Page({ params }: { params: { channelId: number } }) {
   const [connnectedMembers, setConnectedMembers] = useState<any>([]);
-  const [channelMembers, setChannelMembers] = useState<any>([]);
   const [channel, setChannel] = useState<any>([]);
   const accessToken = Cookies.get("accessToken");
-
-  const getChannelMembers = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${params.channelId}/member`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    const resJson = await res.json();
-    return resJson;
-  };
 
   const getChannel = async () => {
     const res = await fetch(
@@ -50,12 +34,6 @@ export default function Page({ params }: { params: { channelId: number } }) {
     });
   }, []);
 
-  useEffect(() => {
-    getChannelMembers().then((res) => {
-      setChannelMembers(res);
-    });
-  }, [connnectedMembers]);
-
   return (
     <GridType1
       children={
@@ -63,7 +41,8 @@ export default function Page({ params }: { params: { channelId: number } }) {
           channelId={params.channelId}
           connectedMembers={connnectedMembers}
           setConnectedMembers={setConnectedMembers}
-          // setChannel={setChannel}
+          channel={channel}
+          channelMembers={channel.channelMembers}
         />
       }
       side={
@@ -81,7 +60,7 @@ export default function Page({ params }: { params: { channelId: number } }) {
           <Box px={3}>
             <ChannelConnectedMemberList
               connectedMembers={connnectedMembers}
-              channelMembers={channelMembers}
+              channelMembers={channel.channelMembers}
               ownerId={channel.ownerId}
             />
           </Box>
