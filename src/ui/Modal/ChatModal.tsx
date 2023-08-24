@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Center,
   Flex,
   Modal,
@@ -8,6 +9,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
+  ModalFooter,
   ModalOverlay,
   Stack,
   Text,
@@ -93,8 +95,15 @@ const ChatModal: React.FC<ChatModalProps> = ({
     // TODO muteTime 지금 완전 짧게 되어있으니까 수정해야함!
     if (res.status < 300) {
       toast({
-        title: `${memberData?.name} is muted`,
+        title: `${memberData?.name}가 mute 되었습니다.`,
         status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: `${memberData?.name}를 mute할 수 없습니다.`,
+        status: "error",
         duration: 9000,
         isClosable: true,
       });
@@ -150,7 +159,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
       if (res.status > 299) {
         toast({
-          title: "차단에 실패하였습니다.",
+          title: `${memberData.name} 유저를 채널에서 쫓아낼 수 없습니다.`,
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -195,7 +204,14 @@ const ChatModal: React.FC<ChatModalProps> = ({
                 src={memberData?.image}
               />
               <Box ml={8}>
-                <Text fontSize={24} mb={2}>
+                <Text
+                  as="button"
+                  fontSize={24}
+                  mb={2}
+                  onClick={() => {
+                    router.push(`/user/profile/${memberData?.id}`);
+                  }}
+                >
                   {memberData?.name}
                 </Text>
                 <Text fontSize={16} textColor="#A0A0A3">
@@ -215,73 +231,66 @@ const ChatModal: React.FC<ChatModalProps> = ({
             mx={4}
             py={4}
             borderTop={"#A0A0A3 1px solid"}
-            borderBottom={"#A0A0A3 1px solid"}
+            // borderBottom={"#A0A0A3 1px solid"}
           >
             <Center>
               <Stack>
-                <ChatModalButtons
-                  myId={user?.id}
-                  userId={memberData?.id}
-                  setBlockingUserIdList={setBlockingUserIdList}
-                />
-                <DmBaseButton userId={memberData?.id} icon={false} />
-                <BaseButton
-                  fontSize={14}
-                  size="sm"
-                  text="visit"
-                  mr={2}
-                  bg="#414147"
-                  style={{ whiteSpace: "nowrap" }}
-                  onClick={() => {
-                    router.push(`/user/profile/${memberData?.id}`);
-                  }}
-                />
-                <BaseButton
-                  isDisabled={!isConnectedMember}
-                  fontSize={14}
-                  size="sm"
-                  text="invite game"
-                  mr={2}
-                  bg="#414147"
-                  style={{ whiteSpace: "nowrap" }}
-                  onClick={handleGameInvite}
-                />
-                {user?.isAdmin && (
+                <Flex>
+                  <ChatModalButtons
+                    myId={user?.id}
+                    userId={memberData?.id}
+                    setBlockingUserIdList={setBlockingUserIdList}
+                  />
+                  <DmBaseButton userId={memberData?.id} icon={false} />
                   <BaseButton
                     isDisabled={!isConnectedMember}
                     fontSize={14}
                     size="sm"
-                    text="mute"
-                    mr={2}
-                    onClick={handleMute}
+                    text="invite"
                     bg="#414147"
                     style={{ whiteSpace: "nowrap" }}
+                    onClick={handleGameInvite}
                   />
-                )}
-                {user?.isAdmin && (
-                  <BaseButton
-                    isDisabled={!isConnectedMember}
-                    fontSize={14}
-                    size="sm"
-                    text="ban"
-                    mr={2}
-                    onClick={handleBan}
-                    bg="#414147"
-                    style={{ whiteSpace: "nowrap" }}
-                  />
-                )}
-                {user?.isAdmin && (
-                  <BaseButton
-                    isDisabled={!isConnectedMember}
-                    fontSize={14}
-                    size="sm"
-                    text="kick"
-                    mr={2}
-                    onClick={handleKick}
-                    bg="#414147"
-                    style={{ whiteSpace: "nowrap" }}
-                  />
-                )}
+                </Flex>
+                <Flex gap={2}>
+                  <BaseButton text="admin" size="sm" flex={1} />
+                  {user?.isAdmin && (
+                    <BaseButton
+                      isDisabled={!isConnectedMember}
+                      fontSize={14}
+                      size="sm"
+                      text="mute"
+                      flex={1}
+                      onClick={handleMute}
+                      bg="#414147"
+                      style={{ whiteSpace: "nowrap" }}
+                    />
+                  )}
+                  {user?.isAdmin && (
+                    <BaseButton
+                      isDisabled={!isConnectedMember}
+                      fontSize={14}
+                      size="sm"
+                      text="ban"
+                      flex={1}
+                      onClick={handleBan}
+                      bg="#414147"
+                      style={{ whiteSpace: "nowrap" }}
+                    />
+                  )}
+                  {user?.isAdmin && (
+                    <BaseButton
+                      isDisabled={!isConnectedMember}
+                      fontSize={14}
+                      size="sm"
+                      text="kick"
+                      flex={1}
+                      onClick={handleKick}
+                      bg="#414147"
+                      style={{ whiteSpace: "nowrap" }}
+                    />
+                  )}
+                </Flex>
               </Stack>
             </Center>
           </ModalBody>
