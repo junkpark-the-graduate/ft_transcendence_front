@@ -3,7 +3,7 @@ import styles from "../styles/layout.module.css";
 import { Providers } from "./providers";
 
 export const metadata = {
-  title: "ft_transcendence",
+  title: "ping pong",
   description: "ft_transcendence",
 };
 

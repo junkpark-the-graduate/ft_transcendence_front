@@ -93,7 +93,7 @@ const JoinedChannelList: React.FC<Props> = ({
   }
 
   return (
-    <Box mt={7}>
+    <Box>
       <Stack spacing={2} overflowY={"auto"} maxHeight={"76vh"}>
         {joinedChannels.map((channel, index) => (
           <React.Fragment key={channel.id}>
