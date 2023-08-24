@@ -24,6 +24,7 @@ import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 import Cookies from "js-cookie";
 import ChatModalButtons from "../Button/ChatModalButtons";
 import { socket } from "@/app/game/socket";
+import { EChannelType } from "@/app/(chat)/channel/types/EChannelType";
 
 interface IBlockingUserId {
   blockingId: number;
@@ -40,6 +41,7 @@ interface ChatModalProps {
   >;
   connectedMembers: any[];
   setInviteGameRoomId: React.Dispatch<React.SetStateAction<string>>;
+  channelType: EChannelType;
 }
 
 const ChatModal: React.FC<ChatModalProps> = ({
@@ -51,6 +53,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
   setBlockingUserIdList,
   connectedMembers,
   setInviteGameRoomId,
+  channelType,
   ...props
 }) => {
   const router = useRouter();
@@ -58,7 +61,6 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
   const [isConnectedMember, setIsConnectedMember] = useState<boolean>(false);
-
   async function getUserData(userId: number) {
     const res = await fetchAsyncToBackEnd(`/user/${userId}`);
     const resJson = await res.json();
@@ -126,7 +128,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
       if (res.status > 299) {
         toast({
-          title: "차단에 실패하였습니다.",
+          title: `${memberData.name} 유저를 차단할 수 없습니다.`,
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -241,7 +243,9 @@ const ChatModal: React.FC<ChatModalProps> = ({
                     userId={memberData?.id}
                     setBlockingUserIdList={setBlockingUserIdList}
                   />
-                  <DmBaseButton userId={memberData?.id} icon={false} />
+                  {EChannelType[Number(channelType)] !== "direct" && (
+                    <DmBaseButton userId={memberData?.id} icon={false} />
+                  )}
                   <BaseButton
                     isDisabled={!isConnectedMember}
                     fontSize={14}
@@ -254,42 +258,45 @@ const ChatModal: React.FC<ChatModalProps> = ({
                 </Flex>
                 <Flex gap={2}>
                   <BaseButton text="admin" size="sm" flex={1} />
-                  {user?.isAdmin && (
-                    <BaseButton
-                      isDisabled={!isConnectedMember}
-                      fontSize={14}
-                      size="sm"
-                      text="mute"
-                      flex={1}
-                      onClick={handleMute}
-                      bg="#414147"
-                      style={{ whiteSpace: "nowrap" }}
-                    />
-                  )}
-                  {user?.isAdmin && (
-                    <BaseButton
-                      isDisabled={!isConnectedMember}
-                      fontSize={14}
-                      size="sm"
-                      text="ban"
-                      flex={1}
-                      onClick={handleBan}
-                      bg="#414147"
-                      style={{ whiteSpace: "nowrap" }}
-                    />
-                  )}
-                  {user?.isAdmin && (
-                    <BaseButton
-                      isDisabled={!isConnectedMember}
-                      fontSize={14}
-                      size="sm"
-                      text="kick"
-                      flex={1}
-                      onClick={handleKick}
-                      bg="#414147"
-                      style={{ whiteSpace: "nowrap" }}
-                    />
-                  )}
+                  {user?.isAdmin &&
+                    EChannelType[Number(channelType)] !== "direct" && (
+                      <BaseButton
+                        isDisabled={!isConnectedMember}
+                        fontSize={14}
+                        size="sm"
+                        text="mute"
+                        flex={1}
+                        onClick={handleMute}
+                        bg="#414147"
+                        style={{ whiteSpace: "nowrap" }}
+                      />
+                    )}
+                  {user?.isAdmin &&
+                    EChannelType[Number(channelType)] !== "direct" && (
+                      <BaseButton
+                        isDisabled={!isConnectedMember}
+                        fontSize={14}
+                        size="sm"
+                        text="ban"
+                        flex={1}
+                        onClick={handleBan}
+                        bg="#414147"
+                        style={{ whiteSpace: "nowrap" }}
+                      />
+                    )}
+                  {user?.isAdmin &&
+                    EChannelType[Number(channelType)] !== "direct" && (
+                      <BaseButton
+                        isDisabled={!isConnectedMember}
+                        fontSize={14}
+                        size="sm"
+                        text="kick"
+                        flex={1}
+                        onClick={handleKick}
+                        bg="#414147"
+                        style={{ whiteSpace: "nowrap" }}
+                      />
+                    )}
                 </Flex>
               </Stack>
             </Center>
