@@ -62,6 +62,7 @@ export default function Page({ params }: { params: { channelId: number } }) {
               connectedMembers={connnectedMembers}
               channelMembers={channel.channelMembers}
               ownerId={channel.ownerId}
+              channelType={channel.type}
             />
           </Box>
         </Box>
