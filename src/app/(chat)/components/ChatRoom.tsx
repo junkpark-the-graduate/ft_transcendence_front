@@ -153,6 +153,17 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   }, []);
 
   useEffect(() => {
+    if (!isDataLoaded || !channel) return;
+    if (EChannelType[Number(channel.type)] !== "direct") return;
+
+    const userIds = channel.name.split("-").map((id: string) => Number(id));
+    const directChannelUserId = userIds.find((id: any) => id !== user.id);
+    getUserDataById(directChannelUserId).then((res) => {
+      setDirectChannelName(res.name);
+    });
+  }, [isDataLoaded, channel]);
+
+  useEffect(() => {
     if (!isDataLoaded) return;
 
     const socketIo = io(`${process.env.NEXT_PUBLIC_CHAT_END_POINT}`, {
@@ -347,7 +358,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
             <Text ml={1}>{channel.name}</Text>
           )}
           {EChannelType[Number(channel.type)] === "direct" && (
-            <Text ml={1}>{channel.nameOfDirect} 님과의 채팅방</Text>
+            <Text ml={1}>{directChannelName} 님과의 채팅방</Text>
           )}
           <ChannelBadge type={Number(channel.type)} ml={2} />
           <Spacer />

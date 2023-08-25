@@ -44,62 +44,34 @@ export default function ChatModalButtons({
   }
 
   async function block(userId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/block?blockingId=${userId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
+      method: "POST",
+    });
     const resJson = await res.json();
     console.log("block", resJson);
     return resJson;
   }
 
   async function unblock(userId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/block?blockingId=${userId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
+      method: "DELETE",
+    });
     const resJson = await res.json();
     console.log("unblock", resJson);
     return resJson;
   }
 
   async function follow(userId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow?followingId=${userId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
+      method: "POST",
+    });
     console.log("follow", res);
   }
 
   async function unfollow(userId: number) {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow?followingId=${userId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
+      method: "DELETE",
+    });
   }
 
   useEffect(() => {

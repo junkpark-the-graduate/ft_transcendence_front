@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Box, Button, Center, Divider, Heading } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 const Timer: React.FC = () => {
   const [milliseconds, setMilliseconds] = useState(300000);
@@ -46,11 +47,9 @@ export const VerifyButton = () => {
         const twoFactorToken = Cookies.get("twoFactorToken");
         console.log("twoFactorToken!!!!!!!!!", twoFactorToken);
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth/tfa?twoFactorToken=${twoFactorToken}`,
-          {
-            method: "POST",
-          }
+        const res = await fetchAsyncToBackEnd(
+          `/auth/tfa?twoFactorToken=${twoFactorToken}`,
+          { method: "POST" }
         );
 
         const json = await res.json();
