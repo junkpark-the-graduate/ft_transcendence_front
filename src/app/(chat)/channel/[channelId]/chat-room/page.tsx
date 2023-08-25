@@ -7,6 +7,7 @@ import GridType1 from "@/ui/Grid/GridType1";
 import ChannelConnectedMemberList from "@/app/(chat)/components/ChannelConnectedMemberList";
 import Cookies from "js-cookie";
 import { getChannels } from "@/utils/channel/getChannels";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 export default function Page({ params }: { params: { channelId: number } }) {
   const [connnectedMembers, setConnectedMembers] = useState<any>([]);
@@ -14,18 +15,8 @@ export default function Page({ params }: { params: { channelId: number } }) {
   const accessToken = Cookies.get("accessToken");
 
   const getChannel = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${params.channelId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    const resJson = await res.json();
-    return resJson;
+    const res = await fetchAsyncToBackEnd(`/channel/${params.channelId}`);
+    return await res.json();
   };
 
   useEffect(() => {

@@ -22,6 +22,7 @@ import ChannelBadge from "../Badges/ChannelBadge";
 import { GoSync } from "react-icons/go";
 import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { useInView } from "react-intersection-observer";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface Props {
   setJoinedChannels: any;
@@ -50,15 +51,8 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
     limit: number,
     searchKeyword: string
   ) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/keyword?page=${page}&limit=${limit}&searchKeyword=${searchKeyword}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
+    const res = await fetchAsyncToBackEnd(
+      `/channel/keyword?page=${page}&limit=${limit}&searchKeyword=${searchKeyword}`
     );
     const resJson = await res.json();
     return resJson;
@@ -87,33 +81,15 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
   }
 
   async function joinChannel(channelId: number) {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
+      method: "POST",
+    });
 
     return res;
   }
 
   async function connectJoinedChannel(channelId: number) {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined/${channelId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
     return res;
   }
 

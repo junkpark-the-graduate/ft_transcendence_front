@@ -24,6 +24,7 @@ import BaseIconButton from "@/ui/Button/IconButton";
 
 import ChannelInput from "@/ui/Input/ChannelInput";
 import ChannelBadge from "@/ui/Badges/ChannelBadge";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface Props {
   channelId: number;
@@ -40,16 +41,7 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   const toast = useToast();
 
   async function getChannel() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`);
     const resJson = await res.json();
     setChannel(resJson);
     setNewChannelName(resJson.name);
@@ -57,21 +49,14 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   }
 
   async function updateChannel() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          name: newChannelName,
-          password: newChannelPassword,
-          type: EChannelType[newChannelType as keyof typeof EChannelType],
-        }),
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        name: newChannelName,
+        password: newChannelPassword,
+        type: EChannelType[newChannelType as keyof typeof EChannelType],
+      }),
+    });
     return res;
   }
 
@@ -102,16 +87,9 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   }
 
   async function deleteChannel() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`, {
+      method: "DELETE",
+    });
     return res;
   }
 
@@ -120,7 +98,6 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
       return;
     }
     const res = await deleteChannel();
-    //TODO res.json이 안됨 syntax error남 왜?ㅠ.ㅠ
     if (res.status > 299) {
       toast({
         title: "Channel delete failed",

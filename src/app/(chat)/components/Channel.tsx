@@ -17,10 +17,6 @@ const Channel: React.FC = () => {
     getJoinedChannels(setJoinedChannels);
   }, []);
 
-  // const handleCreateChannel = (newChannel: any) => {
-  //   setChannels([...channels, newChannel]);
-  // };
-
   return (
     <>
       <GridType1

@@ -296,16 +296,9 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   };
 
   const exitChannel = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
+      method: "DELETE",
+    });
     return res;
   };
 

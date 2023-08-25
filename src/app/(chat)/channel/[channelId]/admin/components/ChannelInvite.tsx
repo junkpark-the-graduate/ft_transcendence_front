@@ -16,6 +16,7 @@ import { useInView } from "react-intersection-observer";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { useRouter } from "next/navigation";
 import ChannelInput from "@/ui/Input/ChannelInput";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface User {
   id: number;
@@ -86,28 +87,15 @@ const ChannelInvite: React.FC<Props> = ({
   }
 
   async function getChannelMembers() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`);
     return res;
   }
 
   async function inviteUser(userId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/invited-member?memberId=${userId}`,
+    const res = await fetchAsyncToBackEnd(
+      `channel/${channelId}/invited-member?memberId=${userId}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
     return res;

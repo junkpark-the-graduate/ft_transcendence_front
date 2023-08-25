@@ -25,6 +25,7 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import { EChannelType } from "@/app/(chat)/channel/types/EChannelType";
 import BaseInput from "../Input/Input";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 export interface CreateChannelModalProps {
   channels: any;
@@ -48,12 +49,8 @@ export default function CreateChannelModal({
   const toast = useToast();
 
   async function postChannel() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel`, {
+    const res = await fetchAsyncToBackEnd(`/channel`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         name: channelName,
         password: channelPassword,

@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import { GoTrash } from "react-icons/go";
 import BaseIconButton from "@/ui/Button/IconButton";
 import ChannelInput from "@/ui/Input/ChannelInput";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface Props {
   channelId: number;
@@ -35,15 +36,8 @@ const ChanneBannedMemberlList: React.FC<Props> = ({
   }, [bannedMembers]);
 
   async function getBannedMembers() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/banned-member`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+    const res = await fetchAsyncToBackEnd(
+      `/channel/${channelId}/banned-member`
     );
     const resJson = await res.json();
     setBannedMembers(resJson);
@@ -54,16 +48,13 @@ const ChanneBannedMemberlList: React.FC<Props> = ({
   }, []);
 
   async function deleteBannedMember(memberId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/banned-member?memberId=${memberId}`,
+    const res = await fetchAsyncToBackEnd(
+      `/channel/${channelId}/banned-member?memberId=${memberId}`,
       {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
+
     return res;
   }
 
