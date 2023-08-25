@@ -1,29 +1,15 @@
-import { useEffect, useState } from "react";
 import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
-export function getFollowingList(userId: number | undefined) {
-  const [followings, setFollowings] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export async function getFollowingList(userId: number | undefined) {
+  try {
+    if (typeof userId !== "undefined") {
+      const res = await fetchAsyncToBackEnd(`/follow/userid`);
+      const data = await res.json();
 
-  const fetchFollowings = async () => {
-    try {
-      if (typeof userId !== "undefined") {
-        const res = await fetchAsyncToBackEnd(`/follow/userid`);
-        const data = await res.json();
-        setIsLoading(false);
-        setFollowings(data.map((x: any) => x.followingId));
-      } else {
-        setIsLoading(false);
-      }
-    } catch (err) {
-      console.log(err);
-      setIsLoading(false);
+      return data.map((x: any) => x.followingId);
     }
-  };
-
-  useEffect(() => {
-    fetchFollowings();
-  }, [userId]);
-
-  return isLoading ? null : followings;
+  } catch (err) {
+    console.log(err);
+  }
+  return null;
 }

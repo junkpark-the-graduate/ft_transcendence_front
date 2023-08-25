@@ -1,17 +1,16 @@
-import { getMyData } from "@/utils/user/getMyData";
+import { useUserDataContext } from "@/context/UserDataContext";
 import { Avatar, AvatarBadge, AvatarProps, Flex } from "@chakra-ui/react";
 
 export interface BaseAvatarProps extends AvatarProps {}
 
 export default function BaseAvatar({ ...props }: BaseAvatarProps) {
-  const userData = getMyData();
+  const { myData } = useUserDataContext();
 
   return (
     <Flex>
-      <Avatar size="sm" name={userData?.name} src={userData?.image}>
+      <Avatar size="sm" name={myData?.name} src={myData?.image}>
         <AvatarBadge
           bg="green"
-          // bg={userData?.status === EUserStatus.online ? "green" : "red"}
           border="2px"
           borderColor="white"
           boxSize="1em"

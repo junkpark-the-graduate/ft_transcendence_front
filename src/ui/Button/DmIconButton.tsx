@@ -1,12 +1,5 @@
 import { useEffect } from "react";
-import BaseButton from "@/ui/Button/Button";
-import { GoCircleSlash, GoComment } from "react-icons/go";
 import { Flex, useToast } from "@chakra-ui/react";
-import { block, unblock } from "@/utils/user/block";
-import { getBlockingList } from "@/utils/user/getBlockingList";
-import { unfollow } from "@/utils/user/follow";
-import { getFollowingList } from "@/utils/user/getFollowingList";
-import { useAppContext } from "@/app/providers";
 import { createDm } from "@/utils/channel/dm";
 import { useRouter } from "next/navigation";
 import IconButton from "./IconButton";

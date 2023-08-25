@@ -10,7 +10,6 @@ import {
   MenuList,
   Spacer,
   Stack,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
@@ -25,35 +24,47 @@ import {
 import { useRouter } from "next/navigation";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getUserData } from "@/utils/user/getUserData";
-import { getMyData } from "@/utils/user/getMyData";
 import { block, unblock } from "@/utils/user/block";
 import { follow, unfollow } from "@/utils/user/follow";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import ProfileModal from "../Modal/ProfileModal";
-import Cookies from "js-cookie";
 import DmIconButton from "../Button/DmIconButton";
+import { useRelationContext } from "@/context/RelationContext";
 
 function FollowingListItem({ userId }: { userId: number | undefined }) {
+  if (userId === undefined) {
+    return;
+  }
+
   const userData = getUserData(userId);
   const router = useRouter();
   const [isBlocking, setIsBlocking] = useState(false);
   const [isFollowing, setIsFollowing] = useState(true);
-
-  // TODO: ここでsocketを使うのはどうかと思う 뭔지 모르겟음
-  // const tmp = socket;
+  const { followingList, setFollowingList } = useRelationContext();
 
   const handleFollow = async () => {
     await follow(userId, () => setIsFollowing(true));
     await unblock(userId, () => setIsBlocking(false));
+    if (followingList) {
+      setFollowingList([...followingList, userId]);
+    } else {
+      setFollowingList([userId]);
+    }
   };
 
   const handleUnfollow = async () => {
     await unfollow(userId, () => setIsFollowing(false));
+    if (followingList) {
+      setFollowingList(followingList.filter((id) => id !== userId));
+    }
   };
 
   const handleBlock = async () => {
     await block(userId, () => setIsBlocking(true));
     await unfollow(userId, () => setIsFollowing(false));
+    if (followingList) {
+      setFollowingList(followingList.filter((id) => id !== userId));
+    }
   };
 
   const handleUnblock = async () => {
@@ -116,14 +127,13 @@ function FollowingListItem({ userId }: { userId: number | undefined }) {
 }
 
 export default function FollowingList() {
-  const myData = getMyData();
-  const followings = getFollowingList(myData?.id);
+  const { followingList } = useRelationContext();
 
   return (
     <Box>
       <Stack spacing={2}>
-        {followings &&
-          followings.map((following) => (
+        {followingList &&
+          followingList.map((following) => (
             <React.Fragment key={following}>
               <FollowingListItem userId={Number(following)} />
               <Divider borderColor="#414147" />
