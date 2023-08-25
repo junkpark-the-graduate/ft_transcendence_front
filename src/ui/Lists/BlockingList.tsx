@@ -43,7 +43,7 @@ function BlockingListItem({ userId }: { userId: number }) {
 
   return (
     <Flex align="center" my={1}>
-      <Avatar size="sm" name={userData?.name} mr={6}>
+      <Avatar size="sm" src={userData?.image} name={userData?.name} mr={6}>
         <AvatarBadge
           bg={userData?.status === EUserStatus.online ? "green" : "red"}
           border="2px"
@@ -51,7 +51,7 @@ function BlockingListItem({ userId }: { userId: number }) {
           boxSize="1em"
         />
       </Avatar>
-      <Text fontSize={14}>{userData?.name}</Text>
+      <Text fontSize={16}>{userData?.name}</Text>
       <Spacer />
       <Flex>
         <BaseButton
