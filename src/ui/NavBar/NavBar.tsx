@@ -15,6 +15,7 @@ import { usePathname, useRouter } from "next/navigation";
 import BaseAvatar from "../Avatar/Avatar";
 import Search from "./Search";
 import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
+import { logout } from "@/utils/auth/logout";
 
 const Links = [
   { label: "Game", path: "/game" },
@@ -143,6 +144,7 @@ export default function NavBar({}: {}) {
                 fontSize="10pt"
                 textColor={"red"}
                 onClick={() => {
+                  logout();
                   handleLinkClick("/");
                 }}
               >

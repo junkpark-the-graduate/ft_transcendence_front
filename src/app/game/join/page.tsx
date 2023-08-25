@@ -9,6 +9,7 @@ import {
   HStack,
   Spinner,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import Game from "../components/Game";
 import { useEffect, useState } from "react";
@@ -27,14 +28,20 @@ export default function Page({ searchParams }: { searchParams: any }) {
   const [isValidRoom, setIsValidRoom] = useState(false);
   const [gameResult, setGameResult] = useState<any>(null);
   const router = useRouter();
+  const toast = useToast();
 
   useEffect(() => {
     socket.emit("join_room", { roomId }, (data: any) => {
       const { isSuccess } = data;
-
+      console.log("join_room callback!!!!!!!!!!!!", isSuccess);
       if (isSuccess) setIsValidRoom(true);
       else {
-        alert("종료되었거나, 유효하지 않은 방입니다.");
+        toast({
+          title: "종료되었거나, 유효하지 않은 방입니다.",
+          status: "warning",
+          duration: 9000,
+          isClosable: true,
+        });
         router.push("/game");
       }
     });

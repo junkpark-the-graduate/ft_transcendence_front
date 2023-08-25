@@ -1,23 +1,36 @@
 "use client";
 
 import ChatRoom from "../../../components/ChatRoom";
-import JoinedChannelList from "../../../../../ui/Lists/JoinedChannelList";
 import { useEffect, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
-import { getChannels } from "@/utils/channel/getChannels";
-import { getJoinedChannels } from "@/utils/channel/getJoinedChannels";
-import { getChannelMembers } from "@/utils/channel/getChannelMembers";
 import GridType1 from "@/ui/Grid/GridType1";
-import ChannelMemberList from "@/app/(chat)/components/ChannelMemberList";
+import ChannelConnectedMemberList from "@/app/(chat)/components/ChannelConnectedMemberList";
+import Cookies from "js-cookie";
+import { getChannels } from "@/utils/channel/getChannels";
 
 export default function Page({ params }: { params: { channelId: number } }) {
-  const [channels, setChannels] = useState<any>([]);
-  const [channelMembers, setChannelMembers] = useState<any>([]);
+  const [connnectedMembers, setConnectedMembers] = useState<any>([]);
+  const [channel, setChannel] = useState<any>([]);
+  const accessToken = Cookies.get("accessToken");
+
+  const getChannel = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${params.channelId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const resJson = await res.json();
+    return resJson;
+  };
 
   useEffect(() => {
-    getChannels(setChannels);
-    getChannelMembers(params.channelId).then((res) => {
-      setChannelMembers(res);
+    getChannel().then((res) => {
+      setChannel(res);
     });
   }, []);
 
@@ -26,8 +39,10 @@ export default function Page({ params }: { params: { channelId: number } }) {
       children={
         <ChatRoom
           channelId={params.channelId}
-          channelMembers={channelMembers}
-          setChannelMembers={setChannelMembers}
+          connectedMembers={connnectedMembers}
+          setConnectedMembers={setConnectedMembers}
+          channel={channel}
+          channelMembers={channel.channelMembers}
         />
       }
       side={
@@ -40,10 +55,15 @@ export default function Page({ params }: { params: { channelId: number } }) {
             py={2}
             mb={4}
           >
-            Channel Member List
+            Connected Members
           </Text>
           <Box px={3}>
-            <ChannelMemberList channelMembers={channelMembers} />
+            <ChannelConnectedMemberList
+              connectedMembers={connnectedMembers}
+              channelMembers={channel.channelMembers}
+              ownerId={channel.ownerId}
+              channelType={channel.type}
+            />
           </Box>
         </Box>
       }

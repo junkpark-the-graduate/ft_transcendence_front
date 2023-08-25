@@ -43,7 +43,7 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
       outerDiv.current.scrollTo({
         top: innerHeight - outerHeight,
         left: 0,
-        behavior: "smooth",
+        behavior: "auto",
       });
     }
   }, [children, autoScroll]);
@@ -77,7 +77,7 @@ const ChatScrollContainer: React.FC<ChatScrollContainerProps> = ({
       console.log("loadingCount", loadingCount);
 
       // 로딩 초기
-      if (loadingCount < 2) {
+      if (loadingCount < 1) {
         outerDiv.current.scrollTop = outerDiv.current.scrollHeight;
       }
       // 새로운 채팅 기록이 없을 때

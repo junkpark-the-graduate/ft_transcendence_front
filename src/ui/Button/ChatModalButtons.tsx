@@ -44,66 +44,34 @@ export default function ChatModalButtons({
   }
 
   async function block(userId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/block?blockingId=${userId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
+      method: "POST",
+    });
     const resJson = await res.json();
     console.log("block", resJson);
     return resJson;
   }
 
   async function unblock(userId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/block?blockingId=${userId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
+      method: "DELETE",
+    });
     const resJson = await res.json();
     console.log("unblock", resJson);
     return resJson;
   }
 
-  async function follow(myId: number, userId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: myId,
-          following: Number(userId),
-        }),
-      }
-    );
+  async function follow(userId: number) {
+    const res = await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
+      method: "POST",
+    });
     console.log("follow", res);
   }
 
-  async function unfollow(myId: number, userId: number) {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/follow/${myId}/${userId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getTokenClient()}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  async function unfollow(userId: number) {
+    await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
+      method: "DELETE",
+    });
   }
 
   useEffect(() => {
@@ -122,14 +90,14 @@ export default function ChatModalButtons({
       return blockingList.some((item) => item.blockingId === Number(userId));
     });
     setIsFollowing(() => {
-      return followingList.some((item) => item.following === Number(userId));
+      return followingList.some((item) => item.followingId === Number(userId));
     });
   }, [blockingList, followingList]);
 
   const handleBlock = async (): Promise<void> => {
     await block(userId);
     if (isFollowing === true) {
-      await unfollow(myId, userId);
+      await unfollow(userId);
       setIsFollowing(false);
     }
     setBlockingUserIdList((prev) => [...prev, { blockingId: Number(userId) }]);
@@ -145,7 +113,7 @@ export default function ChatModalButtons({
   };
 
   const handleFollow = async () => {
-    await follow(myId, userId);
+    await follow(userId);
     if (isBlocking === true) {
       await unblock(userId);
       setIsBlocking(false);
@@ -157,7 +125,7 @@ export default function ChatModalButtons({
   };
 
   const handleUnfollow = async () => {
-    await unfollow(myId, userId);
+    await unfollow(userId);
     setIsFollowing(false);
   };
 
@@ -165,9 +133,8 @@ export default function ChatModalButtons({
     <>
       <Flex>
         <BaseButton
-          w="90px"
+          w="85px"
           fontSize={14}
-          mr={2}
           flex="1"
           size="sm"
           text={isFollowing ? "unfollow" : "follow"}
@@ -179,10 +146,9 @@ export default function ChatModalButtons({
       </Flex>
       <Flex>
         <BaseButton
-          w="90px"
+          w="85px"
           flex="1"
           fontSize={14}
-          mr={2}
           size="sm"
           text={isBlocking ? "unblock" : "block"}
           onClick={isBlocking ? handleUnblock : handleBlock}

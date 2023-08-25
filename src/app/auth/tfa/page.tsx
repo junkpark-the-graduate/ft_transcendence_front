@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation";
-// import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
-async function getAccessToken(twoFactorToken: string) {
+async function getAccessToken(twoFactorToken: string, router: any) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth/tfa?twoFactorToken=${twoFactorToken}`,
@@ -18,7 +17,7 @@ async function getAccessToken(twoFactorToken: string) {
     }
   } catch (err) {
     console.log(err);
-    redirect("/");
+    router.push("/");
   }
 }
 
@@ -27,12 +26,13 @@ export default async function Page({
 }: {
   searchParams: { twoFactorToken?: string };
 }) {
+  const router = useRouter();
   const twoFactorToken = searchParams.twoFactorToken;
   if (twoFactorToken === undefined) {
-    redirect("/");
+    router.push("/");
   }
 
-  const accessToken = await getAccessToken(twoFactorToken);
+  const accessToken = await getAccessToken(twoFactorToken!, router);
 
   return <>{accessToken}</>;
 }

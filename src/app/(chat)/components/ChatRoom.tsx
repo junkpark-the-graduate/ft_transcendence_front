@@ -28,6 +28,8 @@ import { EChannelType } from "../channel/types/EChannelType";
 import { useInView } from "react-intersection-observer";
 import ChatModal from "@/ui/Modal/ChatModal";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
+import InviteGameModal from "@/ui/Modal/InviteGameModal";
+import { set } from "react-hook-form";
 
 interface IUser {
   id: number;
@@ -41,46 +43,63 @@ interface IChat {
   user: IUser;
 }
 
-interface IChatProps {
+interface IChatRoomProps {
   channelId: number;
+  connectedMembers: any[];
+  setConnectedMembers: React.Dispatch<React.SetStateAction<any[]>>;
+  channel: any;
   channelMembers: any[];
-  setChannelMembers: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 interface IBlockingUserId {
   blockingId: number;
 }
 
-const ChatRoom: React.FC<IChatProps> = ({
+const ChatRoom: React.FC<IChatRoomProps> = ({
   channelId,
+  connectedMembers,
+  setConnectedMembers,
+  channel,
   channelMembers,
-  setChannelMembers,
 }) => {
-  const [user, setUser] = useState<{ [key: string]: any }>({});
-  const [channel, setChannel] = useState<{ [key: string]: any }>({});
-  const [message, setMessage] = useState<string>("");
-  const [newChat, setNewChat] = useState<IChat | null>(null);
-  const [newChatHistory, setNewChatHistory] = useState<IChat[]>([]);
-  const [chatList, setChatList] = useState<IChat[]>([]);
-  const [socket, setSocket] = useState<Socket | null>(null);
   const accessToken = Cookies.get("accessToken");
   const router = useRouter();
   const toast = useToast();
+
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  const [user, setUser] = useState<{ [key: string]: any }>({});
+
   const [directChannelName, setDirectChannelName] = useState<string>("");
-  const [chatHistoryPage, setChatHistoryPage] = useState<number>(1);
-  const [ref, inView] = useInView({
-    threshold: 0.5,
-  });
   const [blockingUserIdList, setBlockingUserIdList] = useState<
     IBlockingUserId[]
   >([]);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // TODO: 어떤 모달 인지 이름 명확히 하기
+
+  const [newChat, setNewChat] = useState<IChat | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const [newChatHistory, setNewChatHistory] = useState<IChat[]>([]);
+  const [chatList, setChatList] = useState<IChat[]>([]);
+  const [chatHistoryPage, setChatHistoryPage] = useState<number>(1);
+
+  const [ref, inView] = useInView({
+    threshold: 0.5,
+  });
+
+  const [inviteGameRoomId, setInviteGameRoomId] = useState<string>("");
+  const [isInviteGameModalOpen, setIsInviteGameModalOpen] =
+    useState<boolean>(false);
+  const [gameHost, setGameHost] = useState<IUser>({
+    name: "",
+    id: 0,
+    image: "",
+  });
+  const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
 
   async function getBlockingUserIdList() {
     const res = await fetchAsyncToBackEnd("/block/userid");
     const resJson = await res.json();
-    console.log("blockingList", resJson);
     return resJson;
   }
 
@@ -88,12 +107,6 @@ const ChatRoom: React.FC<IChatProps> = ({
     const res = await fetchAsyncToBackEnd("/user");
     return await res.json();
   };
-
-  async function getChannel() {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`);
-    const resJson = await res.json();
-    return resJson;
-  }
 
   async function getUserDataById(userId: number) {
     const res = await fetchAsyncToBackEnd(`/user/${userId}`);
@@ -105,57 +118,53 @@ const ChatRoom: React.FC<IChatProps> = ({
       const isBlocked = blockingUserIdList.some(
         (blockingUser) => blockingUser.blockingId === chat.user.id
       );
-      if (isBlocked) {
-        chat.isBlocked = true;
-        // chat.message = "This message is blocked";
-      } else {
-        chat.isBlocked = false;
-      }
+      if (isBlocked) chat.isBlocked = true;
+      else chat.isBlocked = false;
       return chat;
     });
     return filteredChatList;
   }
 
   async function goToAdminPageHandler() {
-    if (user.id !== channel.ownerId) {
+    if (user.id !== channel.ownerId)
       toast({
         title: "You are not the owner of this channel",
         status: "error",
         duration: 9000,
         isClosable: true,
       });
-    } else router.push(`/channel/${channelId}/admin`);
+    else router.push(`/channel/${channelId}/admin`);
   }
 
   useEffect(() => {
     if (!accessToken) router.push("/");
 
-    getUser().then((res) => {
-      setUser(res);
-    });
+    Promise.all([
+      getUser().then((res) => {
+        setUser(res);
+      }),
 
-    getChannel().then((res) => {
-      setChannel(res);
-    });
-
-    getBlockingUserIdList().then((res: any) => {
-      setBlockingUserIdList(res);
+      getBlockingUserIdList().then((res: any) => {
+        setBlockingUserIdList(res);
+      }),
+    ]).then(() => {
+      setIsDataLoaded(true);
     });
   }, []);
 
   useEffect(() => {
-    if (!channelMembers || !user) return;
-    if (EChannelType[Number(channel.type)] === "direct") {
-      const userids = channel.name.split("-").map((id: string) => Number(id));
-      const directChannelUserId = userids.find((id: any) => id !== user.id);
-      getUserDataById(directChannelUserId).then((res) => {
-        setDirectChannelName(res.name);
-      });
-    }
-  }, [channel, user]);
+    if (!isDataLoaded || !channel) return;
+    if (EChannelType[Number(channel.type)] !== "direct") return;
+
+    const userIds = channel.name.split("-").map((id: string) => Number(id));
+    const directChannelUserId = userIds.find((id: any) => id !== user.id);
+    getUserDataById(directChannelUserId).then((res) => {
+      setDirectChannelName(res.name);
+    });
+  }, [isDataLoaded, channel]);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!isDataLoaded) return;
 
     const socketIo = io(`${process.env.NEXT_PUBLIC_CHAT_END_POINT}`, {
       query: {
@@ -170,12 +179,21 @@ const ChatRoom: React.FC<IChatProps> = ({
       console.log(`connected : ${socketIo.id}`);
     });
 
-    socketIo.on("user_connected", (username: string) => {
-      console.log(`${username} connected`);
+    socketIo.on("member_connected", (data: any) => {
+      console.log("member_connected", data.member);
+      setConnectedMembers((prev) => [...prev, data.member]);
+    });
+
+    socketIo.on("member_disconnected", (data: any) => {
+      console.log("member_disconnected", data.userId);
+      setConnectedMembers((prev) =>
+        prev.filter((member) => member.id !== data.userId)
+      );
     });
 
     socketIo.on("new_chat", (data: IChat) => {
       console.log("new_chat data!!!!!", data);
+      console.log("blockingUserIdList", blockingUserIdList);
       setChatList((prev) => [...prev, ...filterBlockingUserMessage([data])]);
     });
 
@@ -191,7 +209,9 @@ const ChatRoom: React.FC<IChatProps> = ({
         duration: 9000,
         isClosable: true,
       });
-      router.back();
+      const route =
+        EChannelType[Number(channel.type)] === "direct" ? "/dm" : "/channel";
+      router.push(route);
     });
 
     socketIo.on("muted", () => {
@@ -203,6 +223,16 @@ const ChatRoom: React.FC<IChatProps> = ({
       });
     });
 
+    socketIo.on(
+      "open_invite_game_modal",
+      (data: { roomId: string; user: IUser }) => {
+        console.log("open_invite_game_modal", data);
+        setInviteGameRoomId(data.roomId);
+        setGameHost(data.user);
+        setIsInviteGameModalOpen(true);
+      }
+    );
+
     socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
       setChatList((prev) => [
         ...filterBlockingUserMessage(chatHistory.chatHistory),
@@ -211,28 +241,50 @@ const ChatRoom: React.FC<IChatProps> = ({
       setNewChatHistory(chatHistory.chatHistory);
     });
 
+    socketIo.emit("get_chat_history", { page: chatHistoryPage });
+    setChatHistoryPage((prev) => prev + 1);
+
     return () => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
     };
-  }, [channelId, accessToken]);
+  }, [isDataLoaded]);
 
   useEffect(() => {
     if (!socket || !newChatHistory) return;
     setChatList((prev) => [...filterBlockingUserMessage(prev)]);
   }, [socket, newChatHistory]);
 
+  // discription: 채팅 스크롤이 끝에 닿으면 채팅 내역을 가져온다.
   useEffect(() => {
-    if (inView && socket) {
-      socket.emit("get_chat_history", { page: chatHistoryPage });
-      setChatHistoryPage((prev) => prev + 1);
-    }
+    if (!inView || !socket) return;
+    socket.emit("get_chat_history", { page: chatHistoryPage });
+    setChatHistoryPage((prev) => prev + 1);
   }, [inView]);
 
+  // discription: 유저가 특정 유저를 차단했을때 해당 유저의 메시지를 차단한다.
   useEffect(() => {
     if (!socket) return;
     setChatList(filterBlockingUserMessage(chatList));
   }, [socket, blockingUserIdList]);
+
+  useEffect(() => {
+    if (!socket || !user) return;
+
+    socket.emit("get_connected_members", (data: any) => {
+      setConnectedMembers(data.filter((member: any) => member.id !== user.id));
+    });
+  }, [socket, user]);
+
+  useEffect(() => {
+    if (!socket || !inviteGameRoomId) return;
+    console.log("inviteGameRoom", inviteGameRoomId);
+    socket.emit("invite_game", {
+      roomId: inviteGameRoomId,
+      memberId: selectedUserId,
+      user: user,
+    });
+  }, [inviteGameRoomId]);
 
   const submitChat = (event: React.FormEvent) => {
     event.preventDefault();
@@ -339,7 +391,7 @@ const ChatRoom: React.FC<IChatProps> = ({
   };
 
   return (
-    <Box w="full" h="83vh" borderRadius="8px">
+    <Box w="full" h="83vh" borderRadius="8px" pb={5}>
       <ChatHeader />
       <Divider mt={2} mb={3} />
       <ChatScrollContainer newChat={newChat} newChatHistory={newChatHistory}>
@@ -351,6 +403,7 @@ const ChatRoom: React.FC<IChatProps> = ({
             <Stack
               key={index}
               align={isCurrentUser ? "flex-end" : "flex-start"}
+              pl={4}
             >
               <Box
                 maxW="70%"
@@ -422,8 +475,15 @@ const ChatRoom: React.FC<IChatProps> = ({
         setIsOpen={setIsModalOpen}
         user={channelMembers?.find((member) => member.user.id === user.id)}
         setBlockingUserIdList={setBlockingUserIdList}
-        channelMembers={channelMembers}
-        setChannelMembers={setChannelMembers}
+        connectedMembers={connectedMembers}
+        setInviteGameRoomId={setInviteGameRoomId}
+        channelType={channel.type}
+      />
+      <InviteGameModal
+        isOpen={isInviteGameModalOpen}
+        setIsOpen={setIsInviteGameModalOpen}
+        gameHost={gameHost}
+        roomId={inviteGameRoomId}
       />
     </Box>
   );
