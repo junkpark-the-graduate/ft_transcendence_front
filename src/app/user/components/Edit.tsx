@@ -19,7 +19,6 @@ import {
 } from "@chakra-ui/react";
 import BaseButton from "@/ui/Button/Button";
 import RedButton from "@/ui/Button/RedButton";
-import { getMyData } from "@/utils/user/getMyData";
 import BaseHeading from "@/ui/Typo/Heading";
 import BaseInput from "@/ui/Input/Input";
 import FileInput from "@/ui/Input/FileInput";
@@ -27,6 +26,7 @@ import FullBox from "@/ui/Box/FullBox";
 import { uploadUserInfo } from "@/utils/edit/uploadUserInfo";
 import { uploadUserImg } from "@/utils/edit/uploadUserImg";
 import { checkDuplicateName } from "@/utils/edit/checkDuplicateName";
+import { MyData, useUserDataContext } from "@/context/UserDataContext";
 
 type FormData = {
   name: string;
@@ -35,13 +35,15 @@ type FormData = {
 };
 
 const Edit = () => {
-  const userData = getMyData();
+  const { myData, setMyData } = useUserDataContext();
   const router = useRouter();
   const [inputName, setInputName] = useState("");
   const [isNameValid, setIsNameValid] = useState(0);
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File>();
-  const [twoFactor, setTwoFactor] = useState(userData?.twoFactorEnabled);
+  const [twoFactor, setTwoFactor] = useState<boolean | undefined>(
+    myData?.twoFactorEnabled
+  );
   const [isUploading, setIsUploading] = useState(false);
   const toast = useToast();
 
@@ -51,23 +53,27 @@ const Edit = () => {
   } = useForm<FormData>();
 
   useEffect(() => {
-    if (userData) {
-      setTwoFactor(userData.twoFactorEnabled);
+    if (myData) {
+      setTwoFactor(myData.twoFactorEnabled);
     }
-  }, [userData]);
+  }, [myData]);
 
   const handleToggleAuth = () => {
-    setTwoFactor(!twoFactor);
-    toast({
-      title: `Two-factor authentication ${twoFactor ? "disabled" : "enabled"}`,
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
+    if (twoFactor !== undefined) {
+      setTwoFactor(!twoFactor);
+      toast({
+        title: `Two-factor authentication ${
+          twoFactor ? "disabled" : "enabled"
+        }`,
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleNameValidation = async () => {
-    const finalName = inputName || userData?.name || "";
+    const finalName = inputName || myData?.name || "";
     const numericRegex = /^[0-9]+$/;
     const nameRegex = /^[a-zA-Z0-9]+$/;
 
@@ -81,7 +87,7 @@ const Edit = () => {
       setIsNameValid(0);
       return;
     }
-    if (finalName == userData?.name) {
+    if (finalName == myData?.name) {
       toast({
         description: "현재 사용 중인 이름입니다.",
         status: "success",
@@ -144,7 +150,7 @@ const Edit = () => {
   };
 
   async function onSubmit() {
-    const newName = inputName || userData?.name || "";
+    const newName = inputName || myData?.name || "";
 
     if (isNameValid == 2) {
       toast({
@@ -157,11 +163,23 @@ const Edit = () => {
     }
 
     const formData = new FormData();
-
-    uploadUserImg(selectedFile, formData, setIsUploading);
+    const newImg: string | undefined = await uploadUserImg(
+      selectedFile,
+      formData,
+      setIsUploading
+    );
     uploadUserInfo(newName, twoFactor, setIsUploading);
-    if (!isUploading) {
-      router.push("/user/profile");
+
+    if (!isUploading && myData && twoFactor !== undefined) {
+      const updatedMyData: MyData = {
+        ...myData,
+        name: newName,
+        twoFactorEnabled: twoFactor,
+        image: newImg || myData.image,
+      };
+      setMyData(updatedMyData);
+
+      router.back();
       router.refresh();
     }
   }
@@ -190,7 +208,7 @@ const Edit = () => {
               <Flex>
                 <BaseInput
                   type="name"
-                  placeholder={userData?.name || ""}
+                  placeholder={myData?.name || ""}
                   mr={2}
                   onChange={(e) => {
                     setInputName(e.target.value);
@@ -218,7 +236,7 @@ const Edit = () => {
                       mx="10px"
                       borderRadius="full"
                       boxSize="120px"
-                      src={userData?.image}
+                      src={myData?.image}
                       alt=""
                     />
                   )}

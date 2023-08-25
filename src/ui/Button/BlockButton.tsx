@@ -6,7 +6,7 @@ import { block, unblock } from "@/utils/user/block";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
-import { useAppContext } from "@/app/providers";
+import { useRelationContext } from "@/context/RelationContext";
 
 export interface BlockButtonProps extends ButtonProps {
   myId: number | undefined;
@@ -21,7 +21,7 @@ export default function BlockButton({
   ...props
 }: BlockButtonProps) {
   const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
-    useAppContext();
+    useRelationContext();
   const followingList = getFollowingList(myId);
   const blockingList = getBlockingList(myId);
 

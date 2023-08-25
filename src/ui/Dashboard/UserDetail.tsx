@@ -2,14 +2,15 @@
 
 import { Avatar, Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import FollowButton from "@/ui/Button/FollowButton";
-import { getMyData } from "@/utils/user/getMyData";
 import BlockButton from "@/ui/Button/BlockButton";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import DmBaseButton from "../Button/DmBaseButton";
 import { UserData } from "./Dashboard";
+import { useUserDataContext } from "@/context/UserDataContext";
 
 export default function UserDetail({ userData }: { userData: UserData }) {
-  const myId: number | undefined = getMyData()?.id;
+  const { myData } = useUserDataContext();
+  const myId = myData?.id;
   const isMyProfile: boolean = myId == userData.id;
 
   return (

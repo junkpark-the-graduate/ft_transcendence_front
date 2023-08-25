@@ -11,13 +11,13 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { getUserData } from "@/utils/user/getUserData";
-import { getMyData } from "@/utils/user/getMyData";
 import { unfollow } from "@/utils/user/follow";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { block, unblock } from "@/utils/user/block";
 import BaseButton from "../Button/Button";
 import { GoCircleSlash } from "react-icons/go";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
+import { useUserDataContext } from "@/context/UserDataContext";
 
 function BlockingListItem({ userId }: { userId: number }) {
   const userData = getUserData(userId);
@@ -61,9 +61,8 @@ function BlockingListItem({ userId }: { userId: number }) {
 }
 
 export default function BlockingList() {
-  const myData = getMyData();
-  const myId = myData?.id ?? 0;
-  const blockings = getBlockingList(myId);
+  const { myData } = useUserDataContext();
+  const blockings = getBlockingList(myData?.id);
 
   return (
     <Box>

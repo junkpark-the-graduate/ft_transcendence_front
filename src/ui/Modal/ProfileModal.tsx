@@ -17,7 +17,6 @@ import {
 } from "@chakra-ui/react";
 import BaseButton from "../Button/Button";
 import { UserData } from "@/utils/user/getUserData";
-import { getMyData } from "@/utils/user/getMyData";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import BlockButton from "../Button/BlockButton";
 import FollowButton from "../Button/FollowButton";
@@ -25,6 +24,7 @@ import { useRouter } from "next/navigation";
 import getRankById from "@/utils/user/getRankById";
 import getGameStats from "@/utils/user/getGameStats";
 import DmBaseButton from "../Button/DmBaseButton";
+import { useUserDataContext } from "@/context/UserDataContext";
 
 export interface ProfileModalProps {
   userData: UserData | null | undefined;
@@ -35,7 +35,7 @@ export default function ProfileModal({
   ...props
 }: ProfileModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const myData = getMyData();
+  const { myData } = useUserDataContext();
   const router = useRouter();
   const rank = getRankById(userData?.id);
   const gameStats = getGameStats(userData?.id);

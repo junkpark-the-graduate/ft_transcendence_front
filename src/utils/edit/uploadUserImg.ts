@@ -12,6 +12,9 @@ export async function uploadUserImg(
       method: "PATCH",
       body: formData,
     });
+    const data = await res.json();
+    const imageURL: string = data.image;
+    return imageURL;
     if (!res.ok) {
       console.log("Failed to update user image");
     }
