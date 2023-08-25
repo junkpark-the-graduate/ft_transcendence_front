@@ -13,6 +13,7 @@ import {
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import ChannelBadge from "../Badges/ChannelBadge";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface Props {
   joinedChannels: any[];
@@ -31,17 +32,9 @@ const JoinedChannelList: React.FC<Props> = ({
   }
 
   async function exitChannel(channelId: number) {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
+      method: "DELETE",
+    });
     return res;
   }
 
@@ -62,17 +55,7 @@ const JoinedChannelList: React.FC<Props> = ({
   }
 
   async function connectJoinedChannel(channelId: number) {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined/${channelId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
 
     return res;
   }

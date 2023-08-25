@@ -17,6 +17,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import BaseButton from "../Button/Button";
 import BaseInput from "../Input/Input";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface PasswordModalProps {
   isOpen: boolean;
@@ -34,15 +35,10 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const joinProtectedChannel = async (password: string, channelId: number) => {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member?password=${password}`,
+    const res = await fetchAsyncToBackEnd(
+      `/channel/${channelId}/member?password=${password}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
 

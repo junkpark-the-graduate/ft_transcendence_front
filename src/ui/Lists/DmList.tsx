@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import ButtonBox from "@/ui/Box/ButtonBox";
 import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
 import ChannelBadge from "../Badges/ChannelBadge";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 const DmList: React.FC = () => {
   const accessToken = Cookies.get("accessToken");
@@ -15,17 +16,7 @@ const DmList: React.FC = () => {
   const [channels, setChannels] = useState<any[]>([]);
 
   async function getDirectChannels() {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/direct/joined`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/direct/joined`);
     const resJson = await res.json();
     return resJson;
   }
@@ -38,17 +29,7 @@ const DmList: React.FC = () => {
   }, []);
 
   async function connectJoinedChannel(channelId: number) {
-    const accessToken = Cookies.get("accessToken");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/joined/${channelId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
     return res;
   }
 

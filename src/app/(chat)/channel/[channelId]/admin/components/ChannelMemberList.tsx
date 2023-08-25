@@ -24,6 +24,7 @@ import {
 import BaseIconButton from "@/ui/Button/IconButton";
 import { set } from "react-hook-form";
 import ChannelInput from "@/ui/Input/ChannelInput";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 interface Props {
   channelId: number;
@@ -51,16 +52,7 @@ const ChannelMemberlList: React.FC<Props> = ({
   }, [members]);
 
   async function getChannelMembers() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/member`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`);
     const resJson = await res.json();
     setMembers(resJson);
   }
@@ -70,14 +62,10 @@ const ChannelMemberlList: React.FC<Props> = ({
   }, []);
 
   async function banMember(memberId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/banned-member?memberId=${memberId}`,
+    const res = await fetchAsyncToBackEnd(
+      `/channel/${channelId}/banned-member?memberId=${memberId}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
     return res;
@@ -107,14 +95,10 @@ const ChannelMemberlList: React.FC<Props> = ({
   }
 
   async function kickMember(memberId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/kicked-member?memberId=${memberId}`,
+    const res = await fetchAsyncToBackEnd(
+      `/channel/${channelId}/kicked-member?memberId=${memberId}`,
       {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
     return res;
@@ -143,14 +127,10 @@ const ChannelMemberlList: React.FC<Props> = ({
   }
 
   async function adminMember(memberId: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/admin?memberId=${memberId}`,
+    const res = await fetchAsyncToBackEnd(
+      `/channel/${channelId}/admin?memberId=${memberId}`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
     return res;

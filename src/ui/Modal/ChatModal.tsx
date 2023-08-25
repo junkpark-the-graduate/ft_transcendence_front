@@ -81,17 +81,12 @@ const ChatModal: React.FC<ChatModalProps> = ({
   };
 
   const handleMute = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/muted-member?memberId=${memberId}`,
+    const res = await fetchAsyncToBackEnd(
+      `/channel/${channelId}/muted-member?memberId=${memberId}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
-    const resJson = await res.json();
 
     // TODO muteTime 지금 완전 짧게 되어있으니까 수정해야함!
     if (res.status < 300) {
@@ -113,17 +108,12 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
   const handleBan = async () => {
     if (confirm(`정말로 ${memberData.name} 유저를 차단하시겠습니까?`)) {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/banned-member?memberId=${memberId}`,
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/banned-member?memberId=${memberId}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
         }
       );
-      const resJson = await res.json();
 
       if (res.status > 299) {
         toast({
@@ -146,14 +136,10 @@ const ChatModal: React.FC<ChatModalProps> = ({
 
   const handleKick = async () => {
     if (confirm(`정말로 ${memberData.name} 유저를 쫓아내겠습니까?`)) {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/channel/${channelId}/kicked-member?memberId=${memberId}`,
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/kicked-member?memberId=${memberId}`,
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
         }
       );
       const resJson = await res.json();
