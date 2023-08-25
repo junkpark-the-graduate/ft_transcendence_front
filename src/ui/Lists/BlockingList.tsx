@@ -12,25 +12,33 @@ import {
 import React, { useState } from "react";
 import { getUserData } from "@/utils/user/getUserData";
 import { unfollow } from "@/utils/user/follow";
-import { getBlockingList } from "@/utils/user/getBlockingList";
 import { block, unblock } from "@/utils/user/block";
 import BaseButton from "../Button/Button";
 import { GoCircleSlash } from "react-icons/go";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
-import { useUserDataContext } from "@/context/UserDataContext";
+import { useRelationContext } from "@/context/RelationContext";
 
 function BlockingListItem({ userId }: { userId: number }) {
   const userData = getUserData(userId);
   const [isBlocking, setIsBlocking] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
+  const { blockingList, setBlockingList } = useRelationContext();
 
   const handleBlock = async () => {
     await block(userId, () => setIsBlocking(true));
     await unfollow(userId, () => setIsFollowing(false));
+    if (blockingList) {
+      setBlockingList([...blockingList, userId]);
+    } else {
+      setBlockingList([userId]);
+    }
   };
 
   const handleUnblock = async () => {
     await unblock(userId, () => setIsBlocking(false));
+    if (blockingList) {
+      setBlockingList(blockingList.filter((id) => id !== userId));
+    }
   };
 
   return (
@@ -61,16 +69,15 @@ function BlockingListItem({ userId }: { userId: number }) {
 }
 
 export default function BlockingList() {
-  const { myData } = useUserDataContext();
-  const blockings = getBlockingList(myData?.id);
+  const { blockingList } = useRelationContext();
 
   return (
     <Box>
-      {blockings && blockings.length > 0 ? (
+      {blockingList && blockingList.length > 0 ? (
         <Stack spacing={2}>
-          {blockings.map((blockings, index, array) => (
-            <React.Fragment key={blockings}>
-              <BlockingListItem userId={Number(blockings)} />
+          {blockingList.map((blockedUser, index, array) => (
+            <React.Fragment key={blockedUser}>
+              <BlockingListItem userId={Number(blockedUser)} />
               {index !== array.length - 1 && <Divider borderColor="#414147" />}
             </React.Fragment>
           ))}

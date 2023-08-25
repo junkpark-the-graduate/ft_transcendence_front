@@ -1,29 +1,14 @@
-import { useEffect, useState } from "react";
 import { fetchAsyncToBackEnd } from "../lib/fetchAsyncToBackEnd";
 
-export function getBlockingList(userId: number | undefined) {
-  const [blockings, setBlockings] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchBlockings = async () => {
-    try {
-      if (typeof userId !== "undefined") {
-        const res = await fetchAsyncToBackEnd(`/block/userid`);
-        const data = await res.json();
-        setIsLoading(false);
-        setBlockings(data.map((x: any) => x.blockingId));
-      } else {
-        setIsLoading(false);
-      }
-    } catch (err) {
-      console.log(err);
-      setIsLoading(false);
+export async function getBlockingList(userId: number | undefined) {
+  try {
+    if (typeof userId !== "undefined") {
+      const res = await fetchAsyncToBackEnd(`/block/userid`);
+      const data = await res.json();
+      return data.map((x: any) => x.blockingId);
     }
-  };
-
-  useEffect(() => {
-    fetchBlockings();
-  }, [userId]);
-
-  return isLoading ? null : blockings;
+  } catch (err) {
+    console.log(err);
+  }
+  return null;
 }
