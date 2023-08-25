@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Flex, Input, useToast } from "@chakra-ui/react";
+import { Flex, Input, Spacer, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import BaseIconButton from "@/ui/Button/IconButton";
 import { SearchIcon } from "@chakra-ui/icons";
@@ -75,13 +75,16 @@ export default function Search() {
           }}
         />
       ) : (
-        <BaseIconButton
-          h={8}
-          mr={2}
-          icon={<SearchIcon />}
-          aria-label="search"
-          onClick={handleSearchToggle}
-        />
+        <Flex w="180px">
+          <Spacer />
+          <BaseIconButton
+            h={8}
+            mr={2}
+            icon={<SearchIcon />}
+            aria-label="search"
+            onClick={handleSearchToggle}
+          />
+        </Flex>
       )}
       {searchOpen && (
         <BaseIconButton
