@@ -2,9 +2,16 @@
 
 import { Box } from "@chakra-ui/react";
 import { useUserDataContext } from "@/context/UserDataContext";
+import { useRelationContext } from "@/context/RelationContext";
 
 export default function page() {
   const { myData, isLoading } = useUserDataContext();
+  const { followingList } = useRelationContext();
 
-  return <Box>{isLoading ? "loading..." : myData?.name}</Box>;
+  return (
+    <Box>
+      {myData?.name}
+      {followingList}
+    </Box>
+  );
 }
