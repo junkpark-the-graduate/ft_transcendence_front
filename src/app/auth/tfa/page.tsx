@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 
 async function getAccessToken(twoFactorToken: string, router: any) {
