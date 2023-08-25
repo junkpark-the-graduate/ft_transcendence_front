@@ -10,7 +10,6 @@ import {
   MenuList,
   Spacer,
   Stack,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import BaseIconButton from "../Button/IconButton";
@@ -25,22 +24,18 @@ import {
 import { useRouter } from "next/navigation";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getUserData } from "@/utils/user/getUserData";
-import { getMyData } from "@/utils/user/getMyData";
 import { block, unblock } from "@/utils/user/block";
 import { follow, unfollow } from "@/utils/user/follow";
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import ProfileModal from "../Modal/ProfileModal";
-import Cookies from "js-cookie";
 import DmIconButton from "../Button/DmIconButton";
+import { useUserDataContext } from "@/context/UserDataContext";
 
 function FollowingListItem({ userId }: { userId: number | undefined }) {
   const userData = getUserData(userId);
   const router = useRouter();
   const [isBlocking, setIsBlocking] = useState(false);
   const [isFollowing, setIsFollowing] = useState(true);
-
-  // TODO: ここでsocketを使うのはどうかと思う 뭔지 모르겟음
-  // const tmp = socket;
 
   const handleFollow = async () => {
     await follow(userId, () => setIsFollowing(true));
@@ -116,7 +111,7 @@ function FollowingListItem({ userId }: { userId: number | undefined }) {
 }
 
 export default function FollowingList() {
-  const myData = getMyData();
+  const { myData } = useUserDataContext();
   const followings = getFollowingList(myData?.id);
 
   return (

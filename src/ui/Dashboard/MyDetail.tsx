@@ -4,12 +4,13 @@ import { GoPencil, GoSignOut } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import { EUserStatus } from "../../app/user/types/EUserStatus";
 import BlockedUsersModal from "@/app/user/components/BlockedUsersModal";
-import { UserData } from "./Dashboard";
 import { useRouter } from "next/navigation";
 import { logout } from "@/utils/auth/logout";
+import { useUserDataContext } from "@/context/UserDataContext";
 
-export default function MyDetail({ userData }: { userData: UserData }) {
+export default function MyDetail() {
   const router = useRouter();
+  const { myData } = useUserDataContext();
 
   return (
     <Box position="relative" px={5} pt={4} borderRadius={8} mb={2}>
@@ -23,23 +24,23 @@ export default function MyDetail({ userData }: { userData: UserData }) {
               ml={4}
               mt={4}
               size="2xl"
-              name={userData?.name}
-              src={userData?.image}
+              name={myData?.name}
+              src={myData?.image}
               border="white 5px solid"
             />
           </GridItem>
           <GridItem colSpan={2}>
             <Text fontSize={28} mb={2}>
-              {userData?.name}
+              {myData?.name}
             </Text>
-            <Text fontSize={16}>42 ID: {userData?.id}</Text>
-            <Text fontSize={16}>email: {userData?.email}</Text>
+            <Text fontSize={16}>42 ID: {myData?.id}</Text>
+            <Text fontSize={16}>email: {myData?.email}</Text>
             <Text fontSize={16}>
-              TFA enable: {userData?.twoFactorEnabled ? "true" : "false"}
+              TFA enable: {myData?.twoFactorEnabled ? "true" : "false"}
             </Text>
             <Text fontSize={16}>
               status:{" "}
-              {userData?.status === EUserStatus.online ? "online" : "offline"}
+              {myData?.status === EUserStatus.online ? "online" : "offline"}
             </Text>
           </GridItem>
           <GridItem colSpan={1} pt={6}>

@@ -6,7 +6,7 @@ import { follow, unfollow } from "@/utils/user/follow";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { unblock } from "@/utils/user/block";
-import { useAppContext } from "@/app/providers";
+import { useRelationContext } from "@/context/RelationContext";
 
 export interface FollowButtonProps extends ButtonProps {
   myId: number | undefined;
@@ -21,7 +21,7 @@ export default function FollowButton({
   ...props
 }: FollowButtonProps) {
   const { isFollowing, setIsFollowing, isBlocking, setIsBlocking } =
-    useAppContext();
+    useRelationContext();
   const followingList = getFollowingList(myId);
   const blockingList = getBlockingList(myId);
 

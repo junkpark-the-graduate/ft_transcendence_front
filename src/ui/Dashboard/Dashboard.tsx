@@ -87,11 +87,7 @@ export default function Dashboard({ userId }: { userId: number | null }) {
       ) : user ? (
         <Flex p={4} direction="column">
           <Divider borderColor="#A0A0A3" mt={2} mb={4} />
-          {userId ? (
-            <UserDetail userData={user} />
-          ) : (
-            <MyDetail userData={user} />
-          )}
+          {userId ? <UserDetail userData={user} /> : <MyDetail />}
           <Divider borderColor="#A0A0A3" my={6} />
           <Box flex={5}>
             <Flex>

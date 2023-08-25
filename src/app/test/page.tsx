@@ -1,7 +1,10 @@
 "use client";
 
-import ProfileEditModal from "../user/components/ProfileEditModal";
+import { Box } from "@chakra-ui/react";
+import { useUserDataContext } from "@/context/UserDataContext";
 
 export default function page() {
-  return <ProfileEditModal />;
+  const { myData, isLoading } = useUserDataContext();
+
+  return <Box>{isLoading ? "loading..." : myData?.name}</Box>;
 }
