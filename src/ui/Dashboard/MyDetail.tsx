@@ -6,6 +6,7 @@ import { EUserStatus } from "../../app/user/types/EUserStatus";
 import BlockedUsersModal from "@/app/user/components/BlockedUsersModal";
 import { UserData } from "./Dashboard";
 import { useRouter } from "next/navigation";
+import { logout } from "@/utils/auth/logout";
 
 export default function MyDetail({ userData }: { userData: UserData }) {
   const router = useRouter();
@@ -56,6 +57,7 @@ export default function MyDetail({ userData }: { userData: UserData }) {
                 text="logout pong"
                 leftIcon={<GoSignOut />}
                 onClick={() => {
+                  logout();
                   router.push(`/`);
                 }}
               />
