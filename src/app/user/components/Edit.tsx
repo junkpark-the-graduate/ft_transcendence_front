@@ -170,10 +170,17 @@ const Edit = () => {
     <FullBox>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Center>
-          <Box bg="#29292D" w="500px" p="40px 60px" borderRadius={"15px"}>
-            <BaseHeading text="edit profile" />
-            <Divider my="5" />
-            <FormControl>
+          <Box
+            w="500px"
+            p="30px 40px"
+            border="#A0A0A3 3px solid"
+            boxShadow={"7px 7px black"}
+            borderRadius="0"
+            bg="#29292D"
+          >
+            <BaseHeading ml={2} text="edit profile" />
+            <Divider my={4} />
+            <FormControl px={2}>
               <FormLabel mb="10px" htmlFor="name">
                 {">"} 이름 변경하기
               </FormLabel>
@@ -192,7 +199,7 @@ const Edit = () => {
                 />
                 <BaseButton text="검사하기" onClick={handleNameValidation} />
               </Flex>
-              <Divider my="5" />
+              <Divider my={4} />
               <FormLabel mb="10px" htmlFor="name">
                 {">"} 프로필 이미지 변경하기
               </FormLabel>
@@ -233,7 +240,7 @@ const Edit = () => {
                   }
                 }}
               />
-              <Divider my="5" />
+              <Divider my={4} />
               <FormLabel mb="10px" htmlFor="name">
                 {">"} 2FA 설정 변경하기
               </FormLabel>

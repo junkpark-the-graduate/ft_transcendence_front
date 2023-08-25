@@ -1,11 +1,12 @@
 import { Box, Flex, Avatar, Text, GridItem, Grid } from "@chakra-ui/react";
 import LinkButton from "@/ui/Button/LinkButton";
-import { GoGear, GoSignOut } from "react-icons/go";
+import { GoPencil, GoSignOut } from "react-icons/go";
 import BaseButton from "@/ui/Button/Button";
 import { EUserStatus } from "../../app/user/types/EUserStatus";
 import BlockedUsersModal from "@/app/user/components/BlockedUsersModal";
 import { UserData } from "./Dashboard";
 import { useRouter } from "next/navigation";
+import { logout } from "@/utils/auth/logout";
 
 export default function MyDetail({ userData }: { userData: UserData }) {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function MyDetail({ userData }: { userData: UserData }) {
           <GridItem colSpan={1} pt={6}>
             <Flex flexDirection={"column"}>
               <LinkButton
-                icon={<GoGear />}
+                icon={<GoPencil />}
                 text="edit profile"
                 goTo="/user/edit"
               />
@@ -56,6 +57,7 @@ export default function MyDetail({ userData }: { userData: UserData }) {
                 text="logout pong"
                 leftIcon={<GoSignOut />}
                 onClick={() => {
+                  logout();
                   router.push(`/`);
                 }}
               />
