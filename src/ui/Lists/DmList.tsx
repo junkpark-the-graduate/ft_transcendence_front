@@ -14,29 +14,42 @@ const DmList: React.FC = () => {
   const router = useRouter();
   const toast = useToast();
   const [channels, setChannels] = useState<any[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   async function getDirectChannels() {
-    const res = await fetchAsyncToBackEnd(`/channel/direct/joined`);
-    const resJson = await res.json();
-    return resJson;
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/direct/joined`);
+      const resJson = await res.json();
+      return resJson;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   useEffect(() => {
     if (!accessToken) router.push("/");
     getDirectChannels().then((res) => {
+      if (!res) return;
       setChannels(res);
     });
   }, []);
 
   async function connectJoinedChannel(channelId: number) {
-    const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function onClickChannel(channelId: number) {
     const res = await connectJoinedChannel(channelId);
-    const resJson = await res.json();
+    if (!res) return;
 
+    const resJson = await res.json();
     if (res.status < 300) {
       router.push(`/channel/${channelId}/chat-room`);
     } else {

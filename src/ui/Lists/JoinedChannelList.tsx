@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -26,42 +26,27 @@ const JoinedChannelList: React.FC<Props> = ({
 }) => {
   const toast = useToast();
   const router = useRouter();
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   if (!Array.isArray(joinedChannels)) {
     return <div>Loading...</div>;
   }
 
-  async function exitChannel(channelId: number) {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
-      method: "DELETE",
-    });
-    return res;
-  }
-
-  async function exitChannelHandler(channelId: number) {
-    const res = await exitChannel(channelId);
-    const newJoinedChannels = joinedChannels.filter(
-      (channel: any) => channel.id !== channelId
-    );
-    setJoinedChannels(newJoinedChannels);
-    if (res.status < 300) {
-      toast({
-        title: `You exited the channel ${channelId}`,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  }
-
   async function connectJoinedChannel(channelId: number) {
-    const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
-
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function connectJoinedChannelHandler(channelId: number) {
     const res = await connectJoinedChannel(channelId);
+    if (!res) return;
+
     const resJson = await res.json();
     if (res.status < 300) {
       router.push(`/channel/${channelId}/chat-room`);

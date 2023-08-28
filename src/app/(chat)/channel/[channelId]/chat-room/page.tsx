@@ -6,21 +6,27 @@ import { Box, Text } from "@chakra-ui/react";
 import GridType1 from "@/ui/Grid/GridType1";
 import ChannelConnectedMemberList from "@/app/(chat)/components/ChannelConnectedMemberList";
 import Cookies from "js-cookie";
-import { getChannels } from "@/utils/channel/getChannels";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 export default function Page({ params }: { params: { channelId: number } }) {
   const [connnectedMembers, setConnectedMembers] = useState<any>([]);
   const [channel, setChannel] = useState<any>([]);
-  const accessToken = Cookies.get("accessToken");
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   const getChannel = async () => {
-    const res = await fetchAsyncToBackEnd(`/channel/${params.channelId}`);
-    return await res.json();
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${params.channelId}`);
+      return await res.json();
+    } catch (err: any) {
+      setError(err);
+    }
   };
 
   useEffect(() => {
     getChannel().then((res) => {
+      if (!res) return;
       setChannel(res);
     });
   }, []);

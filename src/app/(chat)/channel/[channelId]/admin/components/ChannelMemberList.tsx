@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -44,17 +44,24 @@ const ChannelMemberlList: React.FC<Props> = ({
   setBannedMembers,
 }) => {
   const toast = useToast();
-  const accessToken = Cookies.get("accessToken");
   const [tmpMembers, setTmpMembers] = React.useState<any[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   useEffect(() => {
     setTmpMembers(members);
   }, [members]);
 
   async function getChannelMembers() {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`);
-    const resJson = await res.json();
-    setMembers(resJson);
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`);
+      if (!res) return;
+      const resJson = await res.json();
+      setMembers(resJson);
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   useEffect(() => {
@@ -62,18 +69,24 @@ const ChannelMemberlList: React.FC<Props> = ({
   }, []);
 
   async function banMember(memberId: number) {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/${channelId}/banned-member?memberId=${memberId}`,
-      {
-        method: "POST",
-      }
-    );
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/banned-member?memberId=${memberId}`,
+        {
+          method: "POST",
+        }
+      );
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function banMemberHandler(member: any) {
     if (confirm(`정말로 ${member.user.name} 유저를 차단하시겠습니까?`)) {
       const res = await banMember(member.user.id);
+      if (!res) return;
+
       if (res.status > 299) {
         toast({
           title: "차단에 실패하였습니다.",
@@ -95,18 +108,24 @@ const ChannelMemberlList: React.FC<Props> = ({
   }
 
   async function kickMember(memberId: number) {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/${channelId}/kicked-member?memberId=${memberId}`,
-      {
-        method: "DELETE",
-      }
-    );
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/kicked-member?memberId=${memberId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function kickMemberHandler(member: any) {
     if (confirm(`정말로 ${member.user.name} 유저를 쫓아내겠습니까?`)) {
       const res = await banMember(member.user.id);
+      if (!res) return;
+
       if (res.status > 299) {
         toast({
           title: "차단에 실패하였습니다.",
@@ -127,17 +146,23 @@ const ChannelMemberlList: React.FC<Props> = ({
   }
 
   async function adminMember(memberId: number) {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/${channelId}/admin?memberId=${memberId}`,
-      {
-        method: "PATCH",
-      }
-    );
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/admin?memberId=${memberId}`,
+        {
+          method: "PATCH",
+        }
+      );
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function adminMemberHandler(member: any) {
     const res = await adminMember(member.user.id);
+    if (!res) return;
+
     const resJson = await res.json();
     const message = member.isAdmin ? "관리자 해제" : "관리자 등록";
 

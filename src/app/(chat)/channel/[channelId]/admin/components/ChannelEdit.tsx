@@ -34,34 +34,43 @@ interface Props {
 
 const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   const router = useRouter();
-  const accessToken = Cookies.get("accessToken");
   const [newChannelName, setNewChannelName] = useState<string>("");
   const [newChannelPassword, setNewChannelPassword] = useState<string>("");
   const [newChannelType, setNewChannelType] = useState<string>("");
   const toast = useToast();
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   async function getChannel() {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`);
-    const resJson = await res.json();
-    setChannel(resJson);
-    setNewChannelName(resJson.name);
-    setNewChannelType(EChannelType[resJson.type]);
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${channelId}`);
+      const resJson = await res.json();
+      return resJson;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function updateChannel() {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        name: newChannelName,
-        password: newChannelPassword,
-        type: EChannelType[newChannelType as keyof typeof EChannelType],
-      }),
-    });
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${channelId}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          name: newChannelName,
+          password: newChannelPassword,
+          type: EChannelType[newChannelType as keyof typeof EChannelType],
+        }),
+      });
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function updateChannelHandler() {
     const res = await updateChannel();
+    if (!res) return;
     const resJson = await res.json();
 
     if (res.status > 299) {
@@ -87,10 +96,14 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   }
 
   async function deleteChannel() {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}`, {
-      method: "DELETE",
-    });
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${channelId}`, {
+        method: "DELETE",
+      });
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function deleteChannelHandler() {
@@ -98,6 +111,8 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
       return;
     }
     const res = await deleteChannel();
+    if (!res) return;
+
     if (res.status > 299) {
       toast({
         title: "Channel delete failed",
@@ -117,7 +132,12 @@ const ChannelEdit: React.FC<Props> = ({ channelId, channel, setChannel }) => {
   }
 
   useEffect(() => {
-    getChannel();
+    getChannel().then((res) => {
+      if (!res) return;
+      setChannel(res);
+      setNewChannelName(res.name);
+      setNewChannelType(EChannelType[res.type]);
+    });
   }, []);
 
   return (

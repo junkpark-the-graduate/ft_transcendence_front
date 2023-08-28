@@ -11,7 +11,6 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { EChannelType } from "../../app/(chat)/channel/types/EChannelType";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import PasswordModal from "@/ui/Modal/PasswordModal";
 import Input from "@/ui/Input/Input";
@@ -20,7 +19,6 @@ import CreateChannelModal from "@/ui/Modal/CreateChannelModal";
 import { formatCreatedAt } from "@/utils/chat/formatCreatedAt";
 import ChannelBadge from "../Badges/ChannelBadge";
 import { GoSync } from "react-icons/go";
-import { getTokenClient } from "@/utils/auth/getTokenClient";
 import { useInView } from "react-intersection-observer";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
@@ -91,22 +89,22 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
   }
 
   async function joinChannel(channelId: number) {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
-      method: "POST",
-    });
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
+        method: "POST",
+      });
 
-    return res;
-  }
-
-  async function connectJoinedChannel(channelId: number) {
-    const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
-    return res;
+      return res;
+    } catch (error: any) {
+      setError(error);
+    }
   }
 
   async function handleJoinChannel(channelId: number) {
     const res = await joinChannel(channelId);
-    const resJson = await res.json();
+    if (!res) return;
 
+    const resJson = await res.json();
     if (res.status < 300) {
       router.push(`/channel/${channelId}/chat-room`);
     } else {
@@ -119,8 +117,19 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
     }
   }
 
+  async function connectJoinedChannel(channelId: number) {
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/joined/${channelId}`);
+      return res;
+    } catch (error: any) {
+      setError(error);
+    }
+  }
+
   async function isAlreadyJoinedChannel(channelId: number) {
     const res = await connectJoinedChannel(channelId);
+    if (!res) return false;
+
     if (res.status < 300) return true;
     else return false;
   }
