@@ -39,20 +39,28 @@ export default function Dashboard({ userId }: { userId: number | null }) {
   const [user, setUser] = useState<UserData | null>(null);
   const [matchHistory, setMatchHistory] = useState<Array<MatchHistory>>([]);
   const [notFound, setNotFound] = useState<boolean>(false);
+  const [error, setError] = useState<any>(null);
+
+  if (error) {
+    throw error;
+  }
 
   useEffect(() => {
-    fetchAsyncToBackEnd("/user/" + (userId ?? "")).then((res) => {
-      if (res.status === 404) {
-        setNotFound(true);
-        return;
-      }
-      res.json().then((data) => {
-        setUser(data);
-      });
-    });
+    fetchAsyncToBackEnd("/user/" + (userId ?? ""))
+      .then((res) => {
+        if (res.status === 404) {
+          setNotFound(true);
+          return;
+        }
+        res.json().then((data) => {
+          setUser(data);
+        });
+      })
+      .catch(setError);
+
     if (userId) {
-      fetchAsyncToBackEnd(`/game/by-ftid/${userId}?limit=10&offset=0`).then(
-        (res) => {
+      fetchAsyncToBackEnd(`/game/by-ftid/${userId}?limit=10&offset=0`)
+        .then((res) => {
           if (res.status !== 200) {
             setNotFound(true);
             return;
@@ -60,14 +68,14 @@ export default function Dashboard({ userId }: { userId: number | null }) {
           res.json().then((matchHistory: Array<MatchHistory>) => {
             setMatchHistory(matchHistory);
           });
-        }
-      );
+        })
+        .catch(setError);
     }
   }, []);
   useEffect(() => {
     if (!userId && user) {
-      fetchAsyncToBackEnd(`/game/by-ftid/${user.id}?limit=10&offset=0`).then(
-        (res) => {
+      fetchAsyncToBackEnd(`/game/by-ftid/${user.id}?limit=10&offset=0`)
+        .then((res) => {
           if (res.status !== 200) {
             setNotFound(true);
             return;
@@ -75,8 +83,8 @@ export default function Dashboard({ userId }: { userId: number | null }) {
           res.json().then((matchHistory: Array<MatchHistory>) => {
             setMatchHistory(matchHistory);
           });
-        }
-      );
+        })
+        .catch(setError);
     }
   }, [user]);
 

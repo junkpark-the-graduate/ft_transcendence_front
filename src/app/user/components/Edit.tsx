@@ -22,7 +22,6 @@ import RedButton from "@/ui/Button/RedButton";
 import BaseHeading from "@/ui/Typo/Heading";
 import BaseInput from "@/ui/Input/Input";
 import FileInput from "@/ui/Input/FileInput";
-import FullBox from "@/ui/Box/FullBox";
 import { uploadUserInfo } from "@/utils/edit/uploadUserInfo";
 import { uploadUserImg } from "@/utils/edit/uploadUserImg";
 import { checkDuplicateName } from "@/utils/edit/checkDuplicateName";
@@ -46,6 +45,12 @@ const Edit = () => {
   );
   const [isUploading, setIsUploading] = useState(false);
   const toast = useToast();
+  const [imageURL, setImageURL] = useState("");
+  const [error, setError] = useState(null);
+
+  if (error) {
+    throw error;
+  }
 
   const {
     handleSubmit,
@@ -128,7 +133,7 @@ const Edit = () => {
       return;
     }
 
-    const isDuplicate = await checkDuplicateName(finalName);
+    const isDuplicate = await checkDuplicateName(finalName).catch(setError);
 
     if (isDuplicate) {
       toast({
@@ -163,19 +168,22 @@ const Edit = () => {
     }
 
     const formData = new FormData();
-    const newImg: string | undefined = await uploadUserImg(
-      selectedFile,
-      formData,
-      setIsUploading
-    );
-    uploadUserInfo(newName, twoFactor, setIsUploading);
+    try {
+      const newImg: string = await uploadUserImg(selectedFile, formData);
+      setImageURL(newImg);
+    } catch (err: any) {
+      setError(err);
+      return;
+    }
+
+    uploadUserInfo(newName, twoFactor, setIsUploading).catch(setError);
 
     if (!isUploading && myData && twoFactor !== undefined) {
       const updatedMyData: MyData = {
         ...myData,
         name: newName,
         twoFactorEnabled: twoFactor,
-        image: newImg || myData.image,
+        image: imageURL || myData.image,
       };
       setMyData(updatedMyData);
 
@@ -185,106 +193,103 @@ const Edit = () => {
   }
 
   return (
-    <FullBox>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Center>
-          <Box
+    <Flex mx={2} mt={3} direction="column">
+      <BaseHeading ml={2} text="edit profile" />
+      <Divider my={4} />
+      <FormControl px={4}>
+        <FormLabel mb={5} htmlFor="name" ml={2}>
+          {">"} 이름 변경하기
+        </FormLabel>
+        <Text fontSize={13} ml={6} mb={2} textColor="gray">
+          알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
+        </Text>
+        <Flex>
+          <BaseInput
+            w="380px"
+            type="name"
+            placeholder={myData?.name || ""}
+            mr={2}
+            ml={6}
+            onChange={(e) => {
+              setInputName(e.target.value);
+              setIsNameValid(2);
+            }}
+          />
+          <BaseButton text="검사하기" onClick={handleNameValidation} />
+        </Flex>
+        <Divider my={4} />
+        <FormLabel mb={5} htmlFor="name" ml={2}>
+          {">"} 프로필 이미지 변경하기
+        </FormLabel>
+        <Flex alignItems="center" ml={6}>
+          <div>
+            {selectedImage ? (
+              <Image
+                mx="10px"
+                borderRadius="full"
+                boxSize="120px"
+                src={selectedImage}
+                alt=""
+              />
+            ) : (
+              <Image
+                mx="10px"
+                borderRadius="full"
+                boxSize="120px"
+                src={myData?.image}
+                alt=""
+              />
+            )}
+          </div>
+          <Spacer />
+        </Flex>
+        <Text fontSize={13} ml={6} my={2} textColor="gray">
+          .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
+        </Text>
+        <Flex>
+          <FileInput
+            ml={6}
             w="500px"
-            p="30px 40px"
-            border="#A0A0A3 3px solid"
-            boxShadow={"7px 7px black"}
-            borderRadius="0"
-            bg="#29292D"
-          >
-            <BaseHeading ml={2} text="edit profile" />
-            <Divider my={4} />
-            <FormControl px={2}>
-              <FormLabel mb="10px" htmlFor="name">
-                {">"} 이름 변경하기
-              </FormLabel>
-              <Text fontSize={13} ml={1} mb={2} textColor="gray">
-                알파벳과 숫자로 구성된 20자 이내의 이름을 입력해주세요.
-              </Text>
-              <Flex>
-                <BaseInput
-                  type="name"
-                  placeholder={myData?.name || ""}
-                  mr={2}
-                  onChange={(e) => {
-                    setInputName(e.target.value);
-                    setIsNameValid(2);
-                  }}
-                />
-                <BaseButton text="검사하기" onClick={handleNameValidation} />
-              </Flex>
-              <Divider my={4} />
-              <FormLabel mb="10px" htmlFor="name">
-                {">"} 프로필 이미지 변경하기
-              </FormLabel>
-              <Flex alignItems="center">
-                <div>
-                  {selectedImage ? (
-                    <Image
-                      mx="10px"
-                      borderRadius="full"
-                      boxSize="120px"
-                      src={selectedImage}
-                      alt=""
-                    />
-                  ) : (
-                    <Image
-                      mx="10px"
-                      borderRadius="full"
-                      boxSize="120px"
-                      src={myData?.image}
-                      alt=""
-                    />
-                  )}
-                </div>
-                <Spacer />
-                <Flex flexDirection="column"></Flex>
-              </Flex>
-              <Text fontSize={13} ml={1} my={2} textColor="gray">
-                .jpg 혹은 .png 형식의 이미지 파일만 업로드 가능합니다.
-              </Text>
-              <FileInput
-                type="file"
-                accept=".jpg, .jpeg, .png"
-                onChange={({ target }) => {
-                  if (target.files) {
-                    const file = target.files[0];
-                    setSelectedImage(URL.createObjectURL(file));
-                    setSelectedFile(file);
-                  }
-                }}
-              />
-              <Divider my={4} />
-              <FormLabel mb="10px" htmlFor="name">
-                {">"} 2FA 설정 변경하기
-              </FormLabel>
-              <Switch
-                colorScheme="gray"
-                isChecked={twoFactor}
-                onChange={handleToggleAuth}
-              >
-                {twoFactor ? "2FA enabled" : "2FA disabled"}
-              </Switch>
-            </FormControl>
-            <Divider my="5" />
-            <Flex>
-              <Spacer />
-              <RedButton text="취소하기" mr={2} />
-              <BaseButton
-                text="저장하기"
-                isLoading={isSubmitting}
-                type="submit"
-                onClick={() => {}}
-              />
-            </Flex>
-          </Box>
-        </Center>
-      </form>
-    </FullBox>
+            type="file"
+            accept=".jpg, .jpeg, .png"
+            onChange={({ target }) => {
+              if (target.files) {
+                const file = target.files[0];
+                setSelectedImage(URL.createObjectURL(file));
+                setSelectedFile(file);
+              }
+            }}
+          />
+        </Flex>
+        <Divider my={4} />
+        <FormLabel mb="10px" htmlFor="name" ml={2}>
+          {">"} 2FA 설정 변경하기
+        </FormLabel>
+        <Text fontSize={13} ml={6} my={2} textColor="gray">
+          2FA enabled일 경우 다음 로그인부터 이메일 인증을 요구합니다.
+        </Text>
+        <Switch
+          mb={2}
+          ml={6}
+          colorScheme="gray"
+          isChecked={twoFactor}
+          onChange={handleToggleAuth}
+        >
+          {twoFactor ? "2FA enabled" : "2FA disabled"}
+        </Switch>
+      </FormControl>
+      <Divider my={5} />
+      <Flex mr={4}>
+        <Spacer />
+        <RedButton text="취소하기" mr={2} />
+        <BaseButton
+          text="저장하기"
+          isLoading={isSubmitting}
+          type="submit"
+          onClick={handleSubmit(onSubmit)}
+        />
+      </Flex>
+    </Flex>
   );
 };
 

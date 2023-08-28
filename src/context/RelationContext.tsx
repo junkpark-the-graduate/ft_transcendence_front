@@ -1,4 +1,6 @@
-import React, { ReactNode } from "react";
+"use client";
+
+import React, { ReactNode, useState } from "react";
 import { getFollowingList } from "@/utils/user/getFollowingList";
 import { getBlockingList } from "@/utils/user/getBlockingList";
 import { useUserDataContext } from "./UserDataContext";
@@ -36,20 +38,31 @@ export const RelationContextProvider: React.FC<{ children: ReactNode }> = ({
     null
   );
   const [blockingList, setBlockingList] = React.useState<number[] | null>(null);
+  const [error, setError] = useState<any>(null);
   const { myData } = useUserDataContext();
+
+  if (error) {
+    throw error;
+  }
 
   React.useEffect(() => {
     const fetchFollowingList = async () => {
-      const list = await getFollowingList(myData?.id);
-      if (list) {
+      try {
+        const list = await getFollowingList(myData?.id);
+        if (!list) return;
         setFollowingList(list);
+      } catch (err: any) {
+        setError(err);
       }
     };
 
     const fetchBlockingList = async () => {
-      const list = await getBlockingList(myData?.id);
-      if (list) {
+      try {
+        const list = await getBlockingList(myData?.id);
+        if (!list) return;
         setBlockingList(list);
+      } catch (err: any) {
+        setError(err);
       }
     };
 

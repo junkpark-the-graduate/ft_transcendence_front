@@ -25,7 +25,7 @@ export async function fetchAsyncToBackEnd(
     ...rest,
   };
 
-  console.log("Final input for fetch:", finalInput);
+  // console.log("Final input for fetch:", finalInput);
 
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACK_END_POINT}${url}`,

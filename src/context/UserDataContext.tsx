@@ -1,3 +1,5 @@
+"use client";
+
 import { EUserStatus } from "@/app/user/types/EUserStatus";
 import { getMyData } from "@/utils/user/getMyData";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
@@ -31,14 +33,22 @@ export const UserDataContextProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [myData, setMyData] = useState<MyData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
+
+  if (error) {
+    throw error;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getMyData();
-      if (data) {
+      try {
+        const data = await getMyData();
+        if (!data) return;
         setMyData(data);
+        setIsLoading(false);
+      } catch (err: any) {
+        setError(err);
       }
-      setIsLoading(false);
     };
 
     fetchData();
