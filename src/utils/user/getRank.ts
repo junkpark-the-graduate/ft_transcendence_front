@@ -9,8 +9,13 @@ export interface RankingObject {
 }
 
 export default function getRank() {
-  const [ranking, setRanking] = useState<RankingObject[] | undefined>(); // Initialize as null
+  const [ranking, setRanking] = useState<RankingObject[] | undefined>();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  if (error) {
+    throw error;
+  }
 
   const fetchRank = async () => {
     try {
@@ -18,8 +23,9 @@ export default function getRank() {
       const rankingData = await res.json();
       setRanking(rankingData);
       setIsLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
+      setError(err);
       setIsLoading(false); // Set isLoading to false even if there's an error
     }
   };

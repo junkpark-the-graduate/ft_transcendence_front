@@ -36,24 +36,29 @@ export default function Page({
   const [isMatched, setIsMatched] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [opponent, setOpponent] = useState<any>(null);
+  const [error, setError] = useState<any>(null);
 
   const router = useRouter();
-
-  socket.on("match_found", (data: any) => {
-    const { roomId, opponent } = data;
-    setOpponent(opponent);
-    setIsMatched(true);
-    setTimeout(() => {
-      router.push(`/game/join?roomId=${roomId}`);
-    }, 3000);
-  });
 
   socket.on("disconnect", () => {
     console.log("disconnected from server");
     router.push(`/`);
   });
 
+  if (error) {
+    throw error;
+  }
+
   useEffect(() => {
+    socket.on("match_found", (data: any) => {
+      const { roomId, opponent } = data;
+      setOpponent(opponent);
+      setIsMatched(true);
+      setTimeout(() => {
+        router.push(`/game/join?roomId=${roomId}`);
+      }, 3000);
+    });
+
     socket.emit("reconnect", (data: any) => {
       const { roomId } = data;
       if (roomId) router.push(`/game/join?roomId=${roomId}`);
@@ -62,9 +67,14 @@ export default function Page({
       socket.emit("join_room", searchParams.roomId);
     }
     fetchAsyncToBackEnd("/user").then((res) => {
-      res.json().then((data) => {
-        setUser(data);
-      });
+      res
+        .json()
+        .then((data) => {
+          setUser(data);
+        })
+        .catch((err) => {
+          setError(err);
+        });
     });
 
     // TODO: 매칭 후 디스코넥트 안됨!!
