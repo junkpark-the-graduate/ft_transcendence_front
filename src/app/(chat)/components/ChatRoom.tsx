@@ -184,7 +184,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   }, [isDataLoaded, channel]);
 
   useEffect(() => {
-    if (!isDataLoaded) return;
+    if (!isDataLoaded || !channel) return;
 
     const socketIo = io(`${process.env.NEXT_PUBLIC_CHAT_END_POINT}`, {
       query: {
@@ -219,6 +219,9 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
     socketIo.on("disconnect", () => {
       console.log(`disconnected : ${socketIo.id}`);
+      const path =
+        EChannelType[Number(channel.type)] === "direct" ? "/dm" : "/channel";
+      router.push(path);
     });
 
     socketIo.on("kicked", () => {
@@ -268,7 +271,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
       socketIo.disconnect();
     };
-  }, [isDataLoaded]);
+  }, [isDataLoaded, channel]);
 
   useEffect(() => {
     if (!socket || !newChatHistory) return;

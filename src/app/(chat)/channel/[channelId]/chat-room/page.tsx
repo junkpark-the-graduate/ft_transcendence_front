@@ -26,6 +26,7 @@ export default function Page({ params }: { params: { channelId: number } }) {
 
   useEffect(() => {
     getChannel().then((res) => {
+      console.log("res channel", res);
       if (!res) return;
       setChannel(res);
     });
