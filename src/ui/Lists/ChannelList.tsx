@@ -25,9 +25,13 @@ import { set } from "react-hook-form";
 
 interface Props {
   setJoinedChannels: any;
+  joinedChannels: any;
 }
 
-const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
+const ChannelList: React.FC<Props> = ({
+  setJoinedChannels,
+  joinedChannels,
+}) => {
   const router = useRouter();
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -179,6 +183,7 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
           <CreateChannelModal
             channels={channels}
             setChannels={setChannels}
+            joinedChannels={joinedChannels}
             setJoinedChannels={setJoinedChannels}
           />
           <IconButton

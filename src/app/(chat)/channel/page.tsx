@@ -32,7 +32,12 @@ export default function Page() {
 
   return (
     <GridType1
-      children={<ChannelList setJoinedChannels={setJoinedChannels} />}
+      children={
+        <ChannelList
+          setJoinedChannels={setJoinedChannels}
+          joinedChannels={joinedChannels}
+        />
+      }
       side={
         <Box w="full" px={1}>
           <Text

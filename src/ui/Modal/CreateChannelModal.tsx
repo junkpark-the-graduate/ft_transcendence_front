@@ -30,17 +30,18 @@ import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 export interface CreateChannelModalProps {
   channels: any;
   setChannels: any;
+  joinedChannels: any;
   setJoinedChannels: any;
 }
 
 export default function CreateChannelModal({
   channels,
   setChannels,
+  joinedChannels,
   setJoinedChannels,
   ...props
 }: CreateChannelModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const accessToken = Cookies.get("accessToken");
   const [channelName, setChannelName] = useState<string>("");
   const [channelPassword, setChannelPassword] = useState<string>("");
   const [channelType, setChannelType] = useState<string>(
@@ -103,7 +104,7 @@ export default function CreateChannelModal({
     ) {
       setChannels([...channels, resJson]);
     }
-    setJoinedChannels([...channels, resJson]);
+    setJoinedChannels([...joinedChannels, resJson]);
     setChannelName("");
     onClose();
   }
