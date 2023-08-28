@@ -33,6 +33,9 @@ export async function fetchAsyncToBackEnd(
   );
 
   // 필요하다면 여기서 response를 처리하거나 에러 핸들링 로직을 추가
+  if (response.status === 401) {
+    throw new Error("Unauthorized");
+  }
 
   return response;
 }

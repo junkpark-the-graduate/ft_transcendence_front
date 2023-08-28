@@ -41,9 +41,14 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
   const [ref, inView] = useInView({
     threshold: 0.5,
   });
+  const [error, setError] = useState<Error | null>(null);
 
   if (!Array.isArray(channels)) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    throw error;
   }
 
   async function getChannels(
@@ -51,15 +56,20 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
     limit: number,
     searchKeyword: string
   ) {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/keyword?page=${page}&limit=${limit}&searchKeyword=${searchKeyword}`
-    );
-    const resJson = await res.json();
-    return resJson;
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/keyword?page=${page}&limit=${limit}&searchKeyword=${searchKeyword}`
+      );
+      const resJson = await res.json();
+      return resJson;
+    } catch (error: any) {
+      setError(error);
+    }
   }
 
   const getPaginatedChannels = useCallback(async () => {
     const res = await getChannels(page, limit, searchKeyword);
+    if (!res) return;
     setChannels((prevChannels: any) => [...prevChannels, ...res]);
   }, [page, limit, searchKeyword]);
 
