@@ -21,6 +21,7 @@ import ChannelBadge from "../Badges/ChannelBadge";
 import { GoSync } from "react-icons/go";
 import { useInView } from "react-intersection-observer";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
+import { set } from "react-hook-form";
 
 interface Props {
   setJoinedChannels: any;
@@ -40,6 +41,7 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
     threshold: 0.5,
   });
   const [error, setError] = useState<Error | null>(null);
+  const [sync, setSync] = useState<boolean>(false);
 
   if (!Array.isArray(channels)) {
     return <div>Loading...</div>;
@@ -69,7 +71,7 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
     const res = await getChannels(page, limit, searchKeyword);
     if (!res) return;
     setChannels((prevChannels: any) => [...prevChannels, ...res]);
-  }, [page, limit, searchKeyword]);
+  }, [page, limit, searchKeyword, sync]);
 
   useEffect(() => {
     if (inView) {
@@ -83,9 +85,17 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
 
   async function searchChannelHandler(e: React.FormEvent) {
     e.preventDefault();
-    setChannels([]);
-    setPage(1);
+    if (tmpSearchKeyword !== searchKeyword) {
+      setPage(1);
+      setChannels([]);
+    }
     setSearchKeyword(tmpSearchKeyword);
+  }
+
+  async function syncChannelsHandler() {
+    if (page === 1) setSync(!sync);
+    setPage(1);
+    setChannels([]);
   }
 
   async function joinChannel(channelId: number) {
@@ -150,11 +160,6 @@ const ChannelList: React.FC<Props> = ({ setJoinedChannels }) => {
         handleJoinChannel(channelId);
       }
     }
-  }
-
-  async function syncChannelsHandler() {
-    setPage(1);
-    setChannels([]);
   }
 
   return (
