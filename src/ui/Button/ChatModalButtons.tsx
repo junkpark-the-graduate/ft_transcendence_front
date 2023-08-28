@@ -28,58 +28,82 @@ export default function ChatModalButtons({
   const [isBlocking, setIsBlocking] = useState<boolean>(false);
   const [followingList, setFollowingList] = useState<any[]>([]);
   const [blockingList, setBlockingList] = useState<any[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   async function getFollowingList(myId: number | undefined) {
-    const res = await fetchAsyncToBackEnd(`/follow/userId`);
-    const resJson = await res.json();
-    console.log("follwingList", resJson);
-    return resJson;
+    try {
+      const res = await fetchAsyncToBackEnd(`/follow/userId`);
+
+      const resJson = await res.json();
+      console.log("follwingList", resJson);
+      return resJson;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function getBlockingList() {
-    const res = await fetchAsyncToBackEnd("/block/userid");
-    const resJson = await res.json();
-    console.log("blockingList", resJson);
-    return resJson;
+    try {
+      const res = await fetchAsyncToBackEnd("/block/userid");
+
+      const resJson = await res.json();
+      console.log("blockingList", resJson);
+      return resJson;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function block(userId: number) {
-    const res = await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
-      method: "POST",
-    });
-    const resJson = await res.json();
-    console.log("block", resJson);
-    return resJson;
+    try {
+      await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
+        method: "POST",
+      });
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function unblock(userId: number) {
-    const res = await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
-      method: "DELETE",
-    });
-    const resJson = await res.json();
-    console.log("unblock", resJson);
-    return resJson;
+    try {
+      await fetchAsyncToBackEnd(`/block?blockingId=${userId}`, {
+        method: "DELETE",
+      });
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function follow(userId: number) {
-    const res = await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
-      method: "POST",
-    });
-    console.log("follow", res);
+    try {
+      await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
+        method: "POST",
+      });
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function unfollow(userId: number) {
-    await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
-      method: "DELETE",
-    });
+    try {
+      await fetchAsyncToBackEnd(`/follow?followingId=${userId}`, {
+        method: "DELETE",
+      });
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   useEffect(() => {
     getFollowingList(myId).then((res) => {
+      if (!res) return;
       setFollowingList(res);
     });
 
     getBlockingList().then((res) => {
+      if (!res) return;
       setBlockingList(res);
     });
   }, []);

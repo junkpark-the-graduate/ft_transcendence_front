@@ -47,17 +47,24 @@ export default function CreateChannelModal({
     EChannelType[EChannelType.public]
   );
   const toast = useToast();
+  const [error, setError] = useState<Error | null>(null);
 
-  async function postChannel() {
-    const res = await fetchAsyncToBackEnd(`/channel`, {
-      method: "POST",
-      body: JSON.stringify({
-        name: channelName,
-        password: channelPassword,
-        type: EChannelType[channelType as keyof typeof EChannelType],
-      }),
-    });
-    return res;
+  if (error) throw error;
+
+  async function createChannel() {
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel`, {
+        method: "POST",
+        body: JSON.stringify({
+          name: channelName,
+          password: channelPassword,
+          type: EChannelType[channelType as keyof typeof EChannelType],
+        }),
+      });
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function handleCreateChannel() {
@@ -75,7 +82,9 @@ export default function CreateChannelModal({
       return;
     }
 
-    const res = await postChannel();
+    const res = await createChannel();
+    if (!res) return;
+
     const resJson = await res.json();
 
     if (res.status > 299) {

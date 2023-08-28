@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BaseButton from "@/ui/Button/Button";
 import { ButtonProps, Flex, useToast } from "@chakra-ui/react";
-import { createDm } from "@/utils/channel/dm";
 import { useRouter } from "next/navigation";
 import { GoComment } from "react-icons/go";
+import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 export interface DmBaseButtonProps extends ButtonProps {
   userId: number | undefined;
@@ -17,13 +17,32 @@ export default function DmBaseButton({
 }: DmBaseButtonProps) {
   const router = useRouter();
   const toast = useToast();
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   useEffect(() => {}, []);
 
+  const createDm = async (userId: number | undefined) => {
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/direct?memberId=${userId}`,
+        {
+          method: "POST",
+        }
+      );
+
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
+  };
+
   const handleConnectDm = async () => {
     const resCreateDm = await createDm(userId);
-    const resCreateDmJson = await resCreateDm.json();
+    if (!resCreateDm) return;
 
+    const resCreateDmJson = await resCreateDm.json();
     if (resCreateDm.status < 300) {
       router.push(`/channel/${resCreateDmJson.id}/chat-room`);
     } else {

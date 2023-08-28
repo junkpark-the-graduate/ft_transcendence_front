@@ -60,15 +60,22 @@ const ChatModal: React.FC<ChatModalProps> = ({
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
   const [isConnectedMember, setIsConnectedMember] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
   async function getUserData(userId: number) {
-    const res = await fetchAsyncToBackEnd(`/user/${userId}`);
-    const resJson = await res.json();
-    return resJson;
+    try {
+      const res = await fetchAsyncToBackEnd(`/user/${userId}`);
+      const resJson = await res.json();
+      return resJson;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   useEffect(() => {
     if (!memberId) return;
     getUserData(memberId).then((res) => {
+      if (!res) return;
       setMemberData(res);
     });
 
@@ -81,85 +88,98 @@ const ChatModal: React.FC<ChatModalProps> = ({
   };
 
   const handleMute = async () => {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/${channelId}/muted-member?memberId=${memberId}`,
-      {
-        method: "POST",
-      }
-    );
-
-    // TODO muteTime 지금 완전 짧게 되어있으니까 수정해야함!
-    if (res.status < 300) {
-      toast({
-        title: `${memberData?.name}가 mute 되었습니다.`,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: `${memberData?.name}를 mute할 수 없습니다.`,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const handleBan = async () => {
-    if (confirm(`정말로 ${memberData.name} 유저를 차단하시겠습니까?`)) {
+    try {
       const res = await fetchAsyncToBackEnd(
-        `/channel/${channelId}/banned-member?memberId=${memberId}`,
+        `/channel/${channelId}/muted-member?memberId=${memberId}`,
         {
           method: "POST",
         }
       );
-
-      if (res.status > 299) {
+      if (!res) return;
+      // TODO muteTime 지금 완전 짧게 되어있으니까 수정해야함!
+      if (res.status < 300) {
         toast({
-          title: `${memberData.name} 유저를 차단할 수 없습니다.`,
-          status: "error",
+          title: `${memberData?.name}가 mute 되었습니다.`,
+          status: "success",
           duration: 9000,
           isClosable: true,
         });
       } else {
         toast({
-          title: `${memberData.name} 유저가 차단되었습니다.`,
-          status: "success",
+          title: `${memberData?.name}를 mute할 수 없습니다.`,
+          status: "error",
           duration: 9000,
           isClosable: true,
         });
-        setIsConnectedMember(false);
       }
+    } catch (err: any) {
+      setError(err);
+    }
+  };
+
+  const handleBan = async () => {
+    try {
+      if (confirm(`정말로 ${memberData.name} 유저를 차단하시겠습니까?`)) {
+        const res = await fetchAsyncToBackEnd(
+          `/channel/${channelId}/banned-member?memberId=${memberId}`,
+          {
+            method: "POST",
+          }
+        );
+        if (!res) return;
+
+        if (res.status > 299) {
+          toast({
+            title: `${memberData.name} 유저를 차단할 수 없습니다.`,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: `${memberData.name} 유저가 차단되었습니다.`,
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+          setIsConnectedMember(false);
+        }
+      }
+    } catch (err: any) {
+      setError(err);
     }
   };
 
   const handleKick = async () => {
-    if (confirm(`정말로 ${memberData.name} 유저를 쫓아내겠습니까?`)) {
-      const res = await fetchAsyncToBackEnd(
-        `/channel/${channelId}/kicked-member?memberId=${memberId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const resJson = await res.json();
+    try {
+      if (confirm(`정말로 ${memberData.name} 유저를 쫓아내겠습니까?`)) {
+        const res = await fetchAsyncToBackEnd(
+          `/channel/${channelId}/kicked-member?memberId=${memberId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!res) return;
 
-      if (res.status > 299) {
-        toast({
-          title: `${memberData.name} 유저를 채널에서 쫓아낼 수 없습니다.`,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: `${memberData.name} 유저를 채널에서 쫓아냈습니다.`,
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-        setIsConnectedMember(false);
+        if (res.status > 299) {
+          toast({
+            title: `${memberData.name} 유저를 채널에서 쫓아낼 수 없습니다.`,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: `${memberData.name} 유저를 채널에서 쫓아냈습니다.`,
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+          setIsConnectedMember(false);
+        }
       }
+    } catch (err: any) {
+      setError(err);
     }
   };
 
@@ -241,54 +261,58 @@ const ChatModal: React.FC<ChatModalProps> = ({
                   />
                 </Flex>
                 <Flex gap={2}>
-                  {user?.isAdmin && (
-                    <Button
-                      as={Box}
-                      bg="teal"
-                      textColor="white"
-                      size="sm"
-                      flex={1}
-                      w="85px"
-                      borderRadius={"8px"}
-                      fontSize={15}
-                      px="25px"
-                      fontWeight={800}
-                      _hover={{ bg: "teal" }}
-                      _focus={{ bg: "teal" }}
-                    >
-                      admin
-                    </Button>
-                  )}
-                  {user?.isAdmin && (
-                    <BaseButton
-                      isDisabled={!isConnectedMember}
-                      w="85px"
-                      size="sm"
-                      text="mute"
-                      flex={1}
-                      onClick={handleMute}
-                    />
-                  )}
-                  {user?.isAdmin && (
-                    <BaseButton
-                      isDisabled={!isConnectedMember}
-                      w="85px"
-                      size="sm"
-                      text="ban"
-                      flex={1}
-                      onClick={handleBan}
-                    />
-                  )}
-                  {user?.isAdmin && (
-                    <BaseButton
-                      isDisabled={!isConnectedMember}
-                      w="85px"
-                      size="sm"
-                      text="kick"
-                      flex={1}
-                      onClick={handleKick}
-                    />
-                  )}
+                  {EChannelType[Number(channelType)] !== "direct" &&
+                    user?.isAdmin && (
+                      <Button
+                        as={Box}
+                        bg="teal"
+                        textColor="white"
+                        size="sm"
+                        flex={1}
+                        w="85px"
+                        borderRadius={"8px"}
+                        fontSize={15}
+                        px="25px"
+                        fontWeight={800}
+                        _hover={{ bg: "teal" }}
+                        _focus={{ bg: "teal" }}
+                      >
+                        admin
+                      </Button>
+                    )}
+                  {EChannelType[Number(channelType)] !== "direct" &&
+                    user?.isAdmin && (
+                      <BaseButton
+                        isDisabled={!isConnectedMember}
+                        w="85px"
+                        size="sm"
+                        text="mute"
+                        flex={1}
+                        onClick={handleMute}
+                      />
+                    )}
+                  {EChannelType[Number(channelType)] !== "direct" &&
+                    user?.isAdmin && (
+                      <BaseButton
+                        isDisabled={!isConnectedMember}
+                        w="85px"
+                        size="sm"
+                        text="ban"
+                        flex={1}
+                        onClick={handleBan}
+                      />
+                    )}
+                  {EChannelType[Number(channelType)] !== "direct" &&
+                    user?.isAdmin && (
+                      <BaseButton
+                        isDisabled={!isConnectedMember}
+                        w="85px"
+                        size="sm"
+                        text="kick"
+                        flex={1}
+                        onClick={handleKick}
+                      />
+                    )}
                 </Flex>
               </Stack>
             </Center>

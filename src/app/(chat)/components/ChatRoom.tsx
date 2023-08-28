@@ -96,21 +96,38 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     image: "",
   });
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   async function getBlockingUserIdList() {
-    const res = await fetchAsyncToBackEnd("/block/userid");
-    const resJson = await res.json();
-    return resJson;
+    try {
+      const res = await fetchAsyncToBackEnd("/block/userid");
+      const resJson = await res.json();
+      return resJson;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   const getUser = async () => {
-    const res = await fetchAsyncToBackEnd("/user");
-    return await res.json();
+    try {
+      const res = await fetchAsyncToBackEnd("/user");
+
+      return await res.json();
+    } catch (err: any) {
+      setError(err);
+    }
   };
 
   async function getUserDataById(userId: number) {
-    const res = await fetchAsyncToBackEnd(`/user/${userId}`);
-    return await res.json();
+    try {
+      const res = await fetchAsyncToBackEnd(`/user/${userId}`);
+
+      return await res.json();
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   function filterBlockingUserMessage(chatList: IChat[]) {
@@ -141,10 +158,12 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
     Promise.all([
       getUser().then((res) => {
+        if (!res) return;
         setUser(res);
       }),
 
       getBlockingUserIdList().then((res: any) => {
+        if (!res) return;
         setBlockingUserIdList(res);
       }),
     ]).then(() => {
@@ -159,6 +178,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     const userIds = channel.name.split("-").map((id: string) => Number(id));
     const directChannelUserId = userIds.find((id: any) => id !== user.id);
     getUserDataById(directChannelUserId).then((res) => {
+      if (!res) return;
       setDirectChannelName(res.name);
     });
   }, [isDataLoaded, channel]);
@@ -307,10 +327,14 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   };
 
   const exitChannel = async () => {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
-      method: "DELETE",
-    });
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`, {
+        method: "DELETE",
+      });
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   };
 
   const exitChannelHandler = async () => {
@@ -318,8 +342,9 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     if (!confirm) return;
 
     const res = await exitChannel();
-    const resJson = await res.json();
+    if (!res) return;
 
+    const resJson = await res.json();
     if (res.status > 299) {
       toast({
         title: resJson.message,
@@ -333,6 +358,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
       router.push(route);
     }
   };
+
   const selectUserHandler = (userId: number) => {
     setSelectedUserId(userId);
     setIsModalOpen(true);

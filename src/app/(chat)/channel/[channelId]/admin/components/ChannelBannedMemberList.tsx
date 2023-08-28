@@ -28,19 +28,26 @@ const ChanneBannedMemberlList: React.FC<Props> = ({
   setBannedMembers,
 }) => {
   const toast = useToast();
-  const accessToken = Cookies.get("accessToken");
   const [tmpMembers, setTmpMembers] = useState<any[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   useEffect(() => {
     setTmpMembers(bannedMembers);
   }, [bannedMembers]);
 
   async function getBannedMembers() {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/${channelId}/banned-member`
-    );
-    const resJson = await res.json();
-    setBannedMembers(resJson);
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/banned-member`
+      );
+      const resJson = await res.json();
+      if (!resJson) return;
+      setBannedMembers(resJson);
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   useEffect(() => {
@@ -48,20 +55,25 @@ const ChanneBannedMemberlList: React.FC<Props> = ({
   }, []);
 
   async function deleteBannedMember(memberId: number) {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/${channelId}/banned-member?memberId=${memberId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/banned-member?memberId=${memberId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    return res;
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function deleteBannedMemberHandler(member: any) {
     if (confirm(`정말로 해당 ${member.user.name} 차단을 해제하시겠습니까?`)) {
       console.log(member);
       const res = await deleteBannedMember(member.user.id);
+      if (!res) return;
       if (res.status > 299) {
         toast({
           title: "차단 해제에 실패했습니다.",

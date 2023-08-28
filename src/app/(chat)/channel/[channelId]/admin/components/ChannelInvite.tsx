@@ -53,20 +53,20 @@ const ChannelInvite: React.FC<Props> = ({
   const [users, setUsers] = useState<User[]>([]);
   const [searchName, setSearchName] = useState<string>("");
   const [tmpSearchName, setTmpSearchName] = useState<string>("");
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   const getPaginatedUsers = useCallback(async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_POINT}/user/page?page=${page}&limit=${limit}&name=${searchName}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    const data: User[] = await res.json();
-    setUsers((prev) => [...prev, ...data]);
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/user/page?page=${page}&limit=${limit}&name=${searchName}`
+      );
+      const resJson: User[] = await res.json();
+      return resJson;
+    } catch (err: any) {
+      setError(err);
+    }
   }, [page, limit, searchName]);
 
   useEffect(() => {
@@ -76,7 +76,10 @@ const ChannelInvite: React.FC<Props> = ({
   }, [inView]);
 
   useEffect(() => {
-    getPaginatedUsers();
+    getPaginatedUsers().then((res) => {
+      if (!res) return;
+      setUsers((prev) => [...prev, ...res]);
+    });
   }, [getPaginatedUsers, searchName]);
 
   async function searchUserHandler(e: React.FormEvent) {
@@ -87,22 +90,31 @@ const ChannelInvite: React.FC<Props> = ({
   }
 
   async function getChannelMembers() {
-    const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`);
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(`/channel/${channelId}/member`);
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function inviteUser(userId: number) {
-    const res = await fetchAsyncToBackEnd(
-      `channel/${channelId}/invited-member?memberId=${userId}`,
-      {
-        method: "POST",
-      }
-    );
-    return res;
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/invited-member?memberId=${userId}`,
+        {
+          method: "POST",
+        }
+      );
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   }
 
   async function inviteUserHandler(user: User) {
     const res = await inviteUser(user.id);
+    if (!res) return;
     const resJson = await res.json();
     if (res.status > 299) {
       toast({
@@ -119,6 +131,7 @@ const ChannelInvite: React.FC<Props> = ({
         isClosable: true,
       });
       const res2 = await getChannelMembers();
+      if (!res2) return;
       const resJson2 = await res2.json();
       setMembers(resJson2);
     }

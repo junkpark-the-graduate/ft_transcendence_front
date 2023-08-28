@@ -33,16 +33,23 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [error, setError] = useState<Error | null>(null);
+
+  if (error) throw error;
 
   const joinProtectedChannel = async (password: string, channelId: number) => {
-    const res = await fetchAsyncToBackEnd(
-      `/channel/${channelId}/member?password=${password}`,
-      {
-        method: "POST",
-      }
-    );
+    try {
+      const res = await fetchAsyncToBackEnd(
+        `/channel/${channelId}/member?password=${password}`,
+        {
+          method: "POST",
+        }
+      );
 
-    return res;
+      return res;
+    } catch (err: any) {
+      setError(err);
+    }
   };
 
   const handleEnter = async (event: React.FormEvent) => {
@@ -54,6 +61,8 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
     }
 
     const res = await joinProtectedChannel(password, channelId);
+    if (!res) return;
+
     const resJson = await res.json();
 
     if (res.status < 300) {
