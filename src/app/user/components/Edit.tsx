@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -9,8 +9,6 @@ import {
   FormControl,
   Switch,
   Divider,
-  Box,
-  Center,
   Image,
   Spacer,
   Flex,
@@ -26,6 +24,8 @@ import { uploadUserInfo } from "@/utils/edit/uploadUserInfo";
 import { uploadUserImg } from "@/utils/edit/uploadUserImg";
 import { checkDuplicateName } from "@/utils/edit/checkDuplicateName";
 import { MyData, useUserDataContext } from "@/context/UserDataContext";
+import BaseIconButton from "@/ui/Button/IconButton";
+import { GoArrowLeft } from "react-icons/go";
 
 type FormData = {
   name: string;
@@ -187,15 +187,25 @@ const Edit = () => {
       };
       setMyData(updatedMyData);
 
-      router.back();
+      router.push("/user/profile");
       router.refresh();
     }
   }
 
   return (
-    <Flex mx={2} mt={3} direction="column">
-      <BaseHeading ml={2} text="edit profile" />
-      <Divider my={4} />
+    <Flex mx={2} mt={1} direction="column">
+      <Flex alignItems="center">
+        <BaseIconButton
+          size="sm"
+          icon={<GoArrowLeft />}
+          aria-label="go back"
+          onClick={() => {
+            router.back();
+          }}
+        />
+        <BaseHeading ml={1} text="edit profile" />
+      </Flex>
+      <Divider mt={2} mb={4} />
       <FormControl px={4}>
         <FormLabel mb={5} htmlFor="name" ml={2}>
           {">"} 이름 변경하기

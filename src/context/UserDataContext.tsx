@@ -17,13 +17,11 @@ export type MyData = {
 type UserDataContextType = {
   myData: MyData | null;
   setMyData: React.Dispatch<React.SetStateAction<MyData | null>>;
-  isLoading: boolean;
 };
 
 const UserDataContext = createContext<UserDataContextType>({
   myData: null,
   setMyData: () => {},
-  isLoading: true,
 });
 
 export const useUserDataContext = () => React.useContext(UserDataContext);
@@ -32,7 +30,6 @@ export const UserDataContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [myData, setMyData] = useState<MyData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
   if (error) {
@@ -45,7 +42,6 @@ export const UserDataContextProvider: React.FC<{ children: ReactNode }> = ({
         const data = await getMyData();
         if (!data) return;
         setMyData(data);
-        setIsLoading(false);
       } catch (err: any) {
         setError(err);
       }
@@ -55,7 +51,7 @@ export const UserDataContextProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   return (
-    <UserDataContext.Provider value={{ myData, setMyData, isLoading }}>
+    <UserDataContext.Provider value={{ myData, setMyData }}>
       {children}
     </UserDataContext.Provider>
   );

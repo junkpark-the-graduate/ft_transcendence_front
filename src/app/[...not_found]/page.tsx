@@ -1,7 +1,7 @@
 "use client";
 
 import GameButton from "@/ui/Button/GameButton";
-import { Box, Divider, Text } from "@chakra-ui/react";
+import { Box, Center, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 
 export default function Custom404() {
@@ -9,6 +9,7 @@ export default function Custom404() {
 
   return (
     <Box
+      w="300px"
       alignSelf="center"
       bg="#29292D"
       px={10}
@@ -19,18 +20,17 @@ export default function Custom404() {
       <Text fontSize={24} mx={2} textAlign="center">
         404: Not Found
       </Text>
-      <Divider my={2} borderColor="#A0A0A3" />
-      <Text fontSize={16} mx={2}>
-        you are not supposed to be here...
-      </Text>
-      <GameButton
-        mt={6}
-        mb={2}
-        text="sorry"
-        onClick={() => {
-          router.back();
-        }}
-      />
+      <Center>
+        <GameButton
+          mt={6}
+          mb={2}
+          w="150px"
+          text="go back"
+          onClick={() => {
+            router.back();
+          }}
+        />
+      </Center>
     </Box>
   );
 }

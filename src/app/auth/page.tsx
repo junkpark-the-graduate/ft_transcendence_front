@@ -22,11 +22,14 @@ export default function Page({
           method: "POST",
         }
       );
-      console.log(res.status);
-      // true -> res자체가 redirect된 상태
       if (res.ok) {
         try {
           const json = await res.json();
+          if (json.isFirstLogin) {
+            console.log("new user");
+            router.replace("/user/edit");
+            return;
+          }
           if (json.twoFactorToken) {
             Cookies.set("twoFactorToken", json.twoFactorToken);
             router.push(`/auth/tfa-loading`);
