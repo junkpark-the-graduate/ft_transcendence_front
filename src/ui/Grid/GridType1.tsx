@@ -5,6 +5,7 @@ import UserDataContext, {
   UserDataContextProvider,
 } from "@/context/UserDataContext";
 import { RelationContextProvider } from "@/context/RelationContext";
+import { socket } from "@/app/game/socket";
 
 export interface GridType1Props extends GridProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export default function GridType1({
   side,
   ...props
 }: GridType1Props) {
+  const sock = socket; // ここでsocketを初期化しないと、socketがnullになる
   return (
     <UserDataContextProvider>
       <RelationContextProvider>
