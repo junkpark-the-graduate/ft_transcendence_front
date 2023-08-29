@@ -96,7 +96,6 @@ export default function GameSettingModal({ setIsMatching }: any) {
           </ModalHeader>
           <ModalCloseButton size="sm" m={1} />
           <ModalBody mx={4} py={6} borderTop={"#A0A0A3 1px solid"}>
-            {/* TODO game type을 제외한 설정 값 적용  */}
             <VStack gap={1}>
               <FormLabel color={"white"}>Background Color</FormLabel>
               <Select

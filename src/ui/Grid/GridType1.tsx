@@ -28,6 +28,7 @@ export default function GridType1({
             color="white"
             fontWeight="bold"
             gap={3}
+            minH="760px"
             {...props}
           >
             <GridItem
