@@ -77,7 +77,7 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     IBlockingUserId[]
   >([]);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // TODO: 어떤 모달 인지 이름 명확히 하기
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const [newChat, setNewChat] = useState<IChat | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -152,7 +152,10 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
         duration: 9000,
         isClosable: true,
       });
-    else router.push(`/channel/${channelId}/admin`);
+    else {
+      // window.location.replace(`/channel/${channelId}/admin`);
+      router.push(`/channel/${channelId}/admin`);
+    }
   }
 
   useEffect(() => {
@@ -227,6 +230,10 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
     socketIo.on("disconnect", () => {
       console.log(`disconnected : ${socketIo.id}`);
+    });
+
+    socketIo.on("error", () => {
+      console.log("error!!!!!!!!!!!");
       const path =
         EChannelType[Number(channel.type)] === "direct" ? "/dm" : "/channel";
       router.push(path);
@@ -276,10 +283,8 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
     setChatHistoryPage((prev) => prev + 1);
 
     return () => {
-      console.log("disconnect!!!!!!!!!!!!!!!!!!");
-      // socketIo.disconnect();
-      if (!socket) return;
-      socket.emit("left");
+      console.log("disconnect");
+      socketIo.disconnect();
     };
   }, [isDataLoaded, channel]);
 
@@ -331,7 +336,6 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
           image: user.image,
         },
       };
-
       socket.emit("submit_chat", chatData);
       setNewChat(chatData);
       setChatList((prev: IChat[]) => [...prev, chatData]);

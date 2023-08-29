@@ -96,7 +96,6 @@ const ChatModal: React.FC<ChatModalProps> = ({
         }
       );
       if (!res) return;
-      // TODO muteTime 지금 완전 짧게 되어있으니까 수정해야함!
       if (res.status < 300) {
         toast({
           title: `${memberData?.name}가 mute 되었습니다.`,
