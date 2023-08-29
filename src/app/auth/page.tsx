@@ -28,7 +28,6 @@ export default function Page({
         try {
           const json = await res.json();
           if (json.isFirstLogin) {
-            console.log("new user");
             Cookies.set("accessToken", json.accessToken);
             router.replace("/user/edit");
             toast({
