@@ -271,16 +271,19 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
       }
     );
 
-    socketIo.on("chat_history", (chatHistory: { chatHistory: IChat[] }) => {
-      setChatList((prev) => [
-        ...filterBlockingUserMessage(chatHistory.chatHistory),
-        ...prev,
-      ]);
-      setNewChatHistory(chatHistory.chatHistory);
-    });
-
-    socketIo.emit("get_chat_history", { page: chatHistoryPage });
-    setChatHistoryPage((prev) => prev + 1);
+    socketIo.emit(
+      "get_chat_history",
+      { page: chatHistoryPage },
+      (chatHistory: any) => {
+        console.log("get_chat_history first", chatHistory);
+        setChatList((prev) => [
+          ...filterBlockingUserMessage(chatHistory),
+          ...prev,
+        ]);
+        setNewChatHistory(chatHistory);
+        setChatHistoryPage((prev) => prev + 1);
+      }
+    );
 
     return () => {
       console.log("disconnect");
@@ -294,10 +297,23 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   }, [socket, newChatHistory]);
 
   // discription: 채팅 스크롤이 끝에 닿으면 채팅 내역을 가져온다.
+
   useEffect(() => {
+    console.log("inView", inView);
     if (!inView || !socket) return;
-    socket.emit("get_chat_history", { page: chatHistoryPage });
-    setChatHistoryPage((prev) => prev + 1);
+    socket.emit(
+      "get_chat_history",
+      { page: chatHistoryPage },
+      (chatHistory: any) => {
+        console.log("get_chat_history", chatHistory);
+        setChatList((prev) => [
+          ...filterBlockingUserMessage(chatHistory),
+          ...prev,
+        ]);
+        setNewChatHistory(chatHistory);
+        setChatHistoryPage((prev) => prev + 1);
+      }
+    );
   }, [inView]);
 
   // discription: 유저가 특정 유저를 차단했을때 해당 유저의 메시지를 차단한다.

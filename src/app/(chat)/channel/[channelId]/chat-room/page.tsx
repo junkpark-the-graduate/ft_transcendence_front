@@ -60,7 +60,11 @@ export default function Page({ params }: { params: { channelId: number } }) {
             Channel Members
           </Text>
           <Box px={3}>
-            <ChannelMemberList channelMembers={channel.channelMembers} />
+            <ChannelMemberList
+              channelMembers={channel.channelMembers}
+              ownerId={channel.ownerId}
+              channelType={channel.type}
+            />
           </Box>
         </Box>
       }
