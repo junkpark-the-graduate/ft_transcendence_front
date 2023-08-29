@@ -461,35 +461,37 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
         })}
       </ChatScrollContainer>
       <Divider my={3} />
-      <form onSubmit={submitChat}>
-        <Flex flexDirection="row">
-          <ChatInput
-            mr={2}
-            type="text"
-            value={message}
-            onChange={(e) => {
-              e.preventDefault();
-              setMessage(e.target.value);
-            }}
-            placeholder="Enter your message"
-          />
-          <Button
-            px={6}
-            type="submit"
-            textColor="white"
-            bg="#191919"
-            _hover={{
-              background: "#191919",
-            }}
-            _focus={{
-              background: "#191919",
-            }}
-            leftIcon={<GoPaperAirplane />}
-          >
-            Send
-          </Button>
-        </Flex>
-      </form>
+      <Box>
+        <form onSubmit={submitChat}>
+          <Flex flexDirection="row">
+            <ChatInput
+              mr={2}
+              type="text"
+              value={message}
+              onChange={(e) => {
+                e.preventDefault();
+                setMessage(e.target.value);
+              }}
+              placeholder="Enter your message"
+            />
+            <Button
+              px={6}
+              type="submit"
+              textColor="white"
+              bg="#191919"
+              _hover={{
+                background: "#191919",
+              }}
+              _focus={{
+                background: "#191919",
+              }}
+              leftIcon={<GoPaperAirplane />}
+            >
+              Send
+            </Button>
+          </Flex>
+        </form>
+      </Box>
       <ChatModal
         channelId={channelId}
         memberId={selectedUserId}
