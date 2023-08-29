@@ -7,6 +7,7 @@ import GridType1 from "@/ui/Grid/GridType1";
 import ChannelConnectedMemberList from "@/app/(chat)/components/ChannelConnectedMemberList";
 import Cookies from "js-cookie";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
+import ChannelMemberList from "@/app/(chat)/components/ChannelMemberList";
 
 export default function Page({ params }: { params: { channelId: number } }) {
   const [user, setUser] = useState<{ [key: string]: any }>({});
@@ -56,16 +57,10 @@ export default function Page({ params }: { params: { channelId: number } }) {
             py={2}
             mb={4}
           >
-            Connected Members
+            Channel Members
           </Text>
           <Box px={3}>
-            <ChannelConnectedMemberList
-              connectedMembers={connnectedMembers}
-              channelMembers={channel.channelMembers}
-              ownerId={channel.ownerId}
-              channelType={channel.type}
-              user={user}
-            />
+            <ChannelMemberList channelMembers={channel.channelMembers} />
           </Box>
         </Box>
       }

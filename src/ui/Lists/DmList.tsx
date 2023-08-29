@@ -68,7 +68,7 @@ const DmList: React.FC = () => {
         <Box mt={2}></Box>
         <Flex direction="column" gap={3}>
           {channels.map((channel: any) => {
-            const lastChat = channel?.chats[channel?.chats.length() - 1];
+            const lastChat = channel?.chats[channel?.chats.length - 1];
             const lastMessage = lastChat?.message || "no message";
             return (
               <ButtonBox
