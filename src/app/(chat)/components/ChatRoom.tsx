@@ -49,6 +49,8 @@ interface IChatRoomProps {
   setConnectedMembers: React.Dispatch<React.SetStateAction<any[]>>;
   channel: any;
   channelMembers: any[];
+  user: any;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
 }
 
 interface IBlockingUserId {
@@ -61,14 +63,14 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   setConnectedMembers,
   channel,
   channelMembers,
+  user,
+  setUser,
 }) => {
   const accessToken = Cookies.get("accessToken");
   const router = useRouter();
   const toast = useToast();
 
   const [socket, setSocket] = useState<Socket | null>(null);
-
-  const [user, setUser] = useState<{ [key: string]: any }>({});
 
   const [directChannelName, setDirectChannelName] = useState<string>("");
   const [blockingUserIdList, setBlockingUserIdList] = useState<
@@ -201,6 +203,12 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
     socketIo.on("member_connected", (data: any) => {
       console.log("member_connected", data.member);
+      if (
+        connectedMembers.some(
+          (member) => member.id === data.member.id && member.id !== user.id
+        )
+      )
+        return;
       setConnectedMembers((prev) => [...prev, data.member]);
     });
 
@@ -269,7 +277,9 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
     return () => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
-      socketIo.disconnect();
+      // socketIo.disconnect();
+      if (!socket) return;
+      socket.emit("left");
     };
   }, [isDataLoaded, channel]);
 

@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 export default function Page({ params }: { params: { channelId: number } }) {
+  const [user, setUser] = useState<{ [key: string]: any }>({});
   const [connnectedMembers, setConnectedMembers] = useState<any>([]);
   const [channel, setChannel] = useState<any>([]);
   const [error, setError] = useState<Error | null>(null);
@@ -41,6 +42,8 @@ export default function Page({ params }: { params: { channelId: number } }) {
           setConnectedMembers={setConnectedMembers}
           channel={channel}
           channelMembers={channel.channelMembers}
+          user={user}
+          setUser={setUser}
         />
       }
       side={
@@ -61,6 +64,7 @@ export default function Page({ params }: { params: { channelId: number } }) {
               channelMembers={channel.channelMembers}
               ownerId={channel.ownerId}
               channelType={channel.type}
+              user={user}
             />
           </Box>
         </Box>
