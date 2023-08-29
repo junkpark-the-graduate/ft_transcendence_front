@@ -11,6 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import BaseButton from "../Button/Button";
 import { socket } from "@/app/game/socket";
 import GameButton from "../Button/GameButton";
 
@@ -57,18 +58,16 @@ const InviteGameModal: React.FC<InviteGameModalProps> = ({
           bg="#29292D"
         >
           <ModalHeader>
-            <Text textAlign="center" fontSize={16}>
-              ?????? 님이 당신을 게임에 초대했습니다.
-            </Text>
+            <Text>{gameHost.name} 님이 게임에 초대하셨습니다.</Text>{" "}
           </ModalHeader>
           <ModalBody my={2}>
-            <Flex justifyContent="center" gap={6}>
+            <Flex justifyContent="center" gap={16}>
               <GameButton
                 w="150px"
                 text="참여하기"
                 size="sm"
                 onClick={() => {
-                  console.log("click");
+                  router.push(`/game/join?roomId=${roomId}`);
                 }}
               />
               <GameButton
