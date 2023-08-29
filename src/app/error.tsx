@@ -2,7 +2,6 @@
 
 import GameButton from "@/ui/Button/GameButton";
 import { Box, Center, Flex, Heading } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Error({
@@ -12,12 +11,13 @@ export default function Error({
   error: Error;
   reset: () => void;
 }) {
-  const router = useRouter();
-
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error);
   }, [error]);
+
+  const handleBackToMain = () => {
+    window.location.replace("/");
+  };
 
   return (
     <Center>
@@ -39,32 +39,18 @@ export default function Error({
               size="sm"
               mt={6}
               text="back to main"
-              onClick={() => {
-                router.push("/");
-              }}
+              onClick={handleBackToMain}
             />
             <GameButton
               w="150px"
               size="sm"
               mt={6}
               text="try again"
-              onClick={() => reset()}
+              onClick={reset}
             />
           </Flex>
         </Center>
       </Box>
     </Center>
-
-    // <div>
-    //   <h2>Something went wrong!</h2>
-    //   <button
-    //     onClick={
-    //       // Attempt to recover by trying to re-render the segment
-    //       () => reset()
-    //     }
-    //   >
-    //     Try again
-    //   </button>
-    // </div>
   );
 }
