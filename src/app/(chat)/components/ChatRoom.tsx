@@ -201,6 +201,12 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
     socketIo.on("member_connected", (data: any) => {
       console.log("member_connected", data.member);
+      if (
+        connectedMembers.some(
+          (member) => member.id === data.member.id && member.id !== user.id
+        )
+      )
+        return;
       setConnectedMembers((prev) => [...prev, data.member]);
     });
 
@@ -269,7 +275,9 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
 
     return () => {
       console.log("disconnect!!!!!!!!!!!!!!!!!!");
-      socketIo.disconnect();
+      // socketIo.disconnect();
+      if (!socket) return;
+      socket.emit("left");
     };
   }, [isDataLoaded, channel]);
 
@@ -419,6 +427,8 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
       <ChatScrollContainer newChat={newChat} newChatHistory={newChatHistory}>
         <div ref={ref}></div>
         {chatList.map((chatItem, index) => {
+          // 본인 인경우 렌더링 안함
+          if (chatItem.user.id === user.id) return null;
           const isCurrentUser = chatItem.user.id === user.id;
 
           return (
