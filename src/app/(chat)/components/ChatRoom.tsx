@@ -49,6 +49,8 @@ interface IChatRoomProps {
   setConnectedMembers: React.Dispatch<React.SetStateAction<any[]>>;
   channel: any;
   channelMembers: any[];
+  user: any;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
 }
 
 interface IBlockingUserId {
@@ -61,14 +63,14 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
   setConnectedMembers,
   channel,
   channelMembers,
+  user,
+  setUser,
 }) => {
   const accessToken = Cookies.get("accessToken");
   const router = useRouter();
   const toast = useToast();
 
   const [socket, setSocket] = useState<Socket | null>(null);
-
-  const [user, setUser] = useState<{ [key: string]: any }>({});
 
   const [directChannelName, setDirectChannelName] = useState<string>("");
   const [blockingUserIdList, setBlockingUserIdList] = useState<
@@ -427,8 +429,6 @@ const ChatRoom: React.FC<IChatRoomProps> = ({
       <ChatScrollContainer newChat={newChat} newChatHistory={newChatHistory}>
         <div ref={ref}></div>
         {chatList.map((chatItem, index) => {
-          // 본인 인경우 렌더링 안함
-          if (chatItem.user.id === user.id) return null;
           const isCurrentUser = chatItem.user.id === user.id;
 
           return (

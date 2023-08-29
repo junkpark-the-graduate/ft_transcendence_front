@@ -72,6 +72,7 @@ const ChannelList: React.FC<Props> = ({
   }
 
   const getPaginatedChannels = useCallback(async () => {
+    console.log("getPaginatedChannels", page, limit, searchKeyword);
     const res = await getChannels(page, limit, searchKeyword);
     if (!res) return;
     setChannels((prevChannels: any) => [...prevChannels, ...res]);

@@ -69,6 +69,7 @@ interface IProps {
   channelMembers: any[];
   ownerId: number;
   channelType: EChannelType;
+  user: any;
 }
 
 export default function ChannelConnectedMemberList({
@@ -76,12 +77,14 @@ export default function ChannelConnectedMemberList({
   channelMembers,
   ownerId,
   channelType,
+  user,
 }: IProps) {
   return (
     <Box>
       <Stack spacing={2}>
         {connectedMembers &&
           connectedMembers.map((member) => {
+            if (member.id === user.id) return;
             const channelMember = channelMembers.find(
               (channelMember) => channelMember.userId === member.id
             );
