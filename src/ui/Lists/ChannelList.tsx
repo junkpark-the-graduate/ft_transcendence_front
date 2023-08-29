@@ -40,7 +40,7 @@ const ChannelList: React.FC<Props> = ({
   const [tmpSearchKeyword, setTmpSearchKeyword] = useState<string>("");
   const [channels, setChannels] = useState<any>([]);
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(20);
   const [ref, inView] = useInView({
     threshold: 0.5,
   });
