@@ -66,16 +66,15 @@ export default function Page({
     if (searchParams.roomId) {
       socket.emit("join_room", searchParams.roomId);
     }
-    fetchAsyncToBackEnd("/user").then((res) => {
-      res
-        .json()
-        .then((data) => {
+    fetchAsyncToBackEnd("/user")
+      .then((res) => {
+        res.json().then((data) => {
           setUser(data);
-        })
-        .catch((err) => {
-          setError(err);
         });
-    });
+      })
+      .catch((err) => {
+        setError(err);
+      });
 
     // TODO: 매칭 후 디스코넥트 안됨!!
     return () => {
