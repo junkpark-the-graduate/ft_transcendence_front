@@ -76,7 +76,6 @@ export default function Page({
         setError(err);
       });
 
-    // TODO: 매칭 후 디스코넥트 안됨!!
     return () => {
       socket.emit("cancel_matching");
       socket.removeAllListeners();

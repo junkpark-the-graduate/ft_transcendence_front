@@ -17,7 +17,6 @@ interface KeyState {
 const PADDLE_WIDTH = 8;
 const PADDLE_HEIGHT = 1;
 
-// TODO refactoring
 export default function Game() {
   const router = useRouter();
   const [score, setScore] = useState("0 : 0");

@@ -40,7 +40,6 @@ const InviteGameModal: React.FC<InviteGameModalProps> = ({
     setIsOpen(false);
   };
 
-  // TODO 호스트가 상대방이 게임 취소한거 알도록 emit을 하던....해야할 듯?
   const cancelHandle = () => {
     onClose();
   };
