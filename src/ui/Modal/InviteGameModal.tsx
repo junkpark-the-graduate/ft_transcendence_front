@@ -61,7 +61,7 @@ const InviteGameModal: React.FC<InviteGameModalProps> = ({
             <Text>{gameHost.name} 님이 게임에 초대하셨습니다.</Text>{" "}
           </ModalHeader>
           <ModalBody my={2}>
-            <Flex justifyContent="center" gap={16}>
+            <Flex justifyContent="center" gap={6}>
               <GameButton
                 w="150px"
                 text="참여하기"
