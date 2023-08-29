@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loading } from "./components/Loading";
 import { Intro } from "@/ui/Intro/Intro";
+import { useToast } from "@chakra-ui/react";
 
 export default function Page({
   searchParams,
@@ -13,6 +14,7 @@ export default function Page({
 }) {
   const router = useRouter();
   const { code } = searchParams;
+  const toast = useToast();
 
   async function signIn() {
     try {
@@ -26,8 +28,15 @@ export default function Page({
         try {
           const json = await res.json();
           if (json.isFirstLogin) {
-            console.log("new user");
+            Cookies.set("accessToken", json.accessToken);
             router.replace("/user/edit");
+            toast({
+              title: "welcome to Ping Pong!",
+              description: "사용자 기본 정보를 확인해주세요.",
+              status: "info",
+              duration: 10000,
+              isClosable: true,
+            });
             return;
           }
           if (json.twoFactorToken) {

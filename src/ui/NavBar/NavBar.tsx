@@ -16,6 +16,7 @@ import BaseAvatar from "../Avatar/Avatar";
 import Search from "./Search";
 import { GoPencil, GoPersonFill, GoSignOut } from "react-icons/go";
 import { logout } from "@/utils/auth/logout";
+import { socket } from "@/app/game/socket";
 
 const Links = [
   { label: "Game", path: "/game" },
@@ -24,6 +25,7 @@ const Links = [
 ];
 
 const NavLink = ({ children, path }: { children: ReactNode; path: string }) => {
+  const sock = socket;
   const router = useRouter();
   const pathname = usePathname();
   const isActive = pathname === path;

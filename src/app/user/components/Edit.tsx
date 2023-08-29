@@ -124,7 +124,7 @@ const Edit = () => {
     }
     if (!nameRegex.test(finalName)) {
       toast({
-        description: "이름은 알파벳과 숫자만 포함해야 합니다.",
+        description: "알파벳과 숫자 이외의 문자는 사용이 불가합니다.",
         status: "error",
         duration: 2000,
         isClosable: true,
