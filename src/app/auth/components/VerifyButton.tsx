@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, useToast } from "@chakra-ui/react";
 import { fetchAsyncToBackEnd } from "@/utils/lib/fetchAsyncToBackEnd";
 
 const Timer: React.FC = () => {
@@ -32,6 +32,7 @@ const Timer: React.FC = () => {
 
 export const VerifyButton = () => {
   const router = useRouter();
+  const toast = useToast();
 
   return (
     <Button
@@ -47,18 +48,30 @@ export const VerifyButton = () => {
         const twoFactorToken = Cookies.get("twoFactorToken");
         console.log("twoFactorToken!!!!!!!!!", twoFactorToken);
 
-        const res = await fetchAsyncToBackEnd(
-          `/auth/tfa?twoFactorToken=${twoFactorToken}`,
-          { method: "POST" }
-        );
+        try {
+          const res = await fetchAsyncToBackEnd(
+            `/auth/tfa?twoFactorToken=${twoFactorToken}`,
+            { method: "POST" }
+          );
+          const json = await res.json();
 
-        const json = await res.json();
-        if (!res.ok) {
-          alert("2차 인증 실패");
-        } else {
           Cookies.set("accessToken", json.accessToken);
+          toast({
+            title: "two factor authentication success",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
           router.refresh();
           router.push("/game");
+        } catch (err: any) {
+          toast({
+            title: "two factor authentication failed",
+            description: "please check your email",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
         }
       }}
     >

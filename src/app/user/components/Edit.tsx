@@ -70,7 +70,7 @@ const Edit = () => {
         title: `Two-factor authentication ${
           twoFactor ? "disabled" : "enabled"
         }`,
-        status: "success",
+        status: "info",
         duration: 2000,
         isClosable: true,
       });
