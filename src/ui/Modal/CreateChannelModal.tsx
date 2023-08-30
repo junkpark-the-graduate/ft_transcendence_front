@@ -106,6 +106,7 @@ export default function CreateChannelModal({
     }
     setJoinedChannels([...joinedChannels, resJson]);
     setChannelName("");
+    setChannelPassword("");
     onClose();
   }
 
