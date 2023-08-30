@@ -1,19 +1,18 @@
-import { Input } from "@chakra-ui/react";
+import { Input, InputProps } from "@chakra-ui/react";
 
-export interface BaseInputProps {
+export interface BaseInputProps extends InputProps {
   placeholder: string;
-  onClick: () => void;
 }
 
-export default function BaseInput({ placeholder, onClick }: BaseInputProps) {
+export default function BaseInput({ placeholder, ...props }: BaseInputProps) {
   return (
     <Input
       placeholder={placeholder}
+      bg="#414147"
       textColor="white"
       variant="filled"
-      w="250px"
-      mb="10px"
-      borderRadius="15px"
+      border="none"
+      borderRadius="8px"
       _hover={{
         background: "#191919",
       }}
@@ -21,8 +20,7 @@ export default function BaseInput({ placeholder, onClick }: BaseInputProps) {
         borderColor: "#191919",
         background: "#191919",
       }}
-      bg="#3B3D41"
-      onClick={onClick}
+      {...props}
     />
   );
 }

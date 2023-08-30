@@ -1,34 +1,11 @@
 "use client";
 
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { NextPageContext } from "next";
 import Cookies from "js-cookie";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useState } from "react";
-
-const Loading = () => {
-  const txt = "login";
-  const [text, setText] = useState("login");
-  const [animationIndex, setAnimationIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnimationIndex((prevIndex) => (prevIndex + 1) % 5);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const animationFrames = ["", ".", "..", "...", ""];
-
-  useEffect(() => {
-    setText(txt + animationFrames[animationIndex]);
-  }, [animationIndex]);
-
-  return <h1>{text}</h1>;
-};
+import { Loading } from "./components/Loading";
+import { Intro } from "@/ui/Intro/Intro";
+import { useToast } from "@chakra-ui/react";
 
 export default function Page({
   searchParams,
@@ -37,24 +14,37 @@ export default function Page({
 }) {
   const router = useRouter();
   const { code } = searchParams;
+  const toast = useToast();
 
   async function signIn() {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/auth?code=${code}`, {
-        method: "POST",
-      });
-
-      console.log(res.status);
-      // true -> res자체가 redirect된 상태
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/auth?code=${code}`,
+        {
+          method: "POST",
+        }
+      );
       if (res.ok) {
         try {
           const json = await res.json();
+          if (json.isFirstLogin) {
+            Cookies.set("accessToken", json.accessToken);
+            router.replace("/user/edit");
+            toast({
+              title: "welcome to Ping Pong!",
+              description: "사용자 기본 정보를 확인해주세요.",
+              status: "info",
+              duration: 10000,
+              isClosable: true,
+            });
+            return;
+          }
           if (json.twoFactorToken) {
             Cookies.set("twoFactorToken", json.twoFactorToken);
-            router.push("http://127.0.0.1:3000/auth/tfa-loading");
+            router.push(`/auth/tfa-loading`);
           } else {
             Cookies.set("accessToken", json.accessToken);
-            router.push("/user");
+            router.push("/game");
           }
         } catch (error) {
           console.error("Failed to parse JSON response:", error);
@@ -69,5 +59,5 @@ export default function Page({
     signIn();
   }, []);
 
-  return <Loading />;
+  return <Intro children={<Loading />} />;
 }

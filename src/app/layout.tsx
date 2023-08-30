@@ -1,9 +1,9 @@
 import "../styles/globals.css";
-import { Inter } from "next/font/google";
+import styles from "../styles/layout.module.css";
 import { Providers } from "./providers";
 
 export const metadata = {
-  title: "ft_transcendence",
+  title: "ping pong",
   description: "ft_transcendence",
 };
 
@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={styles.container}>
         <Providers>{children}</Providers>
       </body>
     </html>

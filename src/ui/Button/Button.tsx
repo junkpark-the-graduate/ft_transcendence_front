@@ -1,22 +1,25 @@
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button, ButtonProps } from "@chakra-ui/react";
 
-export interface BaseButtonProps {
+export interface BaseButtonProps extends ButtonProps {
   text: string;
-  onClick: () => void;
 }
 
-export default function BaseButton({ text, onClick }: BaseButtonProps) {
+export default function BaseButton({ text, ...props }: BaseButtonProps) {
   return (
     <Button
-      bg="#3B3D41"
+      bg="#414147"
+      borderRadius={"8px"}
       textColor="white"
-      w="250px"
-      borderRadius="15px"
-      m="5px"
+      fontSize={15}
+      px="25px"
+      fontWeight={800}
       _hover={{
         background: "#191919",
       }}
-      onClick={onClick}
+      _focus={{
+        background: "#191919",
+      }}
+      {...props}
     >
       {text}
     </Button>

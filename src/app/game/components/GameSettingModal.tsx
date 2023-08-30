@@ -1,0 +1,138 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Select,
+  FormLabel,
+  VStack,
+  Box,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+} from "@chakra-ui/react";
+import { GoGear } from "react-icons/go";
+import GameButton from "@/ui/Button/GameButton";
+
+export default function GameSettingModal({ setIsMatching }: any) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [ballColor, setBallColor] = useState("white");
+  const [backgroundColor, setBackgroundColor] = useState("white");
+  const [paddleColor, setPaddleColor] = useState("white");
+  const [planeColor, setPlaneColor] = useState("white");
+
+  const handleSelectBallColor = (event: any) => {
+    setBallColor(event.target.value);
+    localStorage.setItem("ballColor", event.target.value);
+  };
+  const handleSelectBackGroundColor = (event: any) => {
+    setBackgroundColor(event.target.value);
+    localStorage.setItem("backgroundColor", event.target.value);
+  };
+  const handleSelectPaddleColor = (event: any) => {
+    setPaddleColor(event.target.value);
+    localStorage.setItem("paddleColor", event.target.value);
+  };
+  const handleSelectPlaneColor = (event: any) => {
+    setPlaneColor(event.target.value);
+    localStorage.setItem("planeColor", event.target.value);
+  };
+
+  useEffect(() => {
+    if (localStorage) {
+      setBallColor(localStorage.getItem("ballColor") ?? "white");
+      setBackgroundColor(localStorage.getItem("backgroundColor") ?? "white");
+      setPaddleColor(localStorage.getItem("paddleColor") ?? "white");
+      setPlaneColor(localStorage.getItem("planeColor") ?? "white");
+    }
+  }, []);
+
+  const selectStyle = {
+    color: "white",
+    w: "70%",
+    marginBottom: 3,
+    size: "sm",
+    variant: "filled",
+    borderRadius: "8px",
+    bg: "#191919",
+    // _hover: "#191919",
+    // _focus: "#191919",
+  };
+
+  const colorOptions = () => (
+    <>
+      <option value="white">⚪ white</option>
+      <option value="black">⚫ black</option>
+      <option value="red">🔴 red</option>
+      <option value="orange">🟠 orange</option>
+      <option value="yellow">🟡 yellow</option>
+      <option value="green">🟢 green</option>
+      <option value="blue">🔵 blue</option>
+      <option value="purple">🟣 purple</option>
+    </>
+  );
+
+  return (
+    <Box>
+      <GameButton leftIcon={<GoGear />} onClick={onOpen} text="Game Setting" />
+
+      <Modal isOpen={isOpen} onClose={onClose} size="md">
+        <ModalOverlay />
+        <ModalContent
+          mt={40}
+          p={4}
+          border="#A0A0A3 3px solid"
+          boxShadow={"7px 7px black"}
+          borderRadius="0"
+          bg="#29292D"
+        >
+          {" "}
+          <ModalHeader pt={1} pb={3} textAlign="center">
+            Game Setting
+          </ModalHeader>
+          <ModalCloseButton size="sm" m={1} />
+          <ModalBody mx={4} py={6} borderTop={"#A0A0A3 1px solid"}>
+            <VStack gap={1}>
+              <FormLabel color={"white"}>Background Color</FormLabel>
+              <Select
+                value={backgroundColor ?? "white"}
+                onChange={handleSelectBackGroundColor}
+                {...selectStyle}
+              >
+                {colorOptions()}
+              </Select>
+              <FormLabel color={"white"}>Ball Color</FormLabel>
+              <Select
+                value={ballColor ? ballColor : "white"}
+                onChange={handleSelectBallColor}
+                {...selectStyle}
+              >
+                {colorOptions()}
+              </Select>
+              <FormLabel color={"white"}>Paddle Color</FormLabel>
+              <Select
+                value={paddleColor ?? "white"}
+                onChange={handleSelectPaddleColor}
+                {...selectStyle}
+              >
+                {colorOptions()}
+              </Select>
+              <FormLabel color={"white"}>Plane Color</FormLabel>
+              <Select
+                value={planeColor ?? "white"}
+                onChange={handleSelectPlaneColor}
+                {...selectStyle}
+              >
+                {colorOptions()}
+              </Select>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
+}
