@@ -46,7 +46,7 @@ const ChannelInvite: React.FC<Props> = ({
   const toast = useToast();
   const accessToken = Cookies.get("accessToken");
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(20);
+  const [limit, setLimit] = useState<number>(30);
   const [ref, inView] = useInView({
     threshold: 0.5,
   });

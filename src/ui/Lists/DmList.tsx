@@ -68,8 +68,6 @@ const DmList: React.FC = () => {
         <Box mt={2}></Box>
         <Flex direction="column" gap={3}>
           {channels.map((channel: any) => {
-            const lastChat = channel?.chats[channel?.chats.length - 1];
-            const lastMessage = lastChat?.message || "no message";
             return (
               <ButtonBox
                 key={channel.id}
@@ -80,9 +78,6 @@ const DmList: React.FC = () => {
                 <Flex direction="row" gap={5} alignItems="center">
                   <Avatar size="sm" name={channel.name} />
                   <Text fontSize="lg">{channel.name}</Text>
-                  <Text fontSize="m" color="gray.500">
-                    {lastMessage}
-                  </Text>
                   <Box marginLeft="auto">
                     <HStack spacing={3}>
                       <ChannelBadge type={Number(channel.type)} />
